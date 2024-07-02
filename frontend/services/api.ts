@@ -1,10 +1,11 @@
 // services/api.ts
 import axios from "axios";
-import { Attribute } from "../context/attributes_context";
+import { Attribute, SettingsProps } from "../context/attributes_context";
 import {
   preproccessAttributes,
   preprocessCrossRestrictions,
   preprocessRestrictions,
+  preprocessSettings,
 } from "./utils";
 import { RestrictionProps } from "@/components/restrictions/restriction";
 
@@ -20,10 +21,10 @@ export const downloadSurvey = async (
   path: "export_qsf" | "export_js" | "export_csv" | "export_json",
   filename: string,
   setDownloadStatus: (status: any) => void,
+  settings: SettingsProps,
   csv_lines?: number,
   restrictions?: RestrictionProps[],
-  crossRestrictions?: RestrictionProps[],
-  settings?: number
+  crossRestrictions?: RestrictionProps[]
 ) => {
   const fileExtension = (filename: string) => {
     switch (path) {
@@ -55,16 +56,21 @@ export const downloadSurvey = async (
     const processedCrossRestrictions = preprocessCrossRestrictions(
       crossRestrictions || []
     );
+    // Only export settings for qsf and json
+    const processedSettings =
+      path === "export_qsf" || path === "export_json"
+        ? preprocessSettings(settings)
+        : {};
 
     const response = await api.post(
       `/surveys/${path}/`,
       {
         ...processedAttributes,
         csv_lines,
-        settings,
         restrictions: processedRestrictions,
         cross_restrictions: processedCrossRestrictions,
         filename: file,
+        ...processedSettings,
       },
       {
         responseType: "blob",
@@ -101,7 +107,7 @@ export const getPreview = async (
   attributes: Attribute[],
   restrictions: RestrictionProps[],
   crossRestrictions: RestrictionProps[],
-  settings: number
+  numProfiles: number
 ): Promise<{ attributes: string[]; previews: string[][] }> => {
   try {
     const processedAttributes = preproccessAttributes(attributes);
@@ -114,7 +120,7 @@ export const getPreview = async (
       restrictions: processedRestrictions,
       cross_restrictions: processedCrossRestrictions,
       filename: "preview",
-      profiles: settings,
+      num_profiles: numProfiles,
     });
 
     // Extract attributes and previews from the response

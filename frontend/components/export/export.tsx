@@ -55,7 +55,8 @@ const ExportDropdown: React.FC<IExportDropdown> = ({ size }) => {
   const [activeItem, setActiveItem] = useState<IFormat>(formats[1]);
   const { currentDoc } = useContext(DocumentContext);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { attributes, restrictions, crossRestrictions } = useAttributes();
+  const { attributes, restrictions, crossRestrictions, settings } =
+    useAttributes();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [docName, setDocName] = useState<string>(currentDoc);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -81,6 +82,7 @@ const ExportDropdown: React.FC<IExportDropdown> = ({ size }) => {
       path,
       docName,
       setDownloadStatus,
+      settings,
       numRows,
       restrictions,
       crossRestrictions

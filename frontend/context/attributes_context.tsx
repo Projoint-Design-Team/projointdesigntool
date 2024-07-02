@@ -45,7 +45,7 @@ export interface Attribute {
   key: number;
 }
 
-interface Settings {
+export interface SettingsProps {
   numProfiles: number;
   numTasks: number;
   repeatedTasks: boolean;
@@ -53,7 +53,6 @@ interface Settings {
   taskToRepeat: number;
   whereToRepeat: number;
   randomize: boolean;
-  noFlip: boolean;
 }
 
 interface AttributeContextType {
@@ -86,8 +85,8 @@ interface AttributeContextType {
   saveRestriction: (restriction: RestrictionProps, cross?: boolean) => void;
   deleteRestriction: (restrictionId: string, cross?: boolean) => void;
   instructions: IInstructions;
-  settings: Settings;
-  updateSettings: (newSettings: Settings) => void;
+  settings: SettingsProps;
+  updateSettings: (newSettings: SettingsProps) => void;
   toggleAttributeLocked: (key: number) => void;
 }
 
@@ -125,7 +124,7 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     outcomeType: "mcq",
   });
 
-  const [settings, setSettings] = useState<Settings>({
+  const [settings, setSettings] = useState<SettingsProps>({
     numProfiles: 2,
     numTasks: 2,
     repeatedTasks: true,
@@ -133,7 +132,6 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     taskToRepeat: 1,
     whereToRepeat: 1,
     randomize: false,
-    noFlip: false,
   });
 
   // "numProfiles": 2,
@@ -387,7 +385,7 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     setEdited(true);
   };
 
-  const updateSettings = (newSettings: Settings) => {
+  const updateSettings = (newSettings: SettingsProps) => {
     setSettings(newSettings);
     setEdited(true);
   };

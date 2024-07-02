@@ -29,14 +29,15 @@ export const addSurvey = ({
       ? reintegrateCrossRestrictions(value.cross_restrictions)
       : [],
     settings: {
-      numProfiles: value ? value.profiles : 2,
-      numTasks: value ? value.tasks : 2,
-      repeatedTasks: value ? value.repeat_task : true,
-      repeatedTasksFlipped: value ? value.noFlip : false,
-      taskToRepeat: value ? value.duplicate_first : 1,
-      whereToRepeat: value ? value.duplicate_second : 1,
-      randomize: value ? value.randomize : false,
-      noFlip: value ? value.noFlip : false,
+      numProfiles: value.num_profiles ? value.num_profiles : 2,
+      numTasks: value.num_tasks ? value.num_tasks : 2,
+      repeatedTasks: value.repeated_tasks ? value.repeated_tasks : true,
+      repeatedTasksFlipped: value.repeated_tasks_flipped
+        ? value.repeated_tasks_flipped
+        : false,
+      taskToRepeat: value.task_to_repeat ? value.task_to_repeat : 1,
+      whereToRepeat: value.where_to_repeat ? value.where_to_repeat : 1,
+      randomize: value.randomize ? value.randomize : false,
     },
   };
   localStorage.setItem(`attributes-${uniqueId}`, JSON.stringify(dataToSave));
