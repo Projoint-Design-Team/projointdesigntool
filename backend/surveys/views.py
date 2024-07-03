@@ -2,30 +2,20 @@ import json
 import os
 
 from dotenv import load_dotenv
-from drf_spectacular.utils import OpenApiExample, OpenApiResponse, extend_schema
+from drf_spectacular.utils import (OpenApiExample, OpenApiResponse,
+                                   extend_schema)
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .helpers import (
-    _create_js_file,
-    _create_profiles,
-    _create_qualtrics_js_text,
-    _create_survey,
-    _download_survey,
-    _filter_survey_data,
-    _generate_unlocked_order,
-    _populate_csv,
-    _send_file_response,
-    _validate_file,
-    _validate_survey_data,
-)
-from .serializers import (
-    FileUploadSerializer,
-    QualtricsSerializer,
-    ShortSurveySerializer,
-    SurveySerializer,
-)
+from .helpers import (_create_js_file, _create_profiles,
+                      _create_qualtrics_js_text, _create_survey,
+                      _download_survey, _filter_survey_data,
+                      _generate_unlocked_order, _populate_csv,
+                      _send_file_response, _validate_file,
+                      _validate_survey_data)
+from .serializers import (FileUploadSerializer, QualtricsSerializer,
+                          ShortSurveySerializer, SurveySerializer)
 
 load_dotenv()
 

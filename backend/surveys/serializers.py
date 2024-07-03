@@ -100,7 +100,6 @@ class ShortSurveySerializer(serializers.ModelSerializer):
 
 
 class SurveySerializer(ShortSurveySerializer):
-    constraints = serializers.JSONField(default=dict)
     num_tasks = serializers.IntegerField(default=5, min_value=1, allow_null=True)
     repeated_tasks = serializers.BooleanField(default=False, allow_null=True)
     repeated_tasks_flipped = serializers.BooleanField(default=False, allow_null=True)
@@ -112,7 +111,6 @@ class SurveySerializer(ShortSurveySerializer):
 
     class Meta(ShortSurveySerializer.Meta):
         fields = ShortSurveySerializer.Meta.fields + [
-            "constraints",
             "num_tasks",
             "repeated_tasks",
             "repeated_tasks_flipped",

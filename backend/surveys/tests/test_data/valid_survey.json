@@ -1,83 +1,82 @@
 {
-    "attributes": [
-        {
-            "name": "att1",
-            "levels": [
-                {
-                    "name": "level1",
-                    "weight": 0.5
-                },
-                {
-                    "name": "another1",
-                    "weight": 0.5
-                }
-            ],
-            "locked" : true
-        },
-        {
-            "name": "att2",
-            "levels": [
-                {
-                    "name": "level2",
-                    "weight": 0.2
-                },
-                {
-                    "name": "another2",
-                    "weight": 0.8
-                }
-            ],
-            "locked" : true
-        },
-        {
-            "name": "att3",
-            "levels": [
-                {
-                    "name": "level3",
-                    "weight": 0.9
-                },
-                {
-                    "name": "another3",
-                    "weight": 0.1
-                }
-            ],
-            "locked" : true
-        }
-    ],
-    "restrictions": [
-        {
-            "condition": [
-                {
-                    "attribute": "att1",
-                    "operation": "==",
-                    "value": "level1"
-                },
-                {
-                    "logical": "||",
-                    "attribute": "att2",
-                    "operation": "==",
-                    "value": "level2"
-                }
-            ],
-            "result": [
-                {
-                    "attribute": "att3",
-                    "operation": "!=",
-                    "value": "level3"
-                }
-            ]
-        }
-    ],
-    "cross_restrictions": [],
-    "num_profiles": 2,
-    "filename" : "survey.js",
-    "csv_lines" : 500,
-    "constraints" : [],
-    "num_tasks" : 5,
-    "repeated_tasks" : false,
-    "repeated_tasks_flipped" : false,
-    "task_to_repeat" : 0,
-    "where_to_repeat" : 0,
-    "random" : false,
-    "randomize" : false,
-    "advanced" : {}
+	"attributes": [
+		{
+			"name": "att1",
+			"levels": [
+				{
+					"name": "level1",
+					"weight": 0.5
+				},
+				{
+					"name": "another1",
+					"weight": 0.5
+				}
+			],
+			"locked": true
+		},
+		{
+			"name": "att2",
+			"levels": [
+				{
+					"name": "level2",
+					"weight": 0.2
+				},
+				{
+					"name": "another2",
+					"weight": 0.8
+				}
+			],
+			"locked": true
+		},
+		{
+			"name": "att3",
+			"levels": [
+				{
+					"name": "level3",
+					"weight": 0.9
+				},
+				{
+					"name": "another3",
+					"weight": 0.1
+				}
+			],
+			"locked": true
+		}
+	],
+	"restrictions": [
+		{
+			"condition": [
+				{
+					"attribute": "att1",
+					"operation": "==",
+					"value": "level1"
+				},
+				{
+					"logical": "||",
+					"attribute": "att2",
+					"operation": "==",
+					"value": "level2"
+				}
+			],
+			"result": [
+				{
+					"attribute": "att3",
+					"operation": "!=",
+					"value": "level3"
+				}
+			]
+		}
+	],
+	"cross_restrictions": [],
+	"num_profiles": 2,
+	"filename": "survey.js",
+	"csv_lines": 500,
+	"num_tasks": 5,
+	"repeated_tasks": false,
+	"repeated_tasks_flipped": false,
+	"task_to_repeat": 0,
+	"where_to_repeat": 0,
+	"random": false,
+	"randomize": false,
+	"advanced": {}
 }
