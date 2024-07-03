@@ -27,7 +27,10 @@ export const fetchDocuments = (): DocumentData[] => {
           name: data.name,
           id: key.substring(11),
           attributesCount: data.attributes ? data.attributes.length : 0,
-          restrictions: data.restrictions ? data.restrictions.length : 0,
+          restrictions:
+            data.restrictions && data.crossRestrictions
+              ? data.restrictions.length + data.crossRestrictions.length
+              : 0,
           date: formatDate(data.lastEdited),
         });
       }

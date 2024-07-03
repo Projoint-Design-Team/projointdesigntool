@@ -85,7 +85,7 @@ export const DocumentItem = ({ name, active, id }: IDoc) => {
                 arrow
                 placement="top"
               >
-                <ThreeDots onDelete={handleDelete} />
+                <ThreeDots onDelete={handleDelete} showExport={false} />
               </LightTooltip>
             </div>
           </div>

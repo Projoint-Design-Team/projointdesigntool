@@ -63,113 +63,116 @@ export const FileIcon = ({ stroke }: { stroke: string }) => {
   );
 };
 
-export const ThreeDots = forwardRef<HTMLDivElement, { onDelete?: () => void }>(
-  ({ onDelete, ...props }, ref) => {
-    const [open, setOpen] = React.useState(false);
-    const anchorRef = React.useRef<HTMLDivElement>(null);
-    const { setExportModalOpen } = useModalStore();
-    const { cleanDownloadStatus } = useDownload();
+export const ThreeDots = forwardRef<
+  HTMLDivElement,
+  { onDelete?: () => void; showExport?: boolean }
+>(({ onDelete, showExport = true, ...props }, ref) => {
+  const [open, setOpen] = React.useState(false);
+  const anchorRef = React.useRef<HTMLDivElement>(null);
+  const { setExportModalOpen } = useModalStore();
+  const { cleanDownloadStatus } = useDownload();
 
-    const handleToggle = () => {
-      setOpen((prevOpen) => !prevOpen);
-    };
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
 
-    const handleClose = (event: Event | React.SyntheticEvent) => {
-      if (
-        anchorRef.current &&
-        anchorRef.current.contains(event.target as HTMLElement)
-      ) {
-        return;
-      }
-
-      setOpen(false);
-    };
-
-    function handleListKeyDown(event: React.KeyboardEvent) {
-      if (event.key === "Tab") {
-        event.preventDefault();
-        setOpen(false);
-      } else if (event.key === "Escape") {
-        setOpen(false);
-      }
+  const handleClose = (event: Event | React.SyntheticEvent) => {
+    if (
+      anchorRef.current &&
+      anchorRef.current.contains(event.target as HTMLElement)
+    ) {
+      return;
     }
 
-    const handleDelete = () => {
-      handleToggle();
-      onDelete && onDelete();
-    };
+    setOpen(false);
+  };
 
-    // return focus to the button when we transitioned from !open -> open
-    const prevOpen = React.useRef(open);
-    React.useEffect(() => {
-      if (prevOpen.current === true && open === false) {
-        anchorRef.current!.focus();
-      }
+  function handleListKeyDown(event: React.KeyboardEvent) {
+    if (event.key === "Tab") {
+      event.preventDefault();
+      setOpen(false);
+    } else if (event.key === "Escape") {
+      setOpen(false);
+    }
+  }
 
-      prevOpen.current = open;
-    }, [open]);
-    return (
-      <div ref={anchorRef}>
-        <div
-          ref={ref}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            height: "12px",
-          }}
-          {...props}
-          onClick={handleToggle}
-        >
-          <ThreeDotsIcon />
-        </div>
-        <Popper
-          open={open}
-          anchorEl={anchorRef.current}
-          role={undefined}
-          placement="right-start"
-          transition
-          disablePortal
-          modifiers={[
-            {
-              name: "flip",
-              enabled: false, // This disables flipping the Popper's placement when there is not enough space
+  const handleDelete = () => {
+    handleToggle();
+    onDelete && onDelete();
+  };
+
+  // return focus to the button when we transitioned from !open -> open
+  const prevOpen = React.useRef(open);
+  React.useEffect(() => {
+    if (prevOpen.current === true && open === false) {
+      anchorRef.current!.focus();
+    }
+
+    prevOpen.current = open;
+  }, [open]);
+  return (
+    <div ref={anchorRef}>
+      <div
+        ref={ref}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          height: "12px",
+        }}
+        {...props}
+        onClick={handleToggle}
+      >
+        <ThreeDotsIcon />
+      </div>
+      <Popper
+        open={open}
+        anchorEl={anchorRef.current}
+        role={undefined}
+        placement="right-start"
+        transition
+        disablePortal
+        modifiers={[
+          {
+            name: "flip",
+            enabled: false, // This disables flipping the Popper's placement when there is not enough space
+          },
+          {
+            name: "preventOverflow",
+            options: {
+              altAxis: false, // Prevents the Popper from moving into the alternative axis (y-axis if primary is x)
+              boundary: "clippingParents", // Can be 'scrollParent', 'window', or an HTML element
+              tether: false, // Whether the Popper can be detached from its anchor element
+              altBoundary: false, // Allows the Popper to overflow its boundaries to stay near the anchor
+              rootBoundary: "document", // Defines which boundary to consider as the viewport
             },
-            {
-              name: "preventOverflow",
-              options: {
-                altAxis: false, // Prevents the Popper from moving into the alternative axis (y-axis if primary is x)
-                boundary: "clippingParents", // Can be 'scrollParent', 'window', or an HTML element
-                tether: false, // Whether the Popper can be detached from its anchor element
-                altBoundary: false, // Allows the Popper to overflow its boundaries to stay near the anchor
-                rootBoundary: "document", // Defines which boundary to consider as the viewport
-              },
-            },
-          ]}
-        >
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{
-                transformOrigin:
-                  placement === "right-start" ? "right top" : "right bottom",
-                marginTop: "0.5rem",
+          },
+        ]}
+      >
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{
+              transformOrigin:
+                placement === "right-start" ? "right top" : "right bottom",
+              marginTop: "0.5rem",
+            }}
+          >
+            <Paper
+              elevation={0}
+              variant="outlined"
+              sx={{
+                borderRadius: "0.5rem",
+                width: "10rem",
+                position: "relative",
               }}
             >
-              <Paper
-                elevation={0}
-                variant="outlined"
-                sx={{
-                  borderRadius: "0.5rem",
-                  width: "10rem",
-                  position: "relative",
-                }}
-              >
-                <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList
-                    id="composition-menu"
-                    aria-labelledby="composition-button"
-                    onKeyDown={handleListKeyDown}
-                  >
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList
+                  id="composition-menu"
+                  aria-labelledby="composition-button"
+                  onKeyDown={handleListKeyDown}
+                >
+                  {showExport && (
                     <MenuItem
                       sx={{
                         display: "flex",
@@ -187,30 +190,30 @@ export const ThreeDots = forwardRef<HTMLDivElement, { onDelete?: () => void }>(
                     >
                       <ExportDropdown size={"big"} />
                     </MenuItem>
-                    <MenuItem
-                      sx={{
-                        display: "flex",
-                        gap: "0.75rem",
-                        alignItems: "center",
-                        padding: "0.5rem 1rem",
-                        fontSize: "0.875rem",
-                        fontWeight: "medium",
-                        color: "var(--red)",
-                      }}
-                      onClick={handleDelete}
-                    >
-                      <DeleteTip /> <p>Delete file</p>
-                    </MenuItem>
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
-      </div>
-    );
-  }
-);
+                  )}
+                  <MenuItem
+                    sx={{
+                      display: "flex",
+                      gap: "0.75rem",
+                      alignItems: "center",
+                      padding: "0.5rem 1rem",
+                      fontSize: "0.875rem",
+                      fontWeight: "medium",
+                      color: "var(--red)",
+                    }}
+                    onClick={handleDelete}
+                  >
+                    <DeleteTip /> <p>Delete file</p>
+                  </MenuItem>
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+    </div>
+  );
+});
 
 ThreeDots.displayName = "ThreeDots";
 

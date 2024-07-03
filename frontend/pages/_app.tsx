@@ -11,7 +11,7 @@ import { DownloadProvider } from "@/context/download_context";
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [activeItem, setActiveItem] = useState("");
+  const [activeItem, setActiveItem] = useState(router.asPath.split("/")[1]);
 
   useEffect(() => {
     const handleRouteChangeStart = (url: string) => {
@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     };
 
     const handleRouteChangeComplete = (url: string) => {
-      setActiveItem(router.asPath.split("/")[1]);
+      setActiveItem(url.split("/")[1]);
       setTimeout(() => {
         setLoading(false);
       }, 500);
