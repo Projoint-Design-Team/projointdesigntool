@@ -44,14 +44,14 @@ class ShortSurveySerializer(serializers.ModelSerializer):
         many=True, required=False, default=list)
     cross_restrictions = CrossRestrictionSerializer(
         many=True, required=False, default=list)
-    profiles = serializers.IntegerField(default=2, min_value=2)
-    csv_lines = serializers.IntegerField(default=500)
+    num_profiles = serializers.IntegerField(default=2, min_value=2)
     filename = serializers.CharField(required=True)
+    csv_lines = serializers.IntegerField(default=500)
 
     class Meta:
         model = Survey
-        fields = ["attributes", "restrictions", "filename",
-                  "cross_restrictions", "profiles", "csv_lines"]
+        fields = ["attributes", "restrictions", "cross_restrictions",
+                  "num_profiles", "filename", "csv_lines"]
 
     def validate_attributes(self, value):
         """
@@ -93,21 +93,23 @@ class ShortSurveySerializer(serializers.ModelSerializer):
 
 class SurveySerializer(ShortSurveySerializer):
     constraints = serializers.JSONField(default=dict)
-    tasks = serializers.IntegerField(default=5, min_value=1, allow_null=True)
-    randomize = serializers.BooleanField(default=False, allow_null=True)
-    repeat_task = serializers.BooleanField(default=False, allow_null=True)
-    random = serializers.BooleanField(default=False, allow_null=True)
-    noFlip = serializers.BooleanField(default=False, allow_null=True)
-    duplicate_first = serializers.IntegerField(
+    num_tasks = serializers.IntegerField(
+        default=5, min_value=1, allow_null=True)
+    repeated_tasks = serializers.BooleanField(default=False, allow_null=True)
+    repeated_tasks_flipped = serializers.BooleanField(
+        default=False, allow_null=True)
+    task_to_repeat = serializers.IntegerField(
         default=0, min_value=0, allow_null=True)
-    duplicate_second = serializers.IntegerField(
+    where_to_repeat = serializers.IntegerField(
         default=4, min_value=0, allow_null=True)
+    random = serializers.BooleanField(default=False, allow_null=True)
+    randomize = serializers.BooleanField(default=False, allow_null=True)
     advanced = serializers.JSONField(default=dict)
 
     class Meta(ShortSurveySerializer.Meta):
         fields = ShortSurveySerializer.Meta.fields + [
-            'constraints', 'advanced', 'profiles', 'tasks', 'randomize', 'repeat_task',
-            'random', 'duplicate_first', 'duplicate_second', 'noFlip'
+            'constraints', 'num_tasks', 'repeated_tasks', 'repeated_tasks_flipped', 'task_to_repeat',
+            'where_to_repeat', 'random', 'randomize', 'advanced'
         ]
 
 

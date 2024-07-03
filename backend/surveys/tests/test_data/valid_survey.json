@@ -43,7 +43,6 @@
             "locked" : true
         }
     ],
-    "constraints" : [],
     "restrictions": [
         {
             "condition": [
@@ -69,15 +68,16 @@
         }
     ],
     "cross_restrictions": [],
+    "num_profiles": 2,
     "filename" : "survey.js",
-    "advanced" : {},
-    "profiles": 2,
-    "tasks" : 5,
-    "randomize" : false,
-    "repeat_task" : false,
+    "csv_lines" : 500,
+    "constraints" : [],
+    "num_tasks" : 5,
+    "repeated_tasks" : false,
+    "repeated_tasks_flipped" : false,
+    "task_to_repeat" : 0,
+    "where_to_repeat" : 0,
     "random" : false,
-    "duplicate_first" : 0,
-    "duplicate_second" : 0,
-    "noFlip" : false,
-    "csv_lines" : 500
+    "randomize" : false,
+    "advanced" : {}
 }

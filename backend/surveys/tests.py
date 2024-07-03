@@ -22,7 +22,7 @@ class ExportJsTests(TestCase):
             "restrictions": [{
                 "condition": [{"attribute": "att1", "operation": "==", "value": "a1l1"}],
                 "result": [{"attribute": "att2", "operation": "!=", "value": "a2l1"}]}],
-            "profiles": 2,
+            "num_profiles": 2,
             "filename": "survey.js",
         }
 
@@ -64,7 +64,7 @@ class PreviewSurveyTests(TestCase):
                            {"name": "att2", "levels": [{"name": "level2"}, {
                                "name": "another2"}], "locked": False},
                            {"name": "att3", "levels": [{"name": "level3"}, {"name": "another3"}], "locked": False}],
-            "profiles": 2,
+            "num_profiles": 2,
             "filename": "preview",
         }
         response = self.client.post(self.url, data, format='json')
@@ -81,7 +81,7 @@ class PreviewSurveyTests(TestCase):
                 "condition": [{"attribute": "att1", "operation": "==", "value": "level1"},
                               {"logical": "||", "attribute": "att2", "operation": "==", "value": "level2"}],
                 "result": [{"attribute": "att3", "operation": "!=", "value": "level3"}]}],
-            "profiles": 2,
+            "num_profiles": 2,
             "filename": "preview",
         }
         response = self.client.post(self.url, data, format='json')
@@ -97,7 +97,7 @@ class PreviewSurveyTests(TestCase):
             "restrictions": [{
                 "condition": [{"attribute": "att1", "operation": "=", "value": "level1"}],
                 "result": [{"attribute": "att3", "operation": "!=", "value": "level3"}]}],
-            "profiles": 2,
+            "num_profiles": 2,
             "filename": "preview",
         }
         response = self.client.post(self.url, data, format='json')
@@ -110,7 +110,7 @@ class PreviewSurveyTests(TestCase):
         # Data where an attribute has no levels
         data = {
             "attributes": [{"name": "attr1", "levels": []}],
-            "profiles": 2,
+            "num_profiles": 2,
             "filename": "preview",
         }
         response = self.client.post(self.url, data, format='json')
@@ -156,7 +156,7 @@ class PreviewSurveyTests(TestCase):
                     "result": {"attribute": "att1", "operation": "==", "value": "another1"},
                 }
             ],
-            "profiles": 2,
+            "num_profiles": 2,
             "filename": "preview",
         }
         for _ in range(100):
@@ -197,7 +197,7 @@ class PreviewSurveyTests(TestCase):
                     "result": {"attribute": "att1", "operation": "==", "value": "another1"},
                 }
             ],
-            "profiles": 2,
+            "num_profiles": 2,
             "filename": "preview",
         }
         for _ in range(100):
@@ -225,7 +225,7 @@ class ExportCsvTests(TestCase):
                            {"name": "att5", "levels": [{"name": "lvl5"}, {
                                "name": "another5"}, {"name": "bruh5"}]},
                            {"name": "att6", "levels": [{"name": "lvl6"}, {"name": "another6"}, {"name": "bruh6"}]}],
-            "profiles": 2,
+            "num_profiles": 2,
             "csv_lines": 10000,
             "filename": "survey.csv",
         }
@@ -243,7 +243,7 @@ class ExportCsvTests(TestCase):
                 "condition": [{"attribute": "att1", "operation": "==", "value": "level1"},
                               {"logical": "||", "attribute": "att2", "operation": "==", "value": "level2"}],
                 "result": [{"attribute": "att3", "operation": "!=", "value": "level3"}]}],
-            "profiles": 2,
+            "num_profiles": 2,
             "filename": "survey.csv",
         }
         response = self.client.post(self.url, data, format='json')
@@ -253,7 +253,7 @@ class ExportCsvTests(TestCase):
         # Data where an attribute has no levels
         data = {
             "attributes": [{"name": "attr1", "levels": []}],
-            "profiles": 2,
+            "num_profiles": 2,
             "filename": "survey.csv",
         }
         response = self.client.post(self.url, data, format='json')
@@ -342,7 +342,7 @@ class ExportJsonTests(TestCase):
                 }
             ],
             "cross_restrictions": [],
-            "profiles": 2,
+            "num_profiles": 2,
             "filename": "survey_export.json",
         }
 
@@ -470,14 +470,14 @@ class QualtricsTests(TestCase):
             "cross_restrictions": [],
             "filename": "survey.qsf",
             "advanced": {},
-            "profiles": 2,
-            "tasks": 5,
+            "num_profiles": 2,
+            "num_tasks": 5,
             "randomize": False,
-            "repeat_task": False,
+            "repeated_tasks": False,
             "random": False,
-            "duplicate_first": 0,
-            "duplicate_second": 4,
-            "noFlip": False,
+            "task_to_repeat": 0,
+            "where_to_repeat": 0,
+            "repeated_tasks_flipped": False,
             "csv_lines": 500
         }
         self.valid_survey_path = os.path.join(
@@ -493,9 +493,12 @@ class QualtricsTests(TestCase):
         response = self.client.post(
             self.url_import, {'file': uploaded_file}, format='multipart')
 
+        valid_survey = json.load(open(self.valid_survey_path, 'r'))
+        valid_survey['filename'] = 'survey.qsf'
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(json.loads(response.content.decode(
-            'utf-8')), json.load(open(self.valid_survey_path, 'r')))
+            'utf-8')), valid_survey)
 
     def test_import_qsf_invalid(self):
         # Malformed JSON data as bytes

@@ -314,15 +314,15 @@ def _create_js_file(request):
         # Optional
         constraints = validated_data['constraints']
         restrictions = validated_data['restrictions']
-        profiles = validated_data['profiles']
-        tasks = validated_data['tasks']
+        num_profiles = validated_data['num_profiles']
+        num_tasks = validated_data['num_tasks']
         randomize = validated_data['randomize']
-        repeat_task = validated_data['repeat_task']
+        repeated_tasks = validated_data['repeated_tasks']
         random = validated_data['random']
         advanced = validated_data['advanced']
-        duplicate_first = validated_data['duplicate_first']
-        duplicate_second = validated_data['duplicate_second']
-        noFlip = validated_data['noFlip']
+        task_to_repeat = validated_data['task_to_repeat']
+        where_to_repeat = validated_data['where_to_repeat']
+        repeated_tasks_flipped = validated_data['repeated_tasks_flipped']
 
         """ Write into file """
         with open(filename, "w", encoding="utf-8") as file_js:
@@ -336,20 +336,20 @@ def _create_js_file(request):
             file_js.write(
                 "// Indicator for whether weighted randomization should be enabled or not\n")
             file_js.write(
-                f"var weighted =  {'true' if repeat_task else 'false'};\n\n")
+                f"var weighted =  {'true' if repeated_tasks else 'false'};\n\n")
             file_js.write(
                 "// K = Number of tasks displayed to the respondent\n")
-            file_js.write("var K = " + str(tasks) + ";\n\n")
+            file_js.write("var K = " + str(num_tasks) + ";\n\n")
             file_js.write("// N = Number of profiles displayed in each task\n")
-            file_js.write("var N = " + str(profiles) + ";\n\n")
+            file_js.write("var N = " + str(num_profiles) + ";\n\n")
             file_js.write(
                 "// num_attributes = Number of Attributes in the Array\n")
             file_js.write("var num_attributes = featurearray.length;\n\n")
             file_js.write("// Should duplicate profiles be rejected?\n")
             file_js.write(
-                "let dupprofiles = [" + str(duplicate_first) + "," + str(duplicate_second) + "]" + "\n")
+                "let dupprofiles = [" + str(task_to_repeat) + "," + str(where_to_repeat) + "]" + "\n")
             file_js.write(
-                f"var noDuplicateProfiles = {'false' if repeat_task else 'true'};\n\n")
+                f"var noDuplicateProfiles = {'false' if repeated_tasks else 'true'};\n\n")
 
             if randomize == 1:
                 file_js.write("var attrconstraintarray = " +
@@ -380,7 +380,7 @@ def _create_js_file(request):
                 file_js.write("var featureArrayNew = featurearray;\n\n")
 
             file_js.write(temp_3)
-            if noFlip:
+            if repeated_tasks_flipped:
                 file_js.write("""
                     // Duplicate profiles
                     for (const key in returnarray) {{
@@ -393,7 +393,7 @@ def _create_js_file(request):
                         }}
                     }}
                     }}
-                    """.format(str(duplicate_first), str(duplicate_second)))
+                    """.format(str(task_to_repeat), str(where_to_repeat)))
             else:
                 file_js.write("""
                 let curr = N;
@@ -416,7 +416,7 @@ def _create_js_file(request):
                     if (returnarray[startKey]){{
                         returnarray[startKey] = returnarray[trailKey];
                     }}
-                }}""".format(str(duplicate_first), str(duplicate_second)))
+                }}""".format(str(task_to_repeat), str(where_to_repeat)))
             file_js.write("\n")
             file_js.write(temp_4)
             file_js.close()
@@ -710,7 +710,7 @@ def __CreateBlock(surveyID, bl, user_token):
     return response["result"]["BlockID"]
 
 
-def _create_survey(name, user_token, task, num_attr, profiles, currText, js, d1, d2, repeatFlip, doubleQ, qText):
+def _create_survey(name, user_token, task, num_attr, profiles, currText, js, task_to_repeat, where_to_repeat, repeated_tasks_flipped, doubleQ, qText):
     url = "https://yul1.qualtrics.com/API/v3/survey-definitions"  # CHANGE DATA CENTER
     payload = {"SurveyName": name, "Language": "EN", "ProjectCategory": "CORE"}
     headers = {"Content-Type": "application/json", "X-API-TOKEN": user_token}
@@ -728,8 +728,8 @@ def _create_survey(name, user_token, task, num_attr, profiles, currText, js, d1,
             currText += qText
             currText += "\n"
             currText = _create_html(i, num_attr, profiles, i, 0, qText)
-        # if i==d2:
-        # currText = _create_html(d1, num_attr, profiles, i-1, repeatFlip)
+        # if i==where_to_repeat:
+        # currText = _create_html(task_to_repeat, num_attr, profiles, i-1, repeated_tasks_flipped)
         currQ = _create_question(
             surveyID, currText, blockID, user_token, profiles, js, i
         )
