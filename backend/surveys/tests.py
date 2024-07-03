@@ -16,25 +16,59 @@ class ExportJsTests(TestCase):
 
         self.payloadSuccess = {
             "attributes": [
-                {"name": "att1", "levels": [{"name": "a1l1"}, {"name": "a1l2"}]},
+                {
+                    "name": "att1",
+                    "levels": [
+                        {"name": "level1", "weight": 0.5},
+                        {"name": "another1", "weight": 0.5},
+                    ],
+                    "locked": False,
+                },
                 {
                     "name": "att2",
-                    "levels": [{"name": "a2l1"}, {"name": "a2l2"}, {"name": "a2l3"}],
+                    "levels": [
+                        {"name": "level2", "weight": 0.2},
+                        {"name": "another2", "weight": 0.8},
+                    ],
+                    "locked": True,
                 },
-                {"name": "att3", "levels": [{"name": "a3l1"}, {"name": "a3l2"}]},
+                {
+                    "name": "att3",
+                    "levels": [
+                        {"name": "level3", "weight": 0.9},
+                        {"name": "another3", "weight": 0.1},
+                    ],
+                    "locked": False,
+                },
             ],
             "restrictions": [
                 {
                     "condition": [
-                        {"attribute": "att1", "operation": "==", "value": "a1l1"}
+                        {"attribute": "att1", "operation": "==", "value": "level1"},
+                        {
+                            "logical": "||",
+                            "attribute": "att2",
+                            "operation": "==",
+                            "value": "level2",
+                        },
                     ],
                     "result": [
-                        {"attribute": "att2", "operation": "!=", "value": "a2l1"}
+                        {"attribute": "att3", "operation": "!=", "value": "level3"}
                     ],
                 }
             ],
-            "num_profiles": 2,
+            "cross_restrictions": [],
             "filename": "survey.js",
+            "advanced": {},
+            "num_profiles": 2,
+            "num_tasks": 5,
+            "randomize": True,
+            "repeated_tasks": False,
+            "random": False,
+            "task_to_repeat": 0,
+            "where_to_repeat": 0,
+            "repeated_tasks_flipped": False,
+            "csv_lines": 500,
         }
 
         self.payloadFailure = {
@@ -444,6 +478,9 @@ class ExportJsonTests(TestCase):
             "cross_restrictions": [],
             "num_profiles": 2,
             "filename": "survey_export.json",
+            "qDescription": "This is a test survey",
+            "qText": "This is a test question",
+            "qType": "MC",
         }
 
     def test_export_json_success(self):
@@ -472,7 +509,6 @@ class ImportJsonTests(TestCase):
         response = self.client.post(
             self.url, {"file": uploaded_file}, format="multipart"
         )
-
         # Assertions
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(
@@ -513,7 +549,7 @@ class QualtricsTests(TestCase):
                         {"name": "level1", "weight": 0.5},
                         {"name": "another1", "weight": 0.5},
                     ],
-                    "locked": True,
+                    "locked": False,
                 },
                 {
                     "name": "att2",
@@ -529,10 +565,9 @@ class QualtricsTests(TestCase):
                         {"name": "level3", "weight": 0.9},
                         {"name": "another3", "weight": 0.1},
                     ],
-                    "locked": True,
+                    "locked": False,
                 },
             ],
-            "constraints": [],
             "restrictions": [
                 {
                     "condition": [
@@ -554,7 +589,7 @@ class QualtricsTests(TestCase):
             "advanced": {},
             "num_profiles": 2,
             "num_tasks": 5,
-            "randomize": False,
+            "randomize": True,
             "repeated_tasks": False,
             "random": False,
             "task_to_repeat": 0,

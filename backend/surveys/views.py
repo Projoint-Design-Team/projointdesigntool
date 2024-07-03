@@ -22,7 +22,7 @@ from .helpers import (
 )
 from .serializers import (
     FileUploadSerializer,
-    QualtricsSerializer,
+    ExtraSurveySerializer,
     ShortSurveySerializer,
     SurveySerializer,
 )
@@ -197,7 +197,7 @@ def import_json(request):
 )
 @api_view(["POST"])
 def export_json(request):
-    serializer = SurveySerializer(data=request.data)
+    serializer = ExtraSurveySerializer(data=request.data)
     if serializer.is_valid():
         filename = serializer.validated_data["filename"]
         with open(filename, "w", encoding="utf-8") as file:
@@ -279,10 +279,10 @@ def export_csv(request):
 
 
 @extend_schema(
-    request=QualtricsSerializer,
+    request=ExtraSurveySerializer,
     responses={
         status.HTTP_201_CREATED: OpenApiResponse(
-            response=QualtricsSerializer,
+            response=ExtraSurveySerializer,
             description="A QSF file containing the survey data.",
             examples=[
                 OpenApiExample(
@@ -318,7 +318,7 @@ def export_csv(request):
 )
 @api_view(["POST"])
 def export_qsf(request):
-    serializer = QualtricsSerializer(data=request.data)
+    serializer = ExtraSurveySerializer(data=request.data)
     if serializer.is_valid():
         validated_data = serializer.validated_data
         attributes = validated_data["attributes"]

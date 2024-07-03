@@ -1,14 +1,7 @@
 from django.urls import path
 
-from .views import (
-    export_csv,
-    export_js,
-    export_json,
-    export_qsf,
-    import_json,
-    import_qsf,
-    preview_survey,
-)
+from .views import (export_csv, export_js, export_json, export_qsf,
+                    import_json, import_qsf, preview_survey)
 
 app_name = "surveys"
 

@@ -100,7 +100,6 @@ class ShortSurveySerializer(serializers.ModelSerializer):
 
 
 class SurveySerializer(ShortSurveySerializer):
-    constraints = serializers.JSONField(default=dict)
     num_tasks = serializers.IntegerField(default=5, min_value=1, allow_null=True)
     repeated_tasks = serializers.BooleanField(default=False, allow_null=True)
     repeated_tasks_flipped = serializers.BooleanField(default=False, allow_null=True)
@@ -112,7 +111,6 @@ class SurveySerializer(ShortSurveySerializer):
 
     class Meta(ShortSurveySerializer.Meta):
         fields = ShortSurveySerializer.Meta.fields + [
-            "constraints",
             "num_tasks",
             "repeated_tasks",
             "repeated_tasks_flipped",
@@ -124,13 +122,21 @@ class SurveySerializer(ShortSurveySerializer):
         ]
 
 
-class QualtricsSerializer(SurveySerializer):
+class ExtraSurveySerializer(SurveySerializer):
     doubleQ = serializers.BooleanField(default=False)
-    qType = serializers.CharField(default="MC")
+    qDescription = serializers.CharField(
+        default="Enter your description here! Here are two profiles A and B."
+    )
     qText = serializers.CharField(
         default="Please carefully review the options detailed below, \
             then please answer the questions. Which of these choices do you prefer?"
     )
+    qType = serializers.CharField(default="MC")
 
     class Meta(SurveySerializer.Meta):
-        fields = SurveySerializer.Meta.fields + ["doubleQ", "qType", "qText"]
+        fields = SurveySerializer.Meta.fields + [
+            "qDescription",
+            "doubleQ",
+            "qType",
+            "qText",
+        ]

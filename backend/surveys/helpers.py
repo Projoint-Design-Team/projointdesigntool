@@ -13,7 +13,13 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
-from .serializers import QualtricsSerializer, SurveySerializer
+from .serializers import ExtraSurveySerializer
+
+"""
+THIS VARIABLES ARE TRANSFEERED FROM THE LEGACY CODE AND SLIGHTLY MODIFIED
+STILL A LOT OF MODIFICATIONS AND OPTIMIZATIONS CAN BE DONE
+SAME IS THE CASE WITH THE create_js_file FUNCTION
+"""
 
 temp_1 = """// Code to randomly generate conjoint profiles in a Qualtrics survey
 
@@ -27,13 +33,11 @@ temp_1 = """// Code to randomly generate conjoint profiles in a Qualtrics survey
 
 /* Randomize array in-place using Durstenfeld shuffle algorithm */
 function shuffleArray(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]; // ES6 destructuring swap
     }
-    return(array);
+    return array;
 }
 
 // Function to generate weighted random numbers
@@ -67,53 +71,56 @@ function weighted_randomize(prob_array, at_key)
 
 """
 
-temp_2_star = """// Place the featurearray keys into a new array
-var featureArrayKeys = Object.keys(featurearray);
-
-"""
-
 temp_2_randomize = """// Re-randomize the featurearray
+function convertAttributesToFeatureArray(attributes) {
+    var featurearray = {};
 
-// Place the featurearray keys into a new array
-var featureArrayKeys = Object.keys(featurearray);
+    attributes.forEach(attr => {
+        // Create an entry in featurearray with the attribute name as the key
+        featurearray[attr.name] = {
+            levels: attr.levels.map(level => level.name), // Extract only the level names
+            locked: attr.locked // Directly use the locked property
+        };
+    });
 
-// If order randomization constraints exist, drop all of the non-free attributes
-if (attrconstraintarray.length != 0){
-  for (const constraints of attrconstraintarray){
-    if (constraints.length > 1){
-      for (var p = 1; p < constraints.length; p++){
-        if (featureArrayKeys.includes(constraints[p])){
-          var remkey = featureArrayKeys.indexOf(constraints[p]);
-                    featureArrayKeys.splice(remkey, 1);
-        }
-      }
+    return featurearray;
+}
+
+var temp_featurearray = convertAttributesToFeatureArray(pythonAttributes);
+
+
+// Collect attribute keys and separate locked and unlocked attributes
+var lockedKeys = [];
+var unlockedKeys = [];
+
+// Iterate over temp_featurearray to segregate locked and unlocked attribute keys
+for (const [key, value] of Object.entries(temp_featurearray)) {
+    if (value.locked) {
+        lockedKeys.push(key);
+    } else {
+        unlockedKeys.push(key);
     }
-  }
-} 
+}
 
 // Re-randomize the featurearray keys
-featureArrayKeys = shuffleArray(featureArrayKeys);
+unlockedKeys = shuffleArray(unlockedKeys);
 """
 
-temp_2 = """// Re-insert the non-free attributes constrained by attrconstraintarray
-if (attrconstraintarray.length != 0){
-  for (const constraints of attrconstraintarray){
-    if (constraints.length > 1){
-      var insertloc = constraints[0];
-      if (featureArrayKeys.includes(insertloc)){
-        var insert_block = [];
-        for (var p = 1; p < constraints.length; p++){
-          insert_block.push(constraints[p]);
-        }
-        var begin_index = featureArrayKeys.indexOf(insertloc);
-        featureArrayKeys.splice(begin_index+1, 0, ...insert_block);
-      }
+
+temp_2 = """// Integrate locked keys back into the array at their original indices
+var featureArrayKeys = [];
+for (const key of Object.keys(temp_featurearray)) {
+    if (lockedKeys.includes(key)) {
+        // Place locked keys in their original position
+        featureArrayKeys.push(key);
+    } else {
+        // Place the first unlocked key in place of the first non-locked original position
+        featureArrayKeys.push(unlockedKeys.shift());
     }
-  }
 }
 
 
-// Re-generate the new featurearray - label it featureArrayNew
+// Re-generate the new $featurearray - label it $featureArrayNew
 var featureArrayNew = {};
 for (var h = 0; h < featureArrayKeys.length; h++){
     featureArrayNew[featureArrayKeys[h]] = featurearray[featureArrayKeys[h]];        
@@ -233,19 +240,7 @@ function checkForDuplicateProfiles(profilesArray, taskNum, profileNum, numAttrib
 // Write returnarray to Qualtrics
 var returnarrayKeys = Object.keys(returnarray);
 """
-temp_dup = """
-// Duplicate profiles
-for (const key in returnarray) {
-  if (returnarray.hasOwnProperty(key)) {
-    if (key.startsWith('F-2')) {
-      let correspondingKey = 'F-1' + key.substring(3); // Get corresponding key starting with 'F-1'
-      if (returnarray[correspondingKey]) {
-        returnarray[key] = returnarray[correspondingKey]; // Set value of 'F-2' key to be the same as 'F-1' counterpart
-      }
-    }
-  }
-}
-"""
+
 temp_4 = """
 for (var pr = 0; pr < returnarrayKeys.length; pr++) {
   Qualtrics.SurveyEngine.setEmbeddedData(
@@ -309,7 +304,7 @@ def _create_qualtrics_js_text(request):
 
 
 def _create_js_file(request):
-    serializer = QualtricsSerializer(data=request.data)
+    serializer = ExtraSurveySerializer(data=request.data)
     if serializer.is_valid():
         validated_data = serializer.validated_data
 
@@ -318,7 +313,6 @@ def _create_js_file(request):
         filename = validated_data["filename"]
 
         # Optional
-        constraints = validated_data["constraints"]
         restrictions = validated_data["restrictions"]
         num_profiles = validated_data["num_profiles"]
         num_tasks = validated_data["num_tasks"]
@@ -366,13 +360,11 @@ def _create_js_file(request):
             file_js.write(
                 f"var noDuplicateProfiles = {'false' if repeated_tasks else 'true'};\n\n"
             )
+            file_js.write(f"var pythonAttributes = {json.dumps(attributes)};\n\n")
 
             if randomize == 1:
-                file_js.write("var attrconstraintarray = " + str(constraints) + ";\n\n")
                 file_js.write(temp_2_randomize)
-                if (
-                    len(advanced) != 0
-                ):  # Advanced randomization option (i.e. political party always first)
+                if len(advanced) != 0:  # Advanced randomization option
                     attributes_order = [
                         key for key, value in advanced.items() if value != 0
                     ]
@@ -395,7 +387,7 @@ def _create_js_file(request):
                     file_js.write("featureArrayKeys = " + str(final_order))
                 file_js.write(temp_2)
             else:
-                file_js.write(temp_2_star)
+                file_js.write("var featureArrayKeys = Object.keys(featurearray);\n\n")
                 file_js.write("var featureArrayNew = featurearray;\n\n")
 
             file_js.write(temp_3)
@@ -658,7 +650,7 @@ def _filter_survey_data(data):
 
 
 def _validate_survey_data(survey_data):
-    serializer = SurveySerializer(data=survey_data)
+    serializer = ExtraSurveySerializer(data=survey_data)
     if serializer.is_valid():
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
     else:
