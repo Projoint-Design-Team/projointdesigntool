@@ -138,7 +138,7 @@ for (var p = 1; p <= K; p++) {
     // Repeat until non-restricted profile generated
     var complete = false;
 
-    while (complete == false) {
+    while (!complete) {
       complete = true;
       // Create a count for attributes to be incremented in the next loop
       var attr = 0;
@@ -152,7 +152,7 @@ for (var p = 1; p <= K; p++) {
         var attr_name = featureArrayKeys[q];
 
         // Increment attribute count
-        attr = attr + 1;
+        attr++;
 
         // Create key for attribute name
         var attr_key = "F-" + p + "-" + attr;
@@ -164,16 +164,13 @@ for (var p = 1; p <= K; p++) {
         var num_levels = featureArrayNew[attr_name].length;
 
         // Randomly select one of the level indices
-        if (weighted == 1) {
-          var level_index = weighted_randomize(probabilityarray, attr_name) - 1;
-        } else {
-          var level_index = Math.floor(Math.random() * num_levels);
-        }
+        var level_index = weighted ? weighted_randomize(probabilityarray, attr_name) - 1
+                                   : Math.floor(Math.random() * num_levels);
 
         // Pull out the selected level
         var chosen_level = featureArrayNew[attr_name][level_index];
 
-        // Store selected level in profileDict
+        // Store selected level in profile_dict
         profile_dict[attr_name] = chosen_level;
 
         // Create key for level in returnarray
@@ -184,76 +181,56 @@ for (var p = 1; p <= K; p++) {
       }
 
       // Cycle through restrictions to confirm/reject profile
-      for (var k = 0; k < restrictionarray.length; k++) {
-        var reDo = 1;
-        for (var l = 0; l < 2; l++) {
-          if (restrictionarray[k][l * 3 + 1] == "=") {
-            if (
-              profile_dict[restrictionarray[k][l * 3 + 0]] ==
-              restrictionarray[k][l * 3 + 2]
-            ) {
-              reDo *= 1;
-            } else {
-              reDo = 0;
-            }
-          } else if (restrictionarray[k][l * 3 + 1] == "!") {
-            if (
-              profile_dict[restrictionarray[k][l * 3 + 0]] ==
-              restrictionarray[k][l * 3 + 2]
-            ) {
-              reDo *= 1;
-            } else {
-              reDo = 0;
-            }
-          }
-        }
-        if (reDo == 1) {
-          complete = false;
-          break;
-        }
+      if (!evaluateRestrictions(profile_dict)) {
+        complete = false;  // Restriction check failed
       }
 
-      // If we're throwing out duplicates
-      if (noDuplicateProfiles == true) {
-        // For each previous profile
-        for (var z = 1; z < i; z++) {
-          // Start by assuming it's the same
-          var identical = true;
-
-          // Create a count for attributes to be incremented in the next loop
-          var attrTemp = 0;
-
-          // For each attribute attribute and level array levels in task p
-          for (var qz = 0; qz < featureArrayKeys.length; qz++) {
-            // Increment attribute count
-            attrTemp = attrTemp + 1;
-
-            // Create keys
-            var level_key_profile = "F-" + p + "-" + i + "-" + attrTemp;
-            var level_key_check = "F-" + p + "-" + z + "-" + attrTemp;
-
-            // If attributes are different, declare not identical
-            if (
-              returnarray[level_key_profile] != returnarray[level_key_check]
-            ) {
-              identical = false;
-              break;
-            }
-          }
-          // If we detect an identical profile, reject
-          if (identical == true) {
-            complete = false;
-            break;
-          }
-        }
+      // If no duplicate profiles are allowed, check for duplicates
+      if (noDuplicateProfiles && checkForDuplicateProfiles(returnarray, p, i, featureArrayKeys.length)) {
+        complete = false;  // Duplicate profile detected
       }
     }
   }
 }
 
+// Evaluate restrictions based on the given profile
+function evaluateRestrictions(profile) {
+  return restrictionarray.every(function(restriction) {
+    return evaluateCondition(profile, restriction.condition) ? evaluateResult(profile, restriction.result) : true;
+  });
+}
+
+// Evaluate the condition part of the restriction
+function evaluateCondition(profile, conditions) {
+  return conditions.reduce(function(result, cond, index) {
+    var evaluation = (profile[cond.attribute] === cond.value) === (cond.operation === '==');
+    return index === 0 ? evaluation : (cond.logical === '&&' ? result && evaluation : result || evaluation);
+  }, null);
+}
+
+// Evaluate the result part of the restriction
+function evaluateResult(profile, results) {
+  return results.every(function(res) {
+    return (profile[res.attribute] === res.value) === (res.operation === '==');
+  });
+}
+
+// Check for duplicate profiles within the same task
+function checkForDuplicateProfiles(profilesArray, taskNum, profileNum, numAttributes) {
+  for (var z = 1; z < profileNum; z++) {
+    var identical = true;
+    for (var attr = 1; attr <= numAttributes; attr++) {
+      if (profilesArray["F-" + taskNum + "-" + profileNum + "-" + attr] !== profilesArray["F-" + taskNum + "-" + z + "-" + attr]) {
+        identical = false;
+        break;
+      }
+    }
+    if (identical) return true;  // Duplicate found
+  }
+  return false;  // No duplicates found
+}
 
 // Write returnarray to Qualtrics
-
 var returnarrayKeys = Object.keys(returnarray);
 """
 temp_dup = """
@@ -304,7 +281,7 @@ def _send_file_response(filename):
     )
     response.closed = file.close
     # Delete the file
-    # os.remove(file_path)
+    os.remove(filename)
     return response
 
 
@@ -336,7 +313,7 @@ def _create_js_file(request):
 
         # Optional
         constraints = validated_data['constraints']
-        restrictions = []  # TODO: standardize restrictions for javascript
+        restrictions = validated_data['restrictions']
         profiles = validated_data['profiles']
         tasks = validated_data['tasks']
         randomize = validated_data['randomize']
@@ -352,8 +329,7 @@ def _create_js_file(request):
             file_js.write(temp_1)
 
             file_js.write(_create_array_or_prob_string(attributes, True))
-            restrictions_json = json.dumps(restrictions, indent=2)
-            file_js.write(f"var restrictionarray = {restrictions_json};\n\n")
+            file_js.write(f"var restrictionarray = {restrictions};\n\n")
             file_js.write(_create_array_or_prob_string(attributes, False)
                           if random == 1 else "var probabilityarray = {};\n\n")
 

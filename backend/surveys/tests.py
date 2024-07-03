@@ -1,10 +1,8 @@
 import json
 import os
-from unittest.mock import patch
 
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.http import HttpResponse
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -17,29 +15,14 @@ class ExportJsTests(TestCase):
         self.url = reverse("surveys:export_js")
 
         self.payloadSuccess = {
-            "attributes": [
-                {
-                    "name": "att1",
-                    "levels": [
-                        {"name": "b"},
-                        {"name": "a"},
-                    ],
-                },
-                {
-                    "name": "att2",
-                    "levels": [
-                        {"name": "d"},
-                        {"name": "e"},
-                    ],
-                },
-                {
-                    "name": "att3",
-                    "levels": [
-                        {"name": "f"},
-                        {"name": "g"},
-                    ],
-                },
-            ],
+            "attributes": [{"name": "att1", "levels": [{"name": "a1l1"}, {"name": "a1l2"}]},
+                           {"name": "att2", "levels": [
+                               {"name": "a2l1"}, {"name": "a2l2"}, {"name": "a2l3"}]},
+                           {"name": "att3", "levels": [{"name": "a3l1"}, {"name": "a3l2"}]}],
+            "restrictions": [{
+                "condition": [{"attribute": "att1", "operation": "==", "value": "a1l1"}],
+                "result": [{"attribute": "att2", "operation": "!=", "value": "a2l1"}]}],
+            "profiles": 2,
             "filename": "survey.js",
         }
 
@@ -246,12 +229,8 @@ class ExportCsvTests(TestCase):
             "csv_lines": 10000,
             "filename": "survey.csv",
         }
-        with patch('surveys.views._send_file_response') as mock_send_file_response:
-            mock_send_file_response.return_value = HttpResponse(
-                status=status.HTTP_201_CREATED)
-            response = self.client.post(self.url, data, format='json')
-            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-            mock_send_file_response.assert_called_once()
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_export_csv_with_rest_success(self):
         # Data for a successful request
@@ -267,12 +246,8 @@ class ExportCsvTests(TestCase):
             "profiles": 2,
             "filename": "survey.csv",
         }
-        with patch('surveys.views._send_file_response') as mock_send_file_response:
-            mock_send_file_response.return_value = HttpResponse(
-                status=status.HTTP_201_CREATED)
-            response = self.client.post(self.url, data, format='json')
-            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-            mock_send_file_response.assert_called_once()
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_export_csv_no_levels(self):
         # Data where an attribute has no levels
@@ -469,28 +444,28 @@ class QualtricsTests(TestCase):
             ],
             "constraints": [],
             "restrictions": [
-                # {
-                #     "condition": [
-                #         {
-                #             "attribute": "att1",
-                #             "operation": "==",
-                #             "value": "level1"
-                #         },
-                #         {
-                #             "logical": "||",
-                #             "attribute": "att2",
-                #             "operation": "==",
-                #             "value": "level2"
-                #         }
-                #     ],
-                #     "result": [
-                #         {
-                #             "attribute": "att3",
-                #             "operation": "!=",
-                #             "value": "level3"
-                #         }
-                #     ]
-                # }
+                {
+                    "condition": [
+                        {
+                            "attribute": "att1",
+                            "operation": "==",
+                            "value": "level1"
+                        },
+                        {
+                            "logical": "||",
+                            "attribute": "att2",
+                            "operation": "==",
+                            "value": "level2"
+                        }
+                    ],
+                    "result": [
+                        {
+                            "attribute": "att3",
+                            "operation": "!=",
+                            "value": "level3"
+                        }
+                    ]
+                }
             ],
             "cross_restrictions": [],
             "filename": "survey.qsf",
