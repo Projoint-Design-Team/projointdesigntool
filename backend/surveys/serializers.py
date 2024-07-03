@@ -40,18 +40,24 @@ class FileUploadSerializer(serializers.Serializer):
 
 class ShortSurveySerializer(serializers.ModelSerializer):
     attributes = AttributeSerializer(many=True, required=True)
-    restrictions = RestrictionSerializer(
-        many=True, required=False, default=list)
+    restrictions = RestrictionSerializer(many=True, required=False, default=list)
     cross_restrictions = CrossRestrictionSerializer(
-        many=True, required=False, default=list)
+        many=True, required=False, default=list
+    )
     num_profiles = serializers.IntegerField(default=2, min_value=2)
     filename = serializers.CharField(required=True)
     csv_lines = serializers.IntegerField(default=500)
 
     class Meta:
         model = Survey
-        fields = ["attributes", "restrictions", "cross_restrictions",
-                  "num_profiles", "filename", "csv_lines"]
+        fields = [
+            "attributes",
+            "restrictions",
+            "cross_restrictions",
+            "num_profiles",
+            "filename",
+            "csv_lines",
+        ]
 
     def validate_attributes(self, value):
         """
@@ -62,12 +68,14 @@ class ShortSurveySerializer(serializers.ModelSerializer):
 
         if any(not attribute["levels"] for attribute in value):
             raise serializers.ValidationError(
-                "Cannot export. Some attributes have no levels.")
+                "Cannot export. Some attributes have no levels."
+            )
 
         for item in value:
-            if not isinstance(item, dict) or 'name' not in item or 'levels' not in item:
+            if not isinstance(item, dict) or "name" not in item or "levels" not in item:
                 raise serializers.ValidationError(
-                    "Each attribute must be a dict with 'name' and 'levels'.")
+                    "Each attribute must be a dict with 'name' and 'levels'."
+                )
 
         return value
 
@@ -75,51 +83,54 @@ class ShortSurveySerializer(serializers.ModelSerializer):
         """
         Custom validation that checks each restriction for logic errors or inconsistencies.
         """
-        restrictions = data['restrictions']
+        restrictions = data["restrictions"]
         for restriction in restrictions:
-            if "logical" in restriction['condition'] and cond['logical'] not in ['||', '&&']:
-                raise serializers.ValidationError(
-                    "Invalid operation in logical.")
-            for cond in restriction['condition']:
-                if cond['operation'] not in ['==', '!=']:
-                    raise serializers.ValidationError(
-                        "Invalid operation in condition.")
-            for res in restriction['result']:
-                if res['operation'] not in ['==', '!=']:
-                    raise serializers.ValidationError(
-                        "Invalid operation in result.")
+            if "logical" in restriction["condition"] and cond["logical"] not in [
+                "||",
+                "&&",
+            ]:
+                raise serializers.ValidationError("Invalid operation in logical.")
+            for cond in restriction["condition"]:
+                if cond["operation"] not in ["==", "!="]:
+                    raise serializers.ValidationError("Invalid operation in condition.")
+            for res in restriction["result"]:
+                if res["operation"] not in ["==", "!="]:
+                    raise serializers.ValidationError("Invalid operation in result.")
         return data
 
 
 class SurveySerializer(ShortSurveySerializer):
     constraints = serializers.JSONField(default=dict)
-    num_tasks = serializers.IntegerField(
-        default=5, min_value=1, allow_null=True)
+    num_tasks = serializers.IntegerField(default=5, min_value=1, allow_null=True)
     repeated_tasks = serializers.BooleanField(default=False, allow_null=True)
-    repeated_tasks_flipped = serializers.BooleanField(
-        default=False, allow_null=True)
-    task_to_repeat = serializers.IntegerField(
-        default=0, min_value=0, allow_null=True)
-    where_to_repeat = serializers.IntegerField(
-        default=4, min_value=0, allow_null=True)
+    repeated_tasks_flipped = serializers.BooleanField(default=False, allow_null=True)
+    task_to_repeat = serializers.IntegerField(default=0, min_value=0, allow_null=True)
+    where_to_repeat = serializers.IntegerField(default=4, min_value=0, allow_null=True)
     random = serializers.BooleanField(default=False, allow_null=True)
     randomize = serializers.BooleanField(default=False, allow_null=True)
     advanced = serializers.JSONField(default=dict)
 
     class Meta(ShortSurveySerializer.Meta):
         fields = ShortSurveySerializer.Meta.fields + [
-            'constraints', 'num_tasks', 'repeated_tasks', 'repeated_tasks_flipped', 'task_to_repeat',
-            'where_to_repeat', 'random', 'randomize', 'advanced'
+            "constraints",
+            "num_tasks",
+            "repeated_tasks",
+            "repeated_tasks_flipped",
+            "task_to_repeat",
+            "where_to_repeat",
+            "random",
+            "randomize",
+            "advanced",
         ]
 
 
 class QualtricsSerializer(SurveySerializer):
     doubleQ = serializers.BooleanField(default=False)
-    qType = serializers.CharField(default='MC')
-    qText = serializers.CharField(default='Please carefully review the options detailed below, \
-            then please answer the questions. Which of these choices do you prefer?')
+    qType = serializers.CharField(default="MC")
+    qText = serializers.CharField(
+        default="Please carefully review the options detailed below, \
+            then please answer the questions. Which of these choices do you prefer?"
+    )
 
     class Meta(SurveySerializer.Meta):
-        fields = SurveySerializer.Meta.fields + [
-            'doubleQ', 'qType', 'qText'
-        ]
+        fields = SurveySerializer.Meta.fields + ["doubleQ", "qType", "qText"]

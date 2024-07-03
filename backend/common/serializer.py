@@ -6,4 +6,4 @@ from .models import Documentation
 class DocumentationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Documentation
-        fields = ['identifier', 'markdown_file']
+        fields = ["identifier", "markdown_file"]

@@ -2,20 +2,30 @@ import json
 import os
 
 from dotenv import load_dotenv
-from drf_spectacular.utils import (OpenApiExample, OpenApiResponse,
-                                   extend_schema)
+from drf_spectacular.utils import OpenApiExample, OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .helpers import (_create_js_file, _create_profiles,
-                      _create_qualtrics_js_text, _create_survey,
-                      _download_survey, _filter_survey_data,
-                      _generate_unlocked_order, _populate_csv,
-                      _send_file_response, _validate_file,
-                      _validate_survey_data)
-from .serializers import (FileUploadSerializer, QualtricsSerializer,
-                          ShortSurveySerializer, SurveySerializer)
+from .helpers import (
+    _create_js_file,
+    _create_profiles,
+    _create_qualtrics_js_text,
+    _create_survey,
+    _download_survey,
+    _filter_survey_data,
+    _generate_unlocked_order,
+    _populate_csv,
+    _send_file_response,
+    _validate_file,
+    _validate_survey_data,
+)
+from .serializers import (
+    FileUploadSerializer,
+    QualtricsSerializer,
+    ShortSurveySerializer,
+    SurveySerializer,
+)
 
 load_dotenv()
 
@@ -45,7 +55,7 @@ load_dotenv()
     },
     description="Generates and returns a JavaScript file based on the provided survey data if valid.",
     summary="Export a survey to JavaScript",
-    tags=["Export"]
+    tags=["Export"],
 )
 @api_view(["POST"])
 def export_js(request):
@@ -91,7 +101,7 @@ def export_js(request):
     },
     description="Generates and returns a preview of the survey based on the provided survey data if valid.",
     summary="Preview a survey",
-    tags=["Preview"]
+    tags=["Preview"],
 )
 @api_view(["POST"])
 def preview_survey(request):
@@ -107,9 +117,9 @@ def preview_survey(request):
         attributes_list = _generate_unlocked_order(attributes)
         answer = {"attributes": [], "previews": []}
         answer["previews"] = _create_profiles(
-            num_profiles, attributes_list, restrictions, cross_restrictions)
-        answer["attributes"] = [key
-                                for key in answer["previews"][0].keys()]
+            num_profiles, attributes_list, restrictions, cross_restrictions
+        )
+        answer["attributes"] = [key for key in answer["previews"][0].keys()]
         return Response(answer, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=400)
@@ -123,11 +133,11 @@ def preview_survey(request):
             description="Validated survey data",
             examples=[
                 OpenApiExample(
-                    name='ValidatedSurveyData',
-                    description='Validated Survey Data',
+                    name="ValidatedSurveyData",
+                    description="Validated Survey Data",
                     value=SurveySerializer().data,
                 )
-            ]
+            ],
         ),
         status.HTTP_400_BAD_REQUEST: OpenApiResponse(
             description="An error response indicating that the request was invalid.",
@@ -135,11 +145,11 @@ def preview_survey(request):
     },
     description="Imports a JSON file and validates it against the Survey model. Returns the validated data if successful.",
     summary="Import a JSON formatted survey",
-    tags=["Import"]
+    tags=["Import"],
 )
 @api_view(["POST"])
 def import_json(request):
-    data = _validate_file(request, 'JSON', "application/json")
+    data = _validate_file(request, "JSON", "application/json")
     if isinstance(data, Response):
         return data
     return _validate_survey_data(data)
@@ -183,7 +193,7 @@ def import_json(request):
     },
     description="Exports the validated survey data to a JSON file.",
     summary="Export a survey to JSON",
-    tags=["Export"]
+    tags=["Export"],
 )
 @api_view(["POST"])
 def export_json(request):
@@ -212,7 +222,7 @@ def export_json(request):
                         "headers": {
                             "Content-Disposition": 'attachment; filename="preview.csv"'
                         },
-                    }
+                    },
                 ),
             ],
         ),
@@ -235,7 +245,7 @@ def export_json(request):
     },
     description="Generates and sends a CSV file of profile combinations based on provided attributes.",
     summary="Export a survey to CSV",
-    tags=["Export"]
+    tags=["Export"],
 )
 @api_view(["POST"])
 def export_csv(request):
@@ -250,16 +260,22 @@ def export_csv(request):
         csv_lines = validated_data["csv_lines"]
         filename = validated_data["filename"]
 
-        _populate_csv(attributes, num_profiles, restrictions,
-                      cross_restrictions, csv_lines, filename)
+        _populate_csv(
+            attributes,
+            num_profiles,
+            restrictions,
+            cross_restrictions,
+            csv_lines,
+            filename,
+        )
         return _send_file_response(filename)
     else:
         return Response(serializer.errors, status=400)
 
 
-'''''''''''''''''''''''''''''''''''''''''''''
-''''''''''''QUALTRICS LOGIC''''''''''''''''''
-'''''''''''''''''''''''''''''''''''''''''''''
+"""""" """""" """""" """""" """""" """""" """""" """
+""" """""" """QUALTRICS LOGIC""" """""" """""" """
+""" """""" """""" """""" """""" """""" """""" """"""
 
 
 @extend_schema(
@@ -276,10 +292,10 @@ def export_csv(request):
                         "content_type": "application/json",
                         "headers": {
                             "Content-Disposition": 'attachment; filename="{filename}"'
-                        }
-                    }
+                        },
+                    },
                 )
-            ]
+            ],
         ),
         status.HTTP_400_BAD_REQUEST: OpenApiResponse(
             response=SurveySerializer,
@@ -290,15 +306,15 @@ def export_csv(request):
                     description="This response is returned when request to create Qualtrics survey and export QSF file is invalid",
                     value={
                         "error": "Invalid data provided.",
-                        "details": "Incomplete survey data"
+                        "details": "Incomplete survey data",
                     },
                 )
-            ]
-        )
+            ],
+        ),
     },
     description="Generates and exports a Qualtrics survey based on the provided survey data if valid.",
     summary="Export a survey to Qualtrics",
-    tags=["Export"]
+    tags=["Export"],
 )
 @api_view(["POST"])
 def export_qsf(request):
@@ -320,15 +336,27 @@ def export_qsf(request):
 
         js_text = _create_qualtrics_js_text(request)
         surveyID = _create_survey(
-            filename, user_token, num_tasks, len(
-                attributes), num_profiles, "", js_text, task_to_repeat, where_to_repeat, repeated_tasks_flipped, doubleQ, qText
+            filename,
+            user_token,
+            num_tasks,
+            len(attributes),
+            num_profiles,
+            "",
+            js_text,
+            task_to_repeat,
+            where_to_repeat,
+            repeated_tasks_flipped,
+            doubleQ,
+            qText,
         )
-        success = _download_survey(
-            surveyID, user_token, doubleQ, qType, filename)
+        success = _download_survey(surveyID, user_token, doubleQ, qType, filename)
         if success:
             return _send_file_response(filename)
         else:
-            return Response({"error": "Failed to download survey."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Failed to download survey."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -343,20 +371,21 @@ def export_qsf(request):
                 OpenApiExample(
                     name="ReverseQualtricsExample",
                     description="Successful Reversing QSF File into Survey",
-                    value=SurveySerializer().data,)
-            ]
+                    value=SurveySerializer().data,
+                )
+            ],
         ),
         status.HTTP_400_BAD_REQUEST: OpenApiResponse(
             description="Error in Reversing QSF File into Survey",
-        )
+        ),
     },
     description="Imports a QSF file into an attribute JSON.",
     summary="Imports QSF File",
-    tags=["Import"]
+    tags=["Import"],
 )
 @api_view(["POST"])
 def import_qsf(request):
-    data = _validate_file(request, 'QSF', "multipart/form-data")
+    data = _validate_file(request, "QSF", "multipart/form-data")
     if isinstance(data, Response):
         return data
 

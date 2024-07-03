@@ -1,6 +1,6 @@
-'''
+"""
 THIS IS A HELPER FUNCTION TO CLEAR UP THE VIEWS FILE
-'''
+"""
 
 import csv
 import json
@@ -257,18 +257,24 @@ for (var pr = 0; pr < returnarrayKeys.length; pr++) {
 """
 
 
-'''''''''''''''''''''''''''''''''''''''''''''
-'''''''''''''''''' MAIN LOGIC  ''''''''''''''
-'''''''''''''''''''''''''''''''''''''''''''''
+"""""" """""" """""" """""" """""" """""" """""" """
+""" """""" """""" """ MAIN LOGIC  """ """""" """''
+""" """""" """""" """""" """""" """""" """""" """"""
 
 
 def _create_array_or_prob_string(attributes, isArray):
     arrayString = {}
     for attribute in attributes:
         arrayString[attribute["name"]] = [
-            level["name"] if isArray else level["weight"] for level in attribute["levels"]]
+            level["name"] if isArray else level["weight"]
+            for level in attribute["levels"]
+        ]
 
-    return f"var {'featurearray' if isArray else 'probabilityarray'} = " + str(arrayString) + ";\n\n"
+    return (
+        f"var {'featurearray' if isArray else 'probabilityarray'} = "
+        + str(arrayString)
+        + ";\n\n"
+    )
 
 
 def _send_file_response(filename):
@@ -308,21 +314,21 @@ def _create_js_file(request):
         validated_data = serializer.validated_data
 
         # Convert parameters to types
-        attributes = validated_data['attributes']
-        filename = validated_data['filename']
+        attributes = validated_data["attributes"]
+        filename = validated_data["filename"]
 
         # Optional
-        constraints = validated_data['constraints']
-        restrictions = validated_data['restrictions']
-        num_profiles = validated_data['num_profiles']
-        num_tasks = validated_data['num_tasks']
-        randomize = validated_data['randomize']
-        repeated_tasks = validated_data['repeated_tasks']
-        random = validated_data['random']
-        advanced = validated_data['advanced']
-        task_to_repeat = validated_data['task_to_repeat']
-        where_to_repeat = validated_data['where_to_repeat']
-        repeated_tasks_flipped = validated_data['repeated_tasks_flipped']
+        constraints = validated_data["constraints"]
+        restrictions = validated_data["restrictions"]
+        num_profiles = validated_data["num_profiles"]
+        num_tasks = validated_data["num_tasks"]
+        randomize = validated_data["randomize"]
+        repeated_tasks = validated_data["repeated_tasks"]
+        random = validated_data["random"]
+        advanced = validated_data["advanced"]
+        task_to_repeat = validated_data["task_to_repeat"]
+        where_to_repeat = validated_data["where_to_repeat"]
+        repeated_tasks_flipped = validated_data["repeated_tasks_flipped"]
 
         """ Write into file """
         with open(filename, "w", encoding="utf-8") as file_js:
@@ -330,42 +336,55 @@ def _create_js_file(request):
 
             file_js.write(_create_array_or_prob_string(attributes, True))
             file_js.write(f"var restrictionarray = {restrictions};\n\n")
-            file_js.write(_create_array_or_prob_string(attributes, False)
-                          if random == 1 else "var probabilityarray = {};\n\n")
+            file_js.write(
+                _create_array_or_prob_string(attributes, False)
+                if random == 1
+                else "var probabilityarray = {};\n\n"
+            )
 
             file_js.write(
-                "// Indicator for whether weighted randomization should be enabled or not\n")
+                "// Indicator for whether weighted randomization should be enabled or not\n"
+            )
             file_js.write(
-                f"var weighted =  {'true' if repeated_tasks else 'false'};\n\n")
-            file_js.write(
-                "// K = Number of tasks displayed to the respondent\n")
+                f"var weighted =  {'true' if repeated_tasks else 'false'};\n\n"
+            )
+            file_js.write("// K = Number of tasks displayed to the respondent\n")
             file_js.write("var K = " + str(num_tasks) + ";\n\n")
             file_js.write("// N = Number of profiles displayed in each task\n")
             file_js.write("var N = " + str(num_profiles) + ";\n\n")
-            file_js.write(
-                "// num_attributes = Number of Attributes in the Array\n")
+            file_js.write("// num_attributes = Number of Attributes in the Array\n")
             file_js.write("var num_attributes = featurearray.length;\n\n")
             file_js.write("// Should duplicate profiles be rejected?\n")
             file_js.write(
-                "let dupprofiles = [" + str(task_to_repeat) + "," + str(where_to_repeat) + "]" + "\n")
+                "let dupprofiles = ["
+                + str(task_to_repeat)
+                + ","
+                + str(where_to_repeat)
+                + "]"
+                + "\n"
+            )
             file_js.write(
-                f"var noDuplicateProfiles = {'false' if repeated_tasks else 'true'};\n\n")
+                f"var noDuplicateProfiles = {'false' if repeated_tasks else 'true'};\n\n"
+            )
 
             if randomize == 1:
-                file_js.write("var attrconstraintarray = " +
-                              str(constraints) + ";\n\n")
+                file_js.write("var attrconstraintarray = " + str(constraints) + ";\n\n")
                 file_js.write(temp_2_randomize)
-                if len(advanced) != 0:  # Advanced randomization option (i.e. political party always first)
-                    attributes_order = [key for key,
-                                        value in advanced.items() if value != 0]
+                if (
+                    len(advanced) != 0
+                ):  # Advanced randomization option (i.e. political party always first)
+                    attributes_order = [
+                        key for key, value in advanced.items() if value != 0
+                    ]
                     attributes_random = [
-                        key for key, value in advanced.items() if value == 0]
+                        key for key, value in advanced.items() if value == 0
+                    ]
                     # random.shuffle(attributes_random)
 
                     attributes_order.sort(key=lambda x: x[1])
                     final_order = []
 
-                    for i in range(1, len(advanced)+1):
+                    for i in range(1, len(advanced) + 1):
                         if i in advanced.values():
                             final_order.append(attributes_order[0])
                             attributes_order.pop(0)
@@ -381,7 +400,8 @@ def _create_js_file(request):
 
             file_js.write(temp_3)
             if repeated_tasks_flipped:
-                file_js.write("""
+                file_js.write(
+                    """
                     // Duplicate profiles
                     for (const key in returnarray) {{
                     if (returnarray.hasOwnProperty(key)) {{
@@ -393,9 +413,13 @@ def _create_js_file(request):
                         }}
                     }}
                     }}
-                    """.format(str(task_to_repeat), str(where_to_repeat)))
+                    """.format(
+                        str(task_to_repeat), str(where_to_repeat)
+                    )
+                )
             else:
-                file_js.write("""
+                file_js.write(
+                    """
                 let curr = N;
                 for (let i = 1; i <= N; i++) {{ // Loop through tasks starting from Task 2
                     let startKey = 'F-{}-' + curr;
@@ -416,7 +440,10 @@ def _create_js_file(request):
                     if (returnarray[startKey]){{
                         returnarray[startKey] = returnarray[trailKey];
                     }}
-                }}""".format(str(task_to_repeat), str(where_to_repeat)))
+                }}""".format(
+                        str(task_to_repeat), str(where_to_repeat)
+                    )
+                )
             file_js.write("\n")
             file_js.write(temp_4)
             file_js.close()
@@ -427,19 +454,19 @@ def _create_js_file(request):
 
 def _evaluate_cross_condition(profile, condition):
     """Evaluates a condition based on the profile's attribute values."""
-    attribute_value = profile.get(condition['attribute'])
-    if condition['operation'] == "==":
-        return attribute_value == condition['value']
-    elif condition['operation'] == "!=":
-        return attribute_value != condition['value']
+    attribute_value = profile.get(condition["attribute"])
+    if condition["operation"] == "==":
+        return attribute_value == condition["value"]
+    elif condition["operation"] == "!=":
+        return attribute_value != condition["value"]
     else:
         raise ValueError(f"Unsupported operation: {condition['operation']}")
 
 
 def _evaluate_cross_profile_violation(profiles, restriction):
     """Evaluates if the given restriction is violated in any pair of profiles."""
-    condition = restriction['condition']
-    result = restriction['result']
+    condition = restriction["condition"]
+    result = restriction["result"]
 
     condition_not_entered = True
 
@@ -468,18 +495,22 @@ def _check_any_cross_profile_restriction_violated(profiles, cross_restrictions):
 def _evaluate_condition(profile, conditions):
     current_result = None
     for cond in conditions:
-        attr, op, value = cond['attribute'], cond['operation'], cond['value']
+        attr, op, value = cond["attribute"], cond["operation"], cond["value"]
         # Convert operation string to actual operation
-        if op == '==':
+        if op == "==":
             result = profile[attr] == value
-        elif op == '!=':
+        elif op == "!=":
             result = profile[attr] != value
 
-        if 'logical' in cond:
-            if cond['logical'] == '&&':
-                current_result = current_result and result if current_result is not None else result
-            elif cond['logical'] == '||':
-                current_result = current_result or result if current_result is not None else result
+        if "logical" in cond:
+            if cond["logical"] == "&&":
+                current_result = (
+                    current_result and result if current_result is not None else result
+                )
+            elif cond["logical"] == "||":
+                current_result = (
+                    current_result or result if current_result is not None else result
+                )
         else:
             current_result = result
     return current_result
@@ -488,20 +519,20 @@ def _evaluate_condition(profile, conditions):
 def _evaluate_result(profile, results):
     # Check the 'Then' part
     for res in results:
-        attr, op, value = res['attribute'], res['operation'], res['value']
-        if op == '==':
+        attr, op, value = res["attribute"], res["operation"], res["value"]
+        if op == "==":
             if not (profile[attr] == value):
                 return False
-        elif op == '!=':
+        elif op == "!=":
             if not (profile[attr] != value):
                 return False
     return True
 
 
 def _evaluate_restriction(profile, restriction):
-    if _evaluate_condition(profile, restriction['condition']):
+    if _evaluate_condition(profile, restriction["condition"]):
         # If the condition is true, check the result part
-        return _evaluate_result(profile, restriction['result'])
+        return _evaluate_result(profile, restriction["result"])
     return True
 
 
@@ -513,12 +544,12 @@ def _check_restrictions(profile, restrictions):
 
 
 def _generate_unlocked_order(attributes):
-    """ Generate and return a fixed order for unlocked attributes and positions of locked attributes. """
+    """Generate and return a fixed order for unlocked attributes and positions of locked attributes."""
     locked_attrs = []
     unlocked_attrs = []
 
     for index, attr in enumerate(attributes):
-        if attr.get('locked', False):
+        if attr.get("locked", False):
             locked_attrs.append((index, attr))
         else:
             unlocked_attrs.append((index, attr))
@@ -540,7 +571,14 @@ def _generate_unlocked_order(attributes):
 
 
 def _generate_single_profile(attribute_list):
-    return {attr['name']: random.choices([level['name'] for level in attr['levels']], [level['weight'] for level in attr['levels']], k=1)[0] for attr in attribute_list}
+    return {
+        attr["name"]: random.choices(
+            [level["name"] for level in attr["levels"]],
+            [level["weight"] for level in attr["levels"]],
+            k=1,
+        )[0]
+        for attr in attribute_list
+    }
 
 
 def _create_profiles(profiles_num, attribute_list, restrictions, cross_restrictions):
@@ -552,7 +590,8 @@ def _create_profiles(profiles_num, attribute_list, restrictions, cross_restricti
             if _check_restrictions(profile, restrictions):
                 profiles_list.append(profile)
         profiles_valid = _check_any_cross_profile_restriction_violated(
-            profiles_list, cross_restrictions)
+            profiles_list, cross_restrictions
+        )
     return profiles_list
 
 
@@ -561,28 +600,33 @@ def _write_header(writer, attributes, profiles):
     for i in range(1, len(attributes) + 1):
         for j in range(1, profiles + 2):
             if j == 1:
-                header.append(f'ATT{i}')
+                header.append(f"ATT{i}")
             else:
-                header.append(f'ATT{i}P{j-1}')
+                header.append(f"ATT{i}P{j-1}")
     writer.writerow(header)
 
 
 def _rearrange_and_write_profiles(writer, profiles_list, profiles):
     rearrenged_profiles = []
-    for i in range(len(profiles_list[0])//2):
+    for i in range(len(profiles_list[0]) // 2):
         rearrenged_profiles.append(profiles_list[0][i * 2])
         for j in range(profiles):
             rearrenged_profiles.append(profiles_list[j][i * 2 + 1])
     writer.writerow(rearrenged_profiles)
 
 
-def _create_csv_profiles(profiles_num, attribute_list, restrictions, cross_restrictions):
+def _create_csv_profiles(
+    profiles_num, attribute_list, restrictions, cross_restrictions
+):
     profiles = _create_profiles(
-        profiles_num, attribute_list, restrictions, cross_restrictions)
+        profiles_num, attribute_list, restrictions, cross_restrictions
+    )
     return [[item for pair in profile.items() for item in pair] for profile in profiles]
 
 
-def _populate_csv(attributes, profiles, restrictions, cross_restrictions, csv_lines, filename):
+def _populate_csv(
+    attributes, profiles, restrictions, cross_restrictions, csv_lines, filename
+):
     with open(filename, "w") as file:
         writer = csv.writer(file)
 
@@ -591,7 +635,8 @@ def _populate_csv(attributes, profiles, restrictions, cross_restrictions, csv_li
         attribute_list = _generate_unlocked_order(attributes)
         for _ in range(csv_lines):
             profiles_list = _create_csv_profiles(
-                profiles, attribute_list, restrictions, cross_restrictions)
+                profiles, attribute_list, restrictions, cross_restrictions
+            )
             _rearrange_and_write_profiles(writer, profiles_list, profiles)
 
 
@@ -606,7 +651,10 @@ def _filter_survey_data(data):
                 return json.loads(projoint_survey[2:])
             else:
                 break
-    return Response({'error': 'Invalid QSF survey. Please use QSF file from our platform.'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response(
+        {"error": "Invalid QSF survey. Please use QSF file from our platform."},
+        status=status.HTTP_400_BAD_REQUEST,
+    )
 
 
 def _validate_survey_data(survey_data):
@@ -618,28 +666,38 @@ def _validate_survey_data(survey_data):
 
 
 def _validate_file(request, file_type, content_type):
-    if 'file' not in request.FILES:
-        return Response({'error': 'No file provided.'}, status=status.HTTP_400_BAD_REQUEST)
+    if "file" not in request.FILES:
+        return Response(
+            {"error": "No file provided."}, status=status.HTTP_400_BAD_REQUEST
+        )
 
     try:
-        file = request.FILES['file']
+        file = request.FILES["file"]
     except KeyError as e:
-        return Response({'error': f'Invalid file: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"error": f"Invalid file: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
     if file.content_type != content_type:
-        return Response({'error': f'Invalid file type. A {file_type} file is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"error": f"Invalid file type. A {file_type} file is required."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     try:
         data = JSONParser().parse(file)
     except Exception as e:
-        return Response({'error': f'Invalid {file_type} data: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"error": f"Invalid {file_type} data: {str(e)}"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
     return data
 
 
-'''''''''''''''''''''''''''''''''''''''''''''
-''''''''''''QUALTRICS LOGIC''''''''''''''''''
-'''''''''''''''''''''''''''''''''''''''''''''
+"""""" """""" """""" """""" """""" """""" """""" """
+""" """""" """QUALTRICS LOGIC""" """""" """""" """
+""" """""" """""" """""" """""" """""" """""" """"""
 
 
 def _create_html(i, num_attr, profiles, qNum, noFlip, qText):
@@ -650,7 +708,7 @@ def _create_html(i, num_attr, profiles, qNum, noFlip, qText):
     top = (
         "<span>Question "
         + str(qNum)
-        + '</span>\n<br /><br />\n<span>'
+        + "</span>\n<br /><br />\n<span>"
         + qText
         + '</span>\n<br />\n<div>\n<br />\n<table class="UserTable">\n<tbody>\n'
     )
@@ -676,7 +734,7 @@ def _create_html(i, num_attr, profiles, qNum, noFlip, qText):
             + str(m + 1)
             + "}</strong></td>\n"
         )
-        for n in range(profiles) if noFlip == 0 else range(profiles-1, -1, -1):
+        for n in range(profiles) if noFlip == 0 else range(profiles - 1, -1, -1):
             rows[m] = (
                 rows[m]
                 + "<td style='text-align: center;'>${e://Field/F-"
@@ -705,20 +763,31 @@ def __CreateBlock(surveyID, bl, user_token):
     payload = {"Type": "Standard", "Description": "Block"}
     headers = {"Content-Type": "application/json", "X-API-TOKEN": user_token}
 
-    response = requests.request(
-        "POST", url, json=payload, headers=headers).json()
+    response = requests.request("POST", url, json=payload, headers=headers).json()
     return response["result"]["BlockID"]
 
 
-def _create_survey(name, user_token, task, num_attr, profiles, currText, js, task_to_repeat, where_to_repeat, repeated_tasks_flipped, doubleQ, qText):
+def _create_survey(
+    name,
+    user_token,
+    task,
+    num_attr,
+    profiles,
+    currText,
+    js,
+    task_to_repeat,
+    where_to_repeat,
+    repeated_tasks_flipped,
+    doubleQ,
+    qText,
+):
     url = "https://yul1.qualtrics.com/API/v3/survey-definitions"  # CHANGE DATA CENTER
     payload = {"SurveyName": name, "Language": "EN", "ProjectCategory": "CORE"}
     headers = {"Content-Type": "application/json", "X-API-TOKEN": user_token}
-    response = requests.request(
-        "POST", url, json=payload, headers=headers).json()
+    response = requests.request("POST", url, json=payload, headers=headers).json()
     surveyID = response["result"]["SurveyID"]
 
-    for i in range(task+1):
+    for i in range(task + 1):
         bl = _get_flow(surveyID, user_token)
         if i == 0:
             currText = "This block needs to be placed above your conjoint question blocks.<br>However, you may alter the contents of this block (i.e add an introduction to survey)."
@@ -769,7 +838,7 @@ def _create_question(surveyID, text, blockID, user_token, profiles, js, i):
             "Language": [],
         }
     else:
-        data_tag = F"Q{i}"
+        data_tag = f"Q{i}"
         payload = {
             "QuestionText": question_text,
             "QuestionType": "MC",
@@ -778,8 +847,7 @@ def _create_question(surveyID, text, blockID, user_token, profiles, js, i):
             "DataExportTag": data_tag,
             "Language": [],
         }
-    response = requests.post(
-        url, json=payload, headers=headers, params=querystring)
+    response = requests.post(url, json=payload, headers=headers, params=querystring)
 
 
 def _get_flow(surveyID, user_token):
@@ -791,34 +859,26 @@ def _get_flow(surveyID, user_token):
 
 
 def _emb_fields(surveyID, user_token, num_attr, profiles, tasks):
-    url = "https://yul1.qualtrics.com/API/v3/surveys/" + \
-        surveyID + "/embeddeddatafields"
-    headers = {
-        'X-API-TOKEN': user_token,
-        'Content-Type': 'application/json'
-    }
+    url = (
+        "https://yul1.qualtrics.com/API/v3/surveys/" + surveyID + "/embeddeddatafields"
+    )
+    headers = {"X-API-TOKEN": user_token, "Content-Type": "application/json"}
 
     fields = []
-    for i in range(1, tasks+1):
+    for i in range(1, tasks + 1):
         for j in range(1, profiles + 1):
-            key = F'F-{i}-{j}'
-            fields.append({
-                "key": key,
-                "type": "text"
-            })
+            key = f"F-{i}-{j}"
+            fields.append({"key": key, "type": "text"})
             for k in range(1, num_attr + 1):
-                sub_key = F'{key}-{k}'
-                fields.append({
-                    "key": sub_key,
-                    "type": "text"
-                })
+                sub_key = f"{key}-{k}"
+                fields.append({"key": sub_key, "type": "text"})
 
     payload = {"embeddedDataFields": fields}
 
     headers = {
         "Content-Type": "application/json",
         "Accept": "application/json, application/xml",
-        "X-API-TOKEN": user_token
+        "X-API-TOKEN": user_token,
     }
 
     # Make the API request to set embedded fields without values
@@ -842,12 +902,12 @@ def _download_survey(surveyID, user_token, doubleQ, qType, filename):
         return f"An error occurred: {str(e)}"
 
     if qType == "MC":
-        questionType = ['MC', 'SAVR']
+        questionType = ["MC", "SAVR"]
     elif qType == "Rank":
         questionType = ["RO", "DND"]
     else:
         questionType = ["Slider", "HSLIDER"]
-    questionType2 = ['TE', 'SL']
+    questionType2 = ["TE", "SL"]
 
     if response.status_code == 200:
         response_json = response.json()
@@ -860,28 +920,28 @@ def _download_survey(surveyID, user_token, doubleQ, qType, filename):
 
         if doubleQ:
             counter = 0
-            for j in qsf_data['SurveyElements']:
-                if 'Payload' in j:
+            for j in qsf_data["SurveyElements"]:
+                if "Payload" in j:
                     counter += 1
-                    curr = j['Payload']
-                    if curr and 'QuestionType' in curr:
+                    curr = j["Payload"]
+                    if curr and "QuestionType" in curr:
                         if counter % 2 == 1:
-                            curr['QuestionType'] = questionType[0]
+                            curr["QuestionType"] = questionType[0]
                         else:
-                            curr['QuestionType'] = questionType2[0]
-                    if curr and 'Selector' in curr:
+                            curr["QuestionType"] = questionType2[0]
+                    if curr and "Selector" in curr:
                         if counter % 2 == 1:
-                            curr['Selector'] = questionType[1]
+                            curr["Selector"] = questionType[1]
                         else:
-                            curr['Selector'] = questionType2[1]
+                            curr["Selector"] = questionType2[1]
         else:
-            for j in qsf_data['SurveyElements']:
-                if 'Payload' in j:
-                    curr = j['Payload']
-                    if curr and 'QuestionType' in curr:
-                        curr['QuestionType'] = questionType[0]
-                    if curr and 'Selector' in curr:
-                        curr['Selector'] = questionType[1]
+            for j in qsf_data["SurveyElements"]:
+                if "Payload" in j:
+                    curr = j["Payload"]
+                    if curr and "QuestionType" in curr:
+                        curr["QuestionType"] = questionType[0]
+                    if curr and "Selector" in curr:
+                        curr["Selector"] = questionType[1]
 
         with open(filename, "w") as qsf_file:
             json.dump(qsf_data, qsf_file)
