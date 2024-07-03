@@ -5,7 +5,7 @@ import { Draggable } from "react-beautiful-dnd";
 import DragButton from "../../ui/drag_button";
 import { useState, useRef, useEffect } from "react";
 import { useAttributes } from "../../../context/attributes_context";
-import { RemoveMinus } from "../../ui/icons";
+import { LightTooltip, RemoveMinus } from "../../ui/icons";
 
 interface ILevelComponent extends ILevel {
   index: number;
@@ -52,12 +52,28 @@ export const Level = ({ name, index, id, attributeKey }: ILevelComponent) => {
           {...providedHere.draggableProps}
           className={styles.level}
         >
-          <div className={`${styles.dragHandle} ${styles.dragLevel}`}>
-            <DragButton
-              direction={"horizontal"}
-              {...providedHere.dragHandleProps}
-            />
-          </div>
+          <LightTooltip
+            className={` ${styles.dragLevelTooltip}`}
+            title="Drag to reorder"
+            placement="left"
+            PopperProps={{
+              modifiers: [
+                {
+                  name: "offset",
+                  options: {
+                    offset: [0, -15], // Adjust the offset to bring the tooltip closer
+                  },
+                },
+              ],
+            }}
+          >
+            <div className={`${styles.dragHandle}`}>
+              <DragButton
+                direction={"horizontal"}
+                {...providedHere.dragHandleProps}
+              />
+            </div>
+          </LightTooltip>
           <div
             className={styles.levelInfo}
             onClick={() => {

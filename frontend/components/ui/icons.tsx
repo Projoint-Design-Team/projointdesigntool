@@ -182,6 +182,7 @@ export const ThreeDots = forwardRef<HTMLDivElement, { onDelete?: () => void }>(
                       onClick={() => {
                         setExportModalOpen(true);
                         cleanDownloadStatus();
+                        setOpen(false);
                       }}
                     >
                       <ExportDropdown size={"big"} />

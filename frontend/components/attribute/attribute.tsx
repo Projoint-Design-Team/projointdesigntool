@@ -152,7 +152,7 @@ export const Attribute: FC<PropsAttributeComponent> = ({
             }}
           >
             <div
-              className={`${styles.lockHandle} ${show ? styles.visible : ""}`}
+              className={`${styles.lockHandle}`}
               onClick={() => toggleAttributeLocked(attribute.key)}
             >
               {attribute.locked ? (

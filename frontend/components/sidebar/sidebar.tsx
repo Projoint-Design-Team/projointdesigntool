@@ -91,7 +91,7 @@ export const Sidebar = ({ active }: { active: string }) => {
             arrow
             placement="right"
           >
-            <FileAdd onAddSurvey={handleAddSurvey} onImport={handleImportDoc} />
+            <FileAdd onAddSurvey={handleAddSurvey} />
           </LightTooltip>
         </div>
       </div>

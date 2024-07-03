@@ -11,12 +11,13 @@
   border-bottom: 2px var(--border-gray) solid;
 }
 
-.level:hover .deleteLevel {
-  visibility: visible;
+.level:hover .dragHandle,
+.level:hover .dragLevelTooltip {
+  display: block;
 }
 
-.level:hover .dragLevel {
-  visibility: visible;
+.dragLevelTooltip {
+  display: none;
 }
 
 .levelInfo {
@@ -31,10 +32,10 @@
 
 .dragHandle {
   position: absolute;
-  left: -1.25rem;
+  left: 0.25rem;
   padding: 0.75rem 1rem 1rem 0;
   font-size: 1.25rem;
-  visibility: hidden;
+  display: none;
 }
 
 .deleteHandle {
@@ -57,7 +58,7 @@
 .deleteLevel svg {
   position: absolute;
   top: 50%;
-  right: 5%;
+  right: 0;
   /* left: 50%; */
   /* transform: translate(-50%, -50%); */
   transition: transform 0.25s ease-in-out;
@@ -69,14 +70,6 @@
 
 .deleteLevel:hover svg:last-child {
   transform: rotate(-45deg);
-}
-
-.dragLevel {
-  bottom: 0.25rem;
-  top: -0.125rem;
-  left: -0.75rem;
-  /* padding-right: 2rem; */
-  padding-top: 0.5rem;
 }
 
 .input {

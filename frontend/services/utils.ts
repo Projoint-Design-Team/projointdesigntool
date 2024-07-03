@@ -1,5 +1,5 @@
 import { RestrictionProps } from "@/components/restrictions/restriction";
-import { Attribute } from "../context/attributes_context";
+import { Attribute, SettingsProps } from "../context/attributes_context";
 import { StatementProps } from "@/components/restrictions/restrictions";
 
 export const preproccessAttributes = (attributes: Attribute[]) => {
@@ -74,4 +74,17 @@ export const preprocessCrossRestrictions = (
   });
 
   return processedCrossRestrictions;
+};
+
+export const preprocessSettings = (settings: SettingsProps) => {
+  const processedSettings = {
+    num_profiles: settings.numProfiles,
+    num_tasks: settings.numTasks,
+    repeated_tasks: settings.repeatedTasks,
+    repeated_tasks_flipped: settings.repeatedTasksFlipped,
+    task_to_repeat: settings.taskToRepeat,
+    where_to_repeat: settings.whereToRepeat,
+    randomize: settings.randomize,
+  };
+  return processedSettings;
 };

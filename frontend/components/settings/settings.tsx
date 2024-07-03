@@ -16,13 +16,13 @@ export const Settings = () => {
 
   const { setEdited, settings, updateSettings } = useAttributes();
 
+  
+  const [numProfiles, setNumProfiles] = useState(settings.numProfiles);
+  const [numTasks, setNumTasks] = useState(settings.numTasks);
   const [repeatedTasks, setRepeatedTasks] = useState(settings.repeatedTasks);
   const [repeatedTasksFlipped, setRepeatedTasksFlipped] = useState(
     settings.repeatedTasksFlipped
   );
-
-  const [numProfiles, setNumProfiles] = useState(settings.numProfiles);
-  const [numTasks, setNumTasks] = useState(settings.numTasks);
   const [taskToRepeat, setTaskToRepeat] = useState(settings.taskToRepeat);
   const [whereToRepeat, setWhereToRepeat] = useState(settings.whereToRepeat);
 

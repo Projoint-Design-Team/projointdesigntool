@@ -115,7 +115,7 @@
   right: -2rem;
   padding: 0.5rem;
   font-size: 1.25rem;
-  visibility: hidden;
+
 }
 
 .lockHandle:hover {
@@ -187,19 +187,19 @@
   flex-direction: column;
   /* gap: 1.5rem; */
   width: 100%;
-  padding: 1rem;
+  padding: 1rem 0;
 }
 
 .levels li {
   font-weight: 00;
   display: flex;
   align-items: center;
-  padding: 0.5rem;
+  padding: 0.5rem 1.5rem;
 }
 
 .levels li:last-child {
   padding-bottom: 0;
-  padding-left: 0;
+  padding-left: 1rem;
   padding-top: 0;
 }
 
