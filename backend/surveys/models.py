@@ -8,20 +8,18 @@ class Survey(models.Model):
     filename = models.CharField(max_length=255, default="survey.js")
     cross_restrictions = models.JSONField(blank=True, default=list)
     num_profiles = models.IntegerField(validators=[MinValueValidator(2)], default=2)
+    filename = models.CharField(max_length=255, default="survey.js")
     csv_lines = models.IntegerField(default=500)
-
-    constraints = models.JSONField(blank=True, default=list)  # NOT USED BY US YET
+    constraints = models.JSONField(blank=True, default=list)
     num_tasks = models.IntegerField(validators=[MinValueValidator(1)], default=5)
-    repeated_tasks = models.BooleanField(default=True)
+    repeated_tasks = models.BooleanField(default=False)
     repeated_tasks_flipped = models.BooleanField(default=False)
-
     task_to_repeat = models.IntegerField(
         validators=[MinValueValidator(0)], null=True, blank=True
     )
     where_to_repeat = models.IntegerField(
         validators=[MinValueValidator(0)], null=True, blank=True
     )
-    
     random = models.BooleanField(default=False)
     randomize = models.BooleanField(default=False)
 

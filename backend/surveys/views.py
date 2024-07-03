@@ -112,12 +112,12 @@ def preview_survey(request):
         attributes = validated_data["attributes"]
         restrictions = validated_data["restrictions"]
         cross_restrictions = validated_data["cross_restrictions"]
-        profiles = validated_data["num_profiles"]
+        num_profiles = validated_data["num_profiles"]
 
         attributes_list = _generate_unlocked_order(attributes)
         answer = {"attributes": [], "previews": []}
         answer["previews"] = _create_profiles(
-            profiles, attributes_list, restrictions, cross_restrictions
+            num_profiles, attributes_list, restrictions, cross_restrictions
         )
         answer["attributes"] = [key for key in answer["previews"][0].keys()]
         return Response(answer, status=status.HTTP_201_CREATED)
@@ -256,12 +256,17 @@ def export_csv(request):
         attributes = validated_data["attributes"]
         restrictions = validated_data["restrictions"]
         cross_restrictions = validated_data["cross_restrictions"]
-        profiles = validated_data["num_profiles"]
+        num_profiles = validated_data["num_profiles"]
         csv_lines = validated_data["csv_lines"]
         filename = validated_data["filename"]
 
         _populate_csv(
-            attributes, profiles, restrictions, cross_restrictions, csv_lines, filename
+            attributes,
+            num_profiles,
+            restrictions,
+            cross_restrictions,
+            csv_lines,
+            filename,
         )
         return _send_file_response(filename)
     else:
@@ -318,11 +323,10 @@ def export_qsf(request):
         validated_data = serializer.validated_data
         attributes = validated_data["attributes"]
         filename = validated_data["filename"]
-        profiles = validated_data["num_profiles"]
-        tasks = validated_data["num_tasks"]
+        num_profiles = validated_data["num_profiles"]
+        num_tasks = validated_data["num_tasks"]
         task_to_repeat = validated_data["task_to_repeat"]
         where_to_repeat = validated_data["where_to_repeat"]
-        repeated_tasks = validated_data["repeated_tasks"]
         repeated_tasks_flipped = validated_data["repeated_tasks_flipped"]
         doubleQ = validated_data["doubleQ"]
         qType = validated_data["qType"]
@@ -334,14 +338,13 @@ def export_qsf(request):
         surveyID = _create_survey(
             filename,
             user_token,
-            tasks,
+            num_tasks,
             len(attributes),
-            profiles,
+            num_profiles,
             "",
             js_text,
             task_to_repeat,
             where_to_repeat,
-            repeated_tasks,
             repeated_tasks_flipped,
             doubleQ,
             qText,
