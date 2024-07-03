@@ -35,12 +35,10 @@ export const DocumentItem = ({ name, active, id }: IDoc) => {
         <div className={`${styles.active} ${styles.container}`}>
           <div className={styles.file_top}>
             <Link href={`/${encodedName}`}>
-              <a>
-                <div className={styles.file}>
-                  <FileIcon stroke="var(--dark-blue-h)" />
-                  <p>{name}</p>
-                </div>
-              </a>
+              <div className={styles.file}>
+                <FileIcon stroke="var(--dark-blue-h)" />
+                <p>{name}</p>
+              </div>
             </Link>
             <div className={styles.dots}>
               <LightTooltip
@@ -72,26 +70,26 @@ export const DocumentItem = ({ name, active, id }: IDoc) => {
           </ul>
         </div>
       ) : (
-        <Link href={`/${encodedName}`}>
-          <div className={`${styles.container}`}>
-            <div className={styles.file_top}>
+        <div className={`${styles.container}`}>
+          <div className={styles.file_top}>
+            <Link href={`/${encodedName}`}>
               <div className={styles.file}>
                 <FileIcon stroke="var(--blue-p)" />
                 <p>{name}</p>
               </div>
-              <div className={`${styles.noshow} ${styles.dots}`}>
-                <LightTooltip
-                  disableInteractive
-                  title="More"
-                  arrow
-                  placement="top"
-                >
-                  <ThreeDots onDelete={handleDelete} />
-                </LightTooltip>
-              </div>
+            </Link>
+            <div className={`${styles.noshow} ${styles.dots}`}>
+              <LightTooltip
+                disableInteractive
+                title="More"
+                arrow
+                placement="top"
+              >
+                <ThreeDots onDelete={handleDelete} />
+              </LightTooltip>
             </div>
           </div>
-        </Link>
+        </div>
       )}
     </li>
   );

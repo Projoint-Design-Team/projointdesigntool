@@ -17,8 +17,9 @@ import { useAttributes } from "@/context/attributes_context";
 import { columns } from "./__columns/documents-table__columns";
 import { Button } from "../ui/button";
 import { DocumentData, fetchDocuments } from "./documents-table.constants";
-import { DocumentsImport } from "../documents/__import/documents__import";
+
 import { addSurvey } from "../utils/add-survey";
+import { DocumentsImport } from "../import/import";
 
 export interface DocumentsTableProps {}
 

@@ -5,6 +5,8 @@ import { LinearProgress } from "@mui/material";
 import { Sidebar } from "../sidebar/sidebar";
 import DownloadNotification from "./notification";
 import ImportNotification from "./import-notification";
+import { ExportModal } from "../export/__modal/export__modal";
+import { ImportModal } from "../import/__modal/import__modal";
 
 const Layout = ({
   children,
@@ -20,6 +22,8 @@ const Layout = ({
       <Sidebar active={active} />
       <DownloadNotification />
       <ImportNotification />
+      <ExportModal />
+      <ImportModal />
       {loading ? <LinearProgress /> : children}
     </div>
   );

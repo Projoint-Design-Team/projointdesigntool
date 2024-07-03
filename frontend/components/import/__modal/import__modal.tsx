@@ -1,34 +1,30 @@
 import React, { FC, useState, useRef, useEffect, useCallback } from "react";
+
+import styles from "./import__modal.module.css";
+import { useModalStore } from "@/context/modal_store";
+import { useAttributes } from "@/context/attributes_context";
+import { addSurvey } from "@/components/utils/add-survey";
+import { useDropzone } from "react-dropzone";
 import { importDocument } from "@/services/api";
 import { useRouter } from "next/router";
-import { Button } from "@/components/ui/button";
+import english from "@/naming/english.json";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { DeleteIcon, XIcon } from "@/components/ui/icons";
 
-import styles from "./documents__import.module.css";
 import { LinearProgress, TextField } from "@mui/material";
-import { ImportIcon } from "@/components/ui/file-add";
-import { useAttributes } from "@/context/attributes_context";
-import { addSurvey } from "@/components/utils/add-survey";
-import { useDropzone } from "react-dropzone";
-import { useModalStore } from "@/context/modal_store";
 import { useDownload } from "@/context/download_context";
-import english from "@/naming/english.json";
 
-export interface DocumentsImportProps {
-  size: "big" | "small";
-}
+export interface ImportModalProps {}
 
-export const DocumentsImport: FC<DocumentsImportProps> = ({ size }) => {
+export const ImportModal: FC<ImportModalProps> = ({}) => {
   const { importModalOpen, setImportModalOpen } = useModalStore();
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { setStorageChanged } = useAttributes();
-  const { downloadStatus, setDownloadStatus, cleanDownloadStatus } =
-    useDownload();
+  const { downloadStatus, setDownloadStatus } = useDownload();
 
   const [file, setFile] = useState<File | null>(null);
   const [fileUpload, setFileUpload] = useState(0);
@@ -120,85 +116,70 @@ export const DocumentsImport: FC<DocumentsImportProps> = ({ size }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
   return (
-    <>
-      {size === "big" ? (
-        <>
-          <ImportIcon /> <p>{english.import.value}</p>{" "}
-        </>
-      ) : (
-        <Button
-          text={english.import.value}
-          icon={<ImportIcon stroke="var(--white)" />}
-          onClick={() => {
-            setImportModalOpen();
-            cleanDownloadStatus();
-          }}
-        ></Button>
-      )}
-
-      <Modal
-        open={importModalOpen}
-        onClose={() => setImportModalOpen(false)}
-        aria-labelledby="import-modal-title"
-        aria-describedby="import-modal-description"
-      >
-        <Box sx={modalStyle}>
-          <div className={styles.modalHeader}>
-            <h2 id="import-modal-title">{english.import.title}</h2>
-            <div className={styles.close} onClick={() => setImportModalOpen()}>
-              <XIcon />
-            </div>
+    <Modal
+      open={importModalOpen}
+      onClose={() => setImportModalOpen(false)}
+      aria-labelledby="import-modal-title"
+      aria-describedby="import-modal-description"
+    >
+      <Box sx={modalStyle}>
+        <div className={styles.modalHeader}>
+          <h2 id="import-modal-title">{english.import.title}</h2>
+          <div
+            className={styles.close}
+            onClick={() => setImportModalOpen(false)}
+          >
+            <XIcon />
           </div>
-          <div className={styles.modalContent}>
-            <p className={styles.modalDescription}>
-              {english.import.description}
-            </p>
-            <div
-              {...getRootProps()}
-              className={`${styles.dropzone} ${
-                isDragActive ? styles.dropzoneActive : ""
-              }`}
-            >
-              <input {...getInputProps()} />
-              {isDragActive ? (
-                <p>Drop the file here</p>
-              ) : (
-                <p>Drag a file here, or click to select a file</p>
-              )}
-            </div>
-            {file && (
-              <div className={styles.fileInfo}>
-                <div className={styles.fileInfoHeader}>
-                  <p>{file.name}</p>
-                  <div
-                    onClick={() => {
-                      setFile(null);
-                      setError(null);
-                    }}
-                    className={styles.fileInfoHeaderClose}
-                  >
-                    <DeleteIcon />
-                  </div>
-                </div>
-                <LinearProgress
-                  className={styles.fileInfoProgress}
-                  variant="determinate"
-                  value={fileUpload}
-                />
-              </div>
+        </div>
+        <div className={styles.modalContent}>
+          <p className={styles.modalDescription}>
+            {english.import.description}
+          </p>
+          <div
+            {...getRootProps()}
+            className={`${styles.dropzone} ${
+              isDragActive ? styles.dropzoneActive : ""
+            }`}
+          >
+            <input {...getInputProps()} />
+            {isDragActive ? (
+              <p>Drop the file here</p>
+            ) : (
+              <p>Drag a file here, or click to select a file</p>
             )}
-            {error && <div className={styles.error}>{error}</div>}
-            <div className={styles.modalButtonContainer}>
-              <button onClick={handleImport} className={styles.modalButton}>
-                Import
-              </button>
-            </div>
           </div>
-        </Box>
-      </Modal>
-    </>
+          {file && (
+            <div className={styles.fileInfo}>
+              <div className={styles.fileInfoHeader}>
+                <p>{file.name}</p>
+                <div
+                  onClick={() => {
+                    setFile(null);
+                    setError(null);
+                  }}
+                  className={styles.fileInfoHeaderClose}
+                >
+                  <DeleteIcon />
+                </div>
+              </div>
+              <LinearProgress
+                className={styles.fileInfoProgress}
+                variant="determinate"
+                value={fileUpload}
+              />
+            </div>
+          )}
+          {error && <div className={styles.error}>{error}</div>}
+          <div className={styles.modalButtonContainer}>
+            <button onClick={handleImport} className={styles.modalButton}>
+              Import
+            </button>
+          </div>
+        </div>
+      </Box>
+    </Modal>
   );
 };
 

@@ -8,17 +8,18 @@ import {
 } from "@mui/material";
 import React, { forwardRef } from "react";
 import { FileAddIcon } from "./icons";
-import { DocumentsImport } from "../documents/__import/documents__import";
+
 import { useModalStore } from "@/context/modal_store";
 import { useDownload } from "@/context/download_context";
+import { DocumentsImport } from "../import/import";
 
 export const FileAdd = forwardRef<
   HTMLDivElement,
-  { onAddSurvey: () => void; onImport?: () => void; stroke?: string }
->(({ onAddSurvey, onImport, ...props }, ref) => {
+  { onAddSurvey: () => void; stroke?: string }
+>(({ onAddSurvey, ...props }, ref) => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
-  const { importModalOpen, setImportModalOpen } = useModalStore();
+  const { setImportModalOpen } = useModalStore();
   const { cleanDownloadStatus } = useDownload();
 
   const handleToggle = () => {
@@ -27,7 +28,6 @@ export const FileAdd = forwardRef<
 
   const handleClose = (event: Event | React.SyntheticEvent) => {
     if (
-      !importModalOpen &&
       anchorRef.current &&
       anchorRef.current.contains(event.target as HTMLElement)
     ) {
@@ -84,6 +84,22 @@ export const FileAdd = forwardRef<
         placement="right-start"
         transition
         disablePortal
+        modifiers={[
+          {
+            name: "flip",
+            enabled: false, // This disables flipping the Popper's placement when there is not enough space
+          },
+          {
+            name: "preventOverflow",
+            options: {
+              altAxis: false, // Prevents the Popper from moving into the alternative axis (y-axis if primary is x)
+              boundary: "clippingParents", // Can be 'scrollParent', 'window', or an HTML element
+              tether: false, // Whether the Popper can be detached from its anchor element
+              altBoundary: false, // Allows the Popper to overflow its boundaries to stay near the anchor
+              rootBoundary: "document", // Defines which boundary to consider as the viewport
+            },
+          },
+        ]}
       >
         {({ TransitionProps, placement }) => (
           <Grow
@@ -140,6 +156,7 @@ export const FileAdd = forwardRef<
                     onClick={() => {
                       setImportModalOpen(true);
                       cleanDownloadStatus();
+                      setOpen(false);
                     }}
                   >
                     <DocumentsImport size="big" />

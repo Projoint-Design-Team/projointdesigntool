@@ -164,6 +164,8 @@ export const importDocument = async (
     }
 
     const filename = fileData.name;
+    
+    file.append("filename", filename);
 
     if (!filename) {
       throw new Error("No file provided.");

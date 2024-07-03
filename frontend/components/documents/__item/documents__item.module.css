@@ -1,16 +1,20 @@
 .active {
   color: var(--dark-blue-h);
   background-color: var(--active-blue) !important;
+  padding: 1rem 0.5rem;
 }
 
 .container {
-  padding: 1rem 0.5rem;
   border-radius: 0.25rem;
 }
 
 .container:hover {
   cursor: pointer;
   background-color: var(--light-blue);
+}
+
+.container:hover .noshow {
+  display: flex;
 }
 
 .helpers {
@@ -42,12 +46,19 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  width: 100%;
+  padding: 1rem 0rem 1rem 0.5rem;
+}
+
+.active .file {
+  padding: 0;
 }
 
 .dots {
   display: flex;
   align-items: center;
   height: 20px;
+  padding-right: 0.5rem;
 }
 
 .noshow {
