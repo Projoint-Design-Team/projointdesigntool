@@ -33,10 +33,11 @@ function PreviewPage({ params }: IServerProps) {
 
   const {
     attributes,
-    restrictions,
     instructions,
-    crossRestrictions,
     settings,
+    cleanInvalidRestrictions,
+    processProfileRestrictions,
+    processCrossRestrictions,
   } = useAttributes();
 
   const [profiles, setProfiles] = useState<IPreview | null>(null);
@@ -45,10 +46,11 @@ function PreviewPage({ params }: IServerProps) {
 
   const previewData = async () => {
     // const previews = await getPreview(attributes, restrictions);
+    cleanInvalidRestrictions();
     const previews = await getPreview(
       attributes,
-      restrictions,
-      crossRestrictions,
+      processProfileRestrictions(),
+      processCrossRestrictions(),
       settings.numProfiles
     );
     setProfiles({

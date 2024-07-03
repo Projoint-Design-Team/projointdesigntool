@@ -12,7 +12,7 @@ import {
   LevelNameChange,
 } from "./utils/level";
 
-interface Level {
+export interface Level {
   name: string;
   id: number;
   weight: number;
@@ -60,6 +60,7 @@ interface AttributeContextType {
   setAttributes: React.Dispatch<React.SetStateAction<Attribute[]>>;
   isCreatingAttribute: boolean;
   setIsCreatingAttribute: React.Dispatch<React.SetStateAction<boolean>>;
+  getAttributeById: (id: number) => Attribute | undefined;
   addNewAttribute: (name: string) => void;
   addLevelToAttribute: (attributeKey: number, newLevel: string) => void;
   deleteLevelFromAttribute: (attributeKey: number, levelId: number) => void; // Changed levelIndex to levelId
@@ -88,6 +89,9 @@ interface AttributeContextType {
   settings: SettingsProps;
   updateSettings: (newSettings: SettingsProps) => void;
   toggleAttributeLocked: (key: number) => void;
+  cleanInvalidRestrictions: () => void;
+  processProfileRestrictions: () => RestrictionProps[];
+  processCrossRestrictions: () => RestrictionProps[];
 }
 
 const AttributeContext = createContext<AttributeContextType | undefined>(
@@ -301,6 +305,146 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     setEdited(true);
   };
 
+  const getAttributeById = (id: number) => {
+    return attributes.find((attribute) => attribute.key === id);
+  };
+
+  const validateAndCleanRestrictions = (
+    restrictions: RestrictionProps[],
+    attributes: Attribute[]
+  ): RestrictionProps[] => {
+    const isValidAttribute = (attributeId: number) => {
+      return attributes.some((attribute) => attribute.key === attributeId);
+    };
+
+    const isValidLevel = (levelId: number, attributeId: number) => {
+      const attribute = attributes.find((attr) => attr.key == attributeId);
+      return attribute
+        ? attribute.levels.some((level) => level.id === levelId)
+        : false;
+    };
+
+    return restrictions.filter((restriction) => {
+      const validIfStates = restriction.ifStates.every((state) => {
+        const attributeId = parseInt(state.attribute);
+        const levelId = parseInt(state.level);
+        return (
+          isValidAttribute(attributeId) && isValidLevel(levelId, attributeId)
+        );
+      });
+
+      const validElseStates = restriction.elseStates.every((state) => {
+        const attributeId = parseInt(state.attribute);
+        const levelId = parseInt(state.level);
+        return (
+          isValidAttribute(attributeId) && isValidLevel(levelId, attributeId)
+        );
+      });
+
+      return validIfStates && validElseStates;
+    });
+  };
+
+  const cleanInvalidRestrictions = () => {
+    setRestrictions((prevRestrictions) => {
+      const validRestrictions = validateAndCleanRestrictions(
+        prevRestrictions,
+        attributes
+      );
+      return validRestrictions;
+    });
+
+    setCrossRestrictions((prevCrossRestrictions) => {
+      const validCrossRestrictions = validateAndCleanRestrictions(
+        prevCrossRestrictions,
+        attributes
+      );
+      return validCrossRestrictions;
+    });
+
+    // Assuming we have a function to save the entire array of restrictions to local storage
+    setEdited(true);
+  };
+
+  const getAttributeLevels = (attributeName: string) => {
+    const index = attributes.findIndex(
+      (attr) => attr.key == parseInt(attributeName)
+    );
+    return attributes[index] ? attributes[index].levels : [];
+  };
+
+  const getLevelById = (levelId: number, attributeName: string) => {
+    const attribute = getAttributeLevels(attributeName);
+    const index = attribute.findIndex((level) => level.id == levelId);
+    return attribute[index] ? attribute[index].name : "";
+  };
+
+  const formatRestriction = (
+    restriction: RestrictionProps
+  ): RestrictionProps => {
+    return {
+      ...restriction,
+      ifStates: restriction.ifStates.map((state) => {
+        return {
+          ...state,
+          attribute: getAttributeById(parseInt(state.attribute))!.name,
+          level: getLevelById(parseInt(state.level), state.attribute),
+        };
+      }),
+      elseStates: restriction.elseStates.map((state) => {
+        return {
+          ...state,
+          attribute: getAttributeById(parseInt(state.attribute))!.name,
+          level: getLevelById(parseInt(state.level), state.attribute),
+        };
+      }),
+    };
+  };
+
+  const processCrossRestrictions = () => {
+    const refinedRestrictions = crossRestrictions
+      .filter((restriction) => {
+        const validIfStates = restriction.ifStates.every((state) => {
+          const attribute = getAttributeById(parseInt(state.attribute));
+          const level = getLevelById(parseInt(state.level), state.attribute);
+          return attribute && level;
+        });
+
+        const validElseStates = restriction.elseStates.every((state) => {
+          const attribute = getAttributeById(parseInt(state.attribute));
+          const level = getLevelById(parseInt(state.level), state.attribute);
+          return attribute && level;
+        });
+
+        return validIfStates && validElseStates;
+      })
+      .map((restriction) => formatRestriction(restriction));
+
+    return refinedRestrictions;
+  };
+
+  const processProfileRestrictions = () => {
+    const refinedRestrictions = restrictions
+      .filter((restriction) => {
+        const validIfStates = restriction.ifStates.every((state) => {
+          const attribute = getAttributeById(parseInt(state.attribute));
+          const level = getLevelById(parseInt(state.level), state.attribute);
+          return attribute && level;
+        });
+
+        const validElseStates = restriction.elseStates.every((state) => {
+          const attribute = getAttributeById(parseInt(state.attribute));
+          const level = getLevelById(parseInt(state.level), state.attribute);
+          return attribute && level;
+        });
+
+        return validIfStates && validElseStates;
+      })
+      .map((restriction) => formatRestriction(restriction));
+
+    return refinedRestrictions;
+  };
+
   const saveRestriction = (restriction: RestrictionProps, cross?: boolean) => {
     // Assuming we have a function to save the entire array of restrictions to local storage
     if (!cross) {
@@ -403,6 +547,7 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     cancelNewAttribute,
     handleCreateAttribute,
     setEdited,
+    getAttributeById,
     handleAttributeNameChange,
     handleInstructions,
     storageChanged,
@@ -415,7 +560,10 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     instructions,
     settings,
     updateSettings,
+    cleanInvalidRestrictions,
     toggleAttributeLocked,
+    processProfileRestrictions,
+    processCrossRestrictions,
   };
 
   return (

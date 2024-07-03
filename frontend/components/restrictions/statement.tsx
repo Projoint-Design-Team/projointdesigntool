@@ -39,7 +39,7 @@ export const Statement: React.FC<IStatement> = ({
   const [sign, setSign] = useState<boolean>(statement.equals);
   const [proposition, setProposition] = useState<string>(statement.part);
 
-  const { attributes } = useAttributes();
+  const { attributes, getAttributeById } = useAttributes();
 
   useEffect(() => {
     if (selectedAttr != statement.attribute) {
@@ -62,10 +62,35 @@ export const Statement: React.FC<IStatement> = ({
     setSign(value == "Equals");
   };
 
+  const handleSelectAttribute = (attributeName: string) => {
+    const attribute = attributes.find((attr) => attr.name == attributeName);
+    if (attribute) {
+      setSelectedAttr(attribute.key.toString());
+    }
+  };
+
+  const handleSelectLevel = (levelName: string) => {
+    const level = getAttributeLevels(selectedAttr).find(
+      (level) => level.name == levelName
+    );
+    if (level) {
+      setSelectedLvl(level.id.toString());
+    }
+  };
+
   const getAttributeLevels = (attributeName: string) => {
-    const index = attributes.findIndex((attr) => attr.name == attributeName);
+    const index = attributes.findIndex(
+      (attr) => attr.key == parseInt(attributeName)
+    );
     return attributes[index] ? attributes[index].levels : [];
   };
+
+  const getLevelById = (levelId: number) => {
+    const attribute = getAttributeLevels(selectedAttr);
+    const index = attribute.findIndex((level) => level.id == levelId);
+    return attribute[index] ? attribute[index].name : "";
+  };
+
   return (
     <div className={styles.statement_container}>
       <div className={styles.statement}>
@@ -87,9 +112,13 @@ export const Statement: React.FC<IStatement> = ({
           />
         )}
         <CustomDropdown
-          value={selectedAttr}
+          value={
+            selectedAttr == "select attribute"
+              ? "select attribute"
+              : getAttributeById(parseInt(selectedAttr))!.name
+          }
           items={attributes.map((attr) => attr.name)}
-          setSelected={setSelectedAttr}
+          setSelected={handleSelectAttribute}
           color={selectedAttr == "select attribute" ? true : false}
         />
         <CustomDropdown
@@ -100,13 +129,17 @@ export const Statement: React.FC<IStatement> = ({
           color={false}
         />
         <CustomDropdown
-          value={selectedLvl}
+          value={
+            selectedLvl == "select level"
+              ? "select level"
+              : getLevelById(parseInt(selectedLvl))
+          }
           items={
             selectedAttr
               ? getAttributeLevels(selectedAttr).map((level) => level.name)
               : []
           }
-          setSelected={setSelectedLvl}
+          setSelected={handleSelectLevel}
           color={selectedLvl == "select level" ? true : false}
         />
 
