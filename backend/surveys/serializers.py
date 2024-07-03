@@ -122,13 +122,21 @@ class SurveySerializer(ShortSurveySerializer):
         ]
 
 
-class QualtricsSerializer(SurveySerializer):
+class ExtraSurveySerializer(SurveySerializer):
     doubleQ = serializers.BooleanField(default=False)
-    qType = serializers.CharField(default="MC")
+    qDescription = serializers.CharField(
+        default="Enter your description here! Here are two profiles A and B."
+    )
     qText = serializers.CharField(
         default="Please carefully review the options detailed below, \
             then please answer the questions. Which of these choices do you prefer?"
     )
+    qType = serializers.CharField(default="MC")
 
     class Meta(SurveySerializer.Meta):
-        fields = SurveySerializer.Meta.fields + ["doubleQ", "qType", "qText"]
+        fields = SurveySerializer.Meta.fields + [
+            "qDescription",
+            "doubleQ",
+            "qType",
+            "qText",
+        ]

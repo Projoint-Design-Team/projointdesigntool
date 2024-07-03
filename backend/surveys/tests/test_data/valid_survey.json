@@ -78,5 +78,9 @@
 	"where_to_repeat": 0,
 	"random": false,
 	"randomize": false,
-	"advanced": {}
+	"advanced": {},
+	"qDescription": "This is a test survey",
+	"doubleQ": false,
+	"qText": "This is a test question",
+	"qType": "MC"
 }

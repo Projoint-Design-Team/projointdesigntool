@@ -2,20 +2,30 @@ import json
 import os
 
 from dotenv import load_dotenv
-from drf_spectacular.utils import (OpenApiExample, OpenApiResponse,
-                                   extend_schema)
+from drf_spectacular.utils import OpenApiExample, OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .helpers import (_create_js_file, _create_profiles,
-                      _create_qualtrics_js_text, _create_survey,
-                      _download_survey, _filter_survey_data,
-                      _generate_unlocked_order, _populate_csv,
-                      _send_file_response, _validate_file,
-                      _validate_survey_data)
-from .serializers import (FileUploadSerializer, QualtricsSerializer,
-                          ShortSurveySerializer, SurveySerializer)
+from .helpers import (
+    _create_js_file,
+    _create_profiles,
+    _create_qualtrics_js_text,
+    _create_survey,
+    _download_survey,
+    _filter_survey_data,
+    _generate_unlocked_order,
+    _populate_csv,
+    _send_file_response,
+    _validate_file,
+    _validate_survey_data,
+)
+from .serializers import (
+    FileUploadSerializer,
+    ExtraSurveySerializer,
+    ShortSurveySerializer,
+    SurveySerializer,
+)
 
 load_dotenv()
 
@@ -187,7 +197,7 @@ def import_json(request):
 )
 @api_view(["POST"])
 def export_json(request):
-    serializer = SurveySerializer(data=request.data)
+    serializer = ExtraSurveySerializer(data=request.data)
     if serializer.is_valid():
         filename = serializer.validated_data["filename"]
         with open(filename, "w", encoding="utf-8") as file:
@@ -269,10 +279,10 @@ def export_csv(request):
 
 
 @extend_schema(
-    request=QualtricsSerializer,
+    request=ExtraSurveySerializer,
     responses={
         status.HTTP_201_CREATED: OpenApiResponse(
-            response=QualtricsSerializer,
+            response=ExtraSurveySerializer,
             description="A QSF file containing the survey data.",
             examples=[
                 OpenApiExample(
@@ -308,7 +318,7 @@ def export_csv(request):
 )
 @api_view(["POST"])
 def export_qsf(request):
-    serializer = QualtricsSerializer(data=request.data)
+    serializer = ExtraSurveySerializer(data=request.data)
     if serializer.is_valid():
         validated_data = serializer.validated_data
         attributes = validated_data["attributes"]

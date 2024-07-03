@@ -13,7 +13,7 @@ from rest_framework import status
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
-from .serializers import QualtricsSerializer, SurveySerializer
+from .serializers import ExtraSurveySerializer
 
 """
 THIS VARIABLES ARE TRANSFEERED FROM THE LEGACY CODE AND SLIGHTLY MODIFIED
@@ -304,7 +304,7 @@ def _create_qualtrics_js_text(request):
 
 
 def _create_js_file(request):
-    serializer = QualtricsSerializer(data=request.data)
+    serializer = ExtraSurveySerializer(data=request.data)
     if serializer.is_valid():
         validated_data = serializer.validated_data
 
@@ -650,7 +650,7 @@ def _filter_survey_data(data):
 
 
 def _validate_survey_data(survey_data):
-    serializer = SurveySerializer(data=survey_data)
+    serializer = ExtraSurveySerializer(data=survey_data)
     if serializer.is_valid():
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
     else:

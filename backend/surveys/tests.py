@@ -478,6 +478,9 @@ class ExportJsonTests(TestCase):
             "cross_restrictions": [],
             "num_profiles": 2,
             "filename": "survey_export.json",
+            "qDescription": "This is a test survey",
+            "qText": "This is a test question",
+            "qType": "MC",
         }
 
     def test_export_json_success(self):
@@ -506,7 +509,6 @@ class ImportJsonTests(TestCase):
         response = self.client.post(
             self.url, {"file": uploaded_file}, format="multipart"
         )
-
         # Assertions
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(
