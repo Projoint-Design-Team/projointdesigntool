@@ -15,8 +15,15 @@ export const addSurvey = ({
   onStorageChange: (updateFunc: (prev: number) => number) => void;
 }) => {
   const uniqueId = uuidv4();
+  const attributes = value ? reintegrateAttributes(value.attributes) : [];
+  const restrictions = value
+    ? reintegrateRestrictions(value.restrictions, attributes)
+    : [];
+  const crossRestrictions = value
+    ? reintegrateCrossRestrictions(value.cross_restrictions, attributes)
+    : [];
   const dataToSave = {
-    attributes: value ? reintegrateAttributes(value.attributes) : [],
+    attributes: attributes,
     lastEdited: new Date(),
     name: "Untitled",
     instructions: {
@@ -24,10 +31,8 @@ export const addSurvey = ({
       instructions: "",
       outcomeType: "mcq",
     },
-    restrictions: value ? reintegrateRestrictions(value.restrictions) : [],
-    crossRestrictions: value
-      ? reintegrateCrossRestrictions(value.cross_restrictions)
-      : [],
+    restrictions: restrictions,
+    crossRestrictions: crossRestrictions,
     settings: {
       numProfiles: value.num_profiles ? value.num_profiles : 2,
       numTasks: value.num_tasks ? value.num_tasks : 2,
@@ -67,14 +72,48 @@ export const reintegrateAttributes = (
 };
 
 export const reintegrateRestrictions = (
-  processedRestrictions: any[]
+  processedRestrictions: any[],
+  attributes: Attribute[]
 ): RestrictionProps[] => {
-  return processedRestrictions.map((restriction) => {
-    const ifStates = reintegrateConditions(restriction.condition);
-    const elseStates = restriction.result.map((statement: any, index: number) =>
-      reintegrateStatement(statement, index)
+  const isValidAttribute = (attibuteName: string) => {
+    return attributes.some((attribute) => attribute.name === attibuteName);
+  };
+
+  const isValidLevel = (levelName: string, attributeName: string) => {
+    const attribute = attributes.find((attr) => attr.name == attributeName);
+    return attribute
+      ? attribute.levels.some((level) => level.name === levelName)
+      : false;
+  };
+
+  const validRestrictions = processedRestrictions.filter((restriction) => {
+    console.log(restriction.condition);
+    const validIfStates = restriction.condition.every(
+      (statement: any, index: number) => {
+        return (
+          isValidAttribute(statement.attribute) &&
+          isValidLevel(statement.value, statement.attribute)
+        );
+      }
     );
 
+    const validElseStates = restriction.result.every(
+      (statement: any, index: number) => {
+        return (
+          isValidAttribute(statement.attribute) &&
+          isValidLevel(statement.value, statement.attribute)
+        );
+      }
+    );
+
+    return validIfStates && validElseStates;
+  });
+
+  return validRestrictions.map((restriction) => {
+    const ifStates = reintegrateConditions(restriction.condition, attributes);
+    const elseStates = restriction.result.map((statement: any, index: number) =>
+      reintegrateStatement(statement, index, attributes)
+    );
     return {
       ifStates: ifStates,
       elseStates: elseStates,
@@ -84,36 +123,78 @@ export const reintegrateRestrictions = (
   });
 };
 
-const reintegrateConditions = (conditions: any[]): StatementProps[] => {
+const reintegrateConditions = (
+  conditions: any[],
+  attributes: Attribute[]
+): StatementProps[] => {
   return conditions.map((condition, index) =>
-    reintegrateStatement(condition, index)
+    reintegrateStatement(condition, index, attributes)
   );
 };
 
 const reintegrateStatement = (
   statement: any,
-  index: number
+  index: number,
+  attributes: Attribute[]
 ): StatementProps => {
   let part = "if";
   if (index > 0) {
     part = statement.logical === "&&" ? "and" : "or";
   }
 
+  const attribute = attributes.find(
+    (attr) => attr.name === statement.attribute
+  );
+  const level = attribute?.levels.find(
+    (level) => level.name === statement.value
+  );
+
   return {
     part: part as "if" | "then" | "and" | "or",
-    attribute: statement.attribute,
-    level: statement.value,
+    attribute: attribute!.key.toString(),
+    level: level!.id.toString(),
     equals: statement.operation === "==",
     id: uuidv4(),
   };
 };
 
 export const reintegrateCrossRestrictions = (
-  processedCrossRestrictions: any[]
+  processedCrossRestrictions: any[],
+  attributes: Attribute[]
 ): RestrictionProps[] => {
-  return processedCrossRestrictions.map((restriction) => {
-    const ifStates = [reintegrateStatement(restriction.condition, 0)];
-    const elseStates = [reintegrateStatement(restriction.result, 0)];
+  const isValidAttribute = (attibuteName: string) => {
+    return attributes.some((attribute) => attribute.name === attibuteName);
+  };
+
+  const isValidLevel = (levelName: string, attributeName: string) => {
+    const attribute = attributes.find((attr) => attr.name == attributeName);
+    return attribute
+      ? attribute.levels.some((level) => level.name === levelName)
+      : false;
+  };
+
+  const validRestrictions = processedCrossRestrictions.filter((restriction) => {
+    const validIfStates =
+      isValidAttribute(restriction.condition.attribute) &&
+      isValidLevel(
+        restriction.condition.value,
+        restriction.condition.attribute
+      );
+
+    const validElseStates =
+      isValidAttribute(restriction.result.attribute) &&
+      isValidLevel(restriction.result.value, restriction.result.attribute);
+
+    return validIfStates && validElseStates;
+  });
+
+  return validRestrictions.map((restriction) => {
+    const ifStates = [
+      reintegrateStatement(restriction.condition, 0, attributes),
+    ];
+    const elseStates = [
+      reintegrateStatement(restriction.result, 0, attributes),
+    ];
 
     return {
       ifStates: ifStates,
