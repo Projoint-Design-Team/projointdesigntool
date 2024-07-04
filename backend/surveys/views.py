@@ -31,7 +31,7 @@ load_dotenv()
 
 
 @extend_schema(
-    request=SurveySerializer,
+    request=ExtraSurveySerializer,
     responses={
         status.HTTP_201_CREATED: OpenApiResponse(
             response=SurveySerializer,
@@ -156,7 +156,7 @@ def import_json(request):
 
 
 @extend_schema(
-    request=SurveySerializer,
+    request=ExtraSurveySerializer,
     responses={
         status.HTTP_201_CREATED: OpenApiResponse(
             response=ShortSurveySerializer,
