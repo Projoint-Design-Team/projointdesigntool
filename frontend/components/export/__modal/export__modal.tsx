@@ -53,8 +53,15 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
   const [activeItem, setActiveItem] = useState<IFormat>(formats[1]);
   const { currentDoc } = useContext(DocumentContext);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { attributes, restrictions, crossRestrictions, settings } =
-    useAttributes();
+  const {
+    attributes,
+    restrictions,
+    crossRestrictions,
+    settings,
+    cleanInvalidRestrictions,
+    processProfileRestrictions,
+    processCrossRestrictions,
+  } = useAttributes();
   const [docName, setDocName] = useState<string>(currentDoc);
   const inputRef = useRef<HTMLInputElement>(null);
   const [numRows, setNumRows] = useState<number>(500);
@@ -72,6 +79,8 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
 
   const handleDownload = async (path: IFormat["path"]) => {
     setExportModalOpen(false);
+    cleanInvalidRestrictions();
+
     await downloadSurvey(
       attributes,
       path,
@@ -79,8 +88,8 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
       setDownloadStatus,
       settings,
       numRows,
-      restrictions,
-      crossRestrictions
+      processProfileRestrictions(),
+      processCrossRestrictions()
     );
   };
 

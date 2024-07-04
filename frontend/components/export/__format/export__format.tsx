@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 
 import styles from "./export__format.module.css";
-import { IFormat } from "../export";
+import { IFormat } from "../__modal/export__modal";
 
 export interface ExportFormatProps {
   formats: IFormat[];
