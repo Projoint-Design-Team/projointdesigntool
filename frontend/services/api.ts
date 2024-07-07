@@ -22,9 +22,16 @@ export const downloadSurvey = async (
   filename: string,
   setDownloadStatus: (status: any) => void,
   settings: SettingsProps,
+
   csv_lines?: number,
   restrictions?: RestrictionProps[],
-  crossRestrictions?: RestrictionProps[]
+  crossRestrictions?: RestrictionProps[],
+  instructions?: {
+    qDescription: string;
+    doubleQ: boolean;
+    qType: string;
+    qText: string;
+  }
 ) => {
   const fileExtension = (filename: string) => {
     switch (path) {
@@ -62,6 +69,8 @@ export const downloadSurvey = async (
         ? preprocessSettings(settings)
         : {};
 
+    const preprocessedInstructions = path !== "export_csv" ? instructions : {};
+
     const response = await api.post(
       `/surveys/${path}/`,
       {
@@ -71,6 +80,7 @@ export const downloadSurvey = async (
         cross_restrictions: processedCrossRestrictions,
         filename: file,
         ...processedSettings,
+        ...preprocessedInstructions,
       },
       {
         responseType: "blob",
@@ -164,7 +174,7 @@ export const importDocument = async (
     }
 
     const filename = fileData.name;
-    
+
     file.append("filename", filename);
 
     if (!filename) {

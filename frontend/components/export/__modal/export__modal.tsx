@@ -55,8 +55,7 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const {
     attributes,
-    restrictions,
-    crossRestrictions,
+    instructions,
     settings,
     cleanInvalidRestrictions,
     processProfileRestrictions,
@@ -89,7 +88,19 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
       settings,
       numRows,
       processProfileRestrictions(),
-      processCrossRestrictions()
+      processCrossRestrictions(),
+      {
+        qDescription:
+          instructions.description === ""
+            ? "Enter your description here! Here are two profiles A and B."
+            : instructions.description,
+        doubleQ: false,
+        qType: instructions.outcomeType,
+        qText:
+          instructions.instructions === ""
+            ? "Please carefully review the options detailed below, then please answer the questions."
+            : instructions.instructions,
+      }
     );
   };
 

@@ -27,9 +27,9 @@ export const addSurvey = ({
     lastEdited: new Date(),
     name: "Untitled",
     instructions: {
-      description: "",
-      instructions: "",
-      outcomeType: "mcq",
+      description: value.qDescription,
+      instructions: value.qText,
+      outcomeType: value.qType,
     },
     restrictions: restrictions,
     crossRestrictions: crossRestrictions,
