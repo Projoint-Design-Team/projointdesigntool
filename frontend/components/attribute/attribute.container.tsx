@@ -42,22 +42,6 @@ export const AttributeContainer: FC<PropsAttributeContainer> = ({
   //   }
   // };
 
-  // Handle blur for AttributeCreator
-  const handleBlurCreator = () => {
-    if (name.trim() === "" && cancelNewAttribute) {
-      cancelNewAttribute();
-    } else if (addNewAttribute) {
-      addNewAttribute(name);
-    }
-  };
-
-  // Handle key press for AttributeCreator
-  const handleKeyPressCreator = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter" && name.trim() !== "" && addNewAttribute) {
-      addNewAttribute(name);
-    }
-  };
-
   const { setHighlightedAttribute } = useContext(HighlightedContext);
 
   const handleShow = () => {

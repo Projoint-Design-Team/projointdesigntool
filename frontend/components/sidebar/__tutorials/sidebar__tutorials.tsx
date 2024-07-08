@@ -2,6 +2,7 @@ import React, { FC } from "react";
 
 import styles from "./sidebar__tutorials.module.css";
 import Link from "next/link";
+import { shortenName } from "@/components/utils/helpers";
 
 export interface SidebarTutorialsProps {
   tutorials: string[];
@@ -14,7 +15,7 @@ const formatTutorial = (tutorial: string) => {
     if (index === 0 && array.length > 1) return "";
     return word.charAt(0).toUpperCase() + word.slice(1);
   });
-  return tutorialTitle.join(" ");
+  return shortenName(tutorialTitle.join(" "), 20);
 };
 
 export const SidebarTutorials: FC<SidebarTutorialsProps> = ({

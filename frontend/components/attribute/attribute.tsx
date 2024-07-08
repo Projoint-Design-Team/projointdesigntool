@@ -17,6 +17,7 @@ import {
 import { AttributeWeight } from "./__weight/attribute__weight";
 import { Button } from "../ui/button";
 import naming from "@/naming/english.json";
+import { shortenName } from "../utils/helpers";
 
 interface PropsAttributeComponent {
   attribute: IAttribute;
@@ -73,16 +74,17 @@ export const Attribute: FC<PropsAttributeComponent> = ({
   }, [isEditing]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAttributeName(e.target.value);
+    setAttributeName(e.target.value.trim());
   };
 
   const handleBlur = () => {
     setIsEditing(false);
 
     if (attributeName.trim() === "") {
-      deleteAttribute(attribute.key);
+      setAttributeName("Untitled");
+      handleAttributeNameChange("Untitled", attribute.key);
     } else {
-      handleAttributeNameChange(attributeName, attribute.key);
+      handleAttributeNameChange(attributeName.trim(), attribute.key);
     }
   };
 
@@ -197,7 +199,9 @@ export const Attribute: FC<PropsAttributeComponent> = ({
                   // additional styling or attributes
                 />
               ) : (
-                <p className={styles.levelName}>{attributeName}</p>
+                <p className={styles.levelName}>
+                  {shortenName(attributeName, 32)}
+                </p>
               )}
             </div>
           </div>

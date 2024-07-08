@@ -16,7 +16,6 @@ export const Settings = () => {
 
   const { setEdited, settings, updateSettings } = useAttributes();
 
-  
   const [numProfiles, setNumProfiles] = useState(settings.numProfiles);
   const [numTasks, setNumTasks] = useState(settings.numTasks);
   const [repeatedTasks, setRepeatedTasks] = useState(settings.repeatedTasks);
@@ -193,11 +192,11 @@ export const Settings = () => {
 
           <SettingsRadioGroup
             options={[
+              "Task randomized",
               "Non random",
               "Participant randomized",
-              "Task randomized",
             ]}
-            defaultValue="Non random"
+            defaultValue="Task randomized"
           />
           <SettingsExplanation
             learnMoreLink

@@ -25,7 +25,7 @@ export const addSurvey = ({
   const dataToSave = {
     attributes: attributes,
     lastEdited: new Date(),
-    name: "Untitled",
+    name: value.filename.split(".")[0],
     instructions: {
       description: value.qDescription,
       instructions: value.qText,

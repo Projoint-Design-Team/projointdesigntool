@@ -9,6 +9,7 @@ import naming from "@/naming/english.json";
 import { Droppable } from "react-beautiful-dnd";
 import ExportDropdown from "../export/export";
 import { SurveyOutcomeTypes } from "./__outcome-types/survey__outcome-types";
+import { shortenName } from "../utils/helpers";
 
 const getTimeElapsed = (lastEdited: Date) => {
   const now = new Date();
@@ -62,8 +63,13 @@ export const Survey: FC = () => {
     setLastEdited(new Date());
     setEdited(true);
     // Here you can call a function to save the docName
-    // saveDocName(docName);
-    setCurrentDoc(docName);
+
+    if (docName.trim() === "") {
+      setCurrentDoc("Untitled");
+      setDocName("Untitled");
+    } else {
+      setCurrentDoc(docName);
+    }
   };
 
   const [description, setDescription] = useState<string>(
@@ -78,6 +84,26 @@ export const Survey: FC = () => {
     setInstructions(instructions ? instructions.instructions : "");
   }, [instructions]);
 
+  const adjustHeight = (element: HTMLTextAreaElement) => {
+    element.style.height = "auto"; // Temporarily make height auto to get the correct scroll height
+    element.style.height = element.scrollHeight + "px"; // Set height to scroll height
+  };
+
+  // Usage within your React component
+  const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const textarea = event.target;
+    setDescription(textarea.value.trimStart());
+    adjustHeight(textarea);
+  };
+
+  const handleInstructionsChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    const textarea = event.target;
+    setInstructions(textarea.value.trimStart());
+    adjustHeight(textarea);
+  };
+
   return (
     <section className={styles.survey}>
       <div className={styles.surveyContainer}>
@@ -87,7 +113,9 @@ export const Survey: FC = () => {
               <input
                 ref={inputRef}
                 value={docName}
-                style={{ width: `${(docName.length + 1) * 9.75}px` }}
+                style={{
+                  width: `${Math.min(docName.length + 1, 28) * 9.75}px`,
+                }}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
                 className={styles.editableInput}
@@ -103,7 +131,7 @@ export const Survey: FC = () => {
                   setIsEditing(true);
                 }}
               >
-                {docName}
+                {shortenName(docName, 25)}
               </h2>
             )}
 
@@ -111,48 +139,50 @@ export const Survey: FC = () => {
           </div>
           <ExportDropdown size="small" />
         </div>
-        <div>
-          <input
-            className={`${styles.input} ${styles.inputField}`}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            onBlur={() => handleInstructions(description, "description")}
-            placeholder={naming.surveyPage.description.value}
-          ></input>
-        </div>
 
-        <Droppable droppableId="droppable-attributes" type="group">
-          {(provided) => (
-            <ul
-              className={styles.attributes}
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {attributes.map((attribute, index) => (
-                <AttributeContainer
-                  key={attribute.key}
-                  attribute={attribute}
-                  index={index}
-                />
-              ))}
-              {provided.placeholder}
-            </ul>
-          )}
-        </Droppable>
+        <div>
+          <div>
+            <textarea
+              className={`${styles.input} ${styles.inputField}`}
+              value={description}
+              onChange={handleTextChange}
+              onBlur={() => handleInstructions(description, "description")}
+              placeholder={naming.surveyPage.description.value}
+            ></textarea>
+          </div>
+
+          <Droppable droppableId="droppable-attributes" type="group">
+            {(provided) => (
+              <ul
+                className={styles.attributes}
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {attributes.map((attribute, index) => (
+                  <AttributeContainer
+                    key={attribute.key}
+                    attribute={attribute}
+                    index={index}
+                  />
+                ))}
+                {provided.placeholder}
+              </ul>
+            )}
+          </Droppable>
+        </div>
         <AddAttribute onCreate={() => addNewAttribute("Untitled")} />
 
         <div>
           {/* <p>Instructions</p> */}
-          <input
+          <textarea
             className={`${styles.input} ${styles.inputField}`}
             value={instructs}
-            onChange={(e) => setInstructions(e.target.value)}
+            onChange={handleInstructionsChange}
             onBlur={() => handleInstructions(instructs, "instructions")}
             placeholder={naming.surveyPage.instructions.value}
-          ></input>
+          ></textarea>
+          <SurveyOutcomeTypes />
         </div>
-
-        <SurveyOutcomeTypes />
       </div>
     </section>
   );

@@ -16,6 +16,10 @@
   display: block;
 }
 
+.level:hover .deleteHandle {
+  visibility: visible;
+}
+
 .dragLevelTooltip {
   display: none;
 }
@@ -42,7 +46,7 @@
   position: absolute;
   right: -2.25rem;
   top: 0;
-  /* visibility: hidden; */
+  visibility: hidden;
 }
 
 .deleteLevel {
@@ -52,7 +56,8 @@
   padding: 0.5rem 0.5rem;
   display: flex;
   align-items: center;
-  position: relative;
+  right: 0.5rem;
+  top: 0.5rem;
 }
 
 .deleteLevel svg {

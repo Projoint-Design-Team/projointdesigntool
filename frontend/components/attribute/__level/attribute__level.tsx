@@ -6,6 +6,7 @@ import DragButton from "../../ui/drag_button";
 import { useState, useRef, useEffect } from "react";
 import { useAttributes } from "../../../context/attributes_context";
 import { LightTooltip, RemoveMinus } from "../../ui/icons";
+import { shortenName } from "@/components/utils/helpers";
 
 interface ILevelComponent extends ILevel {
   index: number;
@@ -94,13 +95,13 @@ export const Level = ({ name, index, id, attributeKey }: ILevelComponent) => {
                 // additional styling or attributes
               />
             ) : (
-              <p className={styles.levelName}>{levelName}</p>
+              <p className={styles.levelName}>{shortenName(levelName, 32)}</p>
             )}
             <div
               onClick={() => {
                 deleteLevelFromAttribute(attributeKey, id);
               }}
-              className={styles.deleteLevel}
+              className={`${styles.deleteHandle} ${styles.deleteLevel}`}
             >
               <RemoveMinus />
               <RemoveMinus />
