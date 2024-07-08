@@ -32,8 +32,6 @@ ENV APP_HOME=/home/app/web
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/staticfiles
 RUN mkdir $APP_HOME/mediafiles
-RUN mkdir $APP_HOME/logs
-
 WORKDIR $APP_HOME
 
 
@@ -47,8 +45,6 @@ COPY ./entrypoint.sh $APP_HOME
 COPY . $APP_HOME
 
 RUN chown -R app:app $APP_HOME
-RUN chmod -R 755 $APP_HOME/logs
-RUN chmod -R 755 $APP_HOME/logs/api_requests.log
 
 USER app
 

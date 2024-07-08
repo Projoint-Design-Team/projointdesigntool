@@ -1,0 +1,12 @@
+2024-07-04 07:52:41 INFO Watching for file changes with StatReloader
+2024-07-08 14:43:06 INFO Watching for file changes with StatReloader
+2024-07-08 14:43:10 INFO Watching for file changes with StatReloader
+2024-07-08 14:43:45 INFO Watching for file changes with StatReloader
+2024-07-08 14:43:47 WARNING Not Found: /
+2024-07-08 14:43:47 WARNING "GET / HTTP/1.1" 404 2521
+2024-07-08 14:43:47 WARNING Not Found: /favicon.ico
+2024-07-08 14:43:47 WARNING "GET /favicon.ico HTTP/1.1" 404 2572
+2024-07-08 14:43:51 INFO "GET /api/swagger-ui/ HTTP/1.1" 200 4636
+2024-07-08 14:43:51 INFO "GET /schema/ HTTP/1.1" 200 48819
+2024-07-08 14:43:56 INFO "GET /api/common/docs/list/ HTTP/1.1" 200 63
+2024-07-08 14:43:57 INFO "GET /api/common/docs/list/ HTTP/1.1" 200 63
