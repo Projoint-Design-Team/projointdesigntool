@@ -5,6 +5,7 @@ import CustomDropdown from "./dropdown";
 import { Button } from "../ui/button";
 import { StatementProps } from "./restrictions";
 import { XIcon } from "../ui/icons";
+import { shortenName } from "../utils/helpers";
 
 interface IStatement {
   // part: "IF" | "THEN" | "AND";
@@ -115,7 +116,7 @@ export const Statement: React.FC<IStatement> = ({
           value={
             selectedAttr == "select attribute"
               ? "select attribute"
-              : getAttributeById(parseInt(selectedAttr))!.name
+              : shortenName(getAttributeById(parseInt(selectedAttr))!.name, 20)
           }
           items={attributes.map((attr) => attr.name)}
           setSelected={handleSelectAttribute}
@@ -132,7 +133,7 @@ export const Statement: React.FC<IStatement> = ({
           value={
             selectedLvl == "select level"
               ? "select level"
-              : getLevelById(parseInt(selectedLvl))
+              : shortenName(getLevelById(parseInt(selectedLvl)), 20)
           }
           items={
             selectedAttr

@@ -1,5 +1,5 @@
 // CarSelection.tsx
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "./preview.module.css"; // Make sure to create this CSS module
 import { Button } from "../ui/button";
 import { IInstructions, useAttributes } from "../../context/attributes_context";
@@ -29,6 +29,8 @@ const Preview = ({
   setRefresh,
   refresh,
 }: IPreview) => {
+  const [testData, setTestData] = useState<string[]>([]);
+
   const profiles: IProfile[] = useMemo(
     () =>
       previews.map((_, index) => ({
@@ -56,6 +58,29 @@ const Preview = ({
     }
   };
 
+  useEffect(() => {
+    const testData2: string[] = [];
+
+    for (let k = 0; k <= previews.length; k++) {
+      if (k === 0) {
+        testData2.push("");
+      } else {
+        testData2.push(`Profile ${k}`);
+      }
+    }
+
+    for (let j = 0; j < attributes.length; j++) {
+      for (let i = -1; i < previews.length; i++) {
+        if (i === -1) {
+          testData2.push(attributes[j]);
+        } else {
+          testData2.push(previews[i][j]);
+        }
+      }
+    }
+    setTestData(testData2);
+  }, [attributes, previews]);
+
   return (
     <section className={styles.section}>
       <div className={styles.sectionContainer}>
@@ -72,32 +97,35 @@ const Preview = ({
         <div className={styles.instructions}>
           {instructions && instructions.description}
         </div>
-        <div className={styles.cardContainer}>
-          <ul className={styles.attributes}>
-            <li style={{ visibility: "hidden" }}>Profile</li>
-            {attributes.map((attribute, index) => (
-              <li key={attribute + index}>{attribute}:</li>
-            ))}
-          </ul>
-          <div className={styles.cardsContainer}>
-            {previews.map((preview, index) => (
-              <div key={index}>
-                <div className={styles.card}>
-                  <ul className={styles.cardContent}>
-                    <li className={styles.profile_name}>Profile {index + 1}</li>
-                    {preview &&
-                      preview.map((value, index) => (
-                        <li key={value + index}>{` ${value}`}</li>
-                      ))}
-                  </ul>
-                </div>
-                {/* {instructions?.outcomeType === "mcq" && (
-                  <li>{` ${preview[0]}`}</li>
-                )} */}
+
+        <div className={styles.testContainer}>
+          <div
+            className={styles.test}
+            style={{
+              gridTemplateColumns: `10rem repeat(${previews.length}, 18.5rem)`,
+            }}
+          >
+            {testData.map((preview, index) => (
+              <div
+                className={`${styles.testData} ${
+                  index <= previews.length ? styles.firstPreview : ""
+                } ${
+                  index >= testData.length - previews.length
+                    ? styles.lastPreview
+                    : ""
+                } ${
+                  index % (previews.length + 1) === 0
+                    ? styles.attributeName
+                    : ""
+                }`}
+                key={index}
+              >
+                <p>{preview}</p>
               </div>
             ))}
           </div>
         </div>
+
         <div className={styles.instructions}>
           {instructions && instructions.instructions}
         </div>

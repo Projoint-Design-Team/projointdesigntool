@@ -75,8 +75,12 @@ export const Settings = () => {
     setLastEdited(new Date());
     setEdited(true);
     // Here you can call a function to save the docName
-    // saveDocName(docName);
-    setCurrentDoc(docName);
+    if (docName.trim() === "") {
+      setCurrentDoc("Untitled");
+      setDocName("Untitled");
+    } else {
+      setCurrentDoc(docName);
+    }
   };
 
   const handleNumProfilesChange = (newValue: number) => {

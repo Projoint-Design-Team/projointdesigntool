@@ -84,6 +84,21 @@ export const Survey: FC = () => {
     setInstructions(instructions ? instructions.instructions : "");
   }, [instructions]);
 
+  useEffect(() => {
+    const textarea = document.getElementById(
+      "descriptionTextarea"
+    ) as HTMLTextAreaElement;
+    const textarea2 = document.getElementById(
+      "instructionsTextarea"
+    ) as HTMLTextAreaElement;
+    if (textarea) {
+      adjustHeight(textarea);
+    }
+    if (textarea2) {
+      adjustHeight(textarea2);
+    }
+  }, [description]);
+
   const adjustHeight = (element: HTMLTextAreaElement) => {
     element.style.height = "auto"; // Temporarily make height auto to get the correct scroll height
     element.style.height = element.scrollHeight + "px"; // Set height to scroll height
@@ -143,10 +158,13 @@ export const Survey: FC = () => {
         <div>
           <div>
             <textarea
+              id="descriptionTextarea"
               className={`${styles.input} ${styles.inputField}`}
               value={description}
               onChange={handleTextChange}
-              onBlur={() => handleInstructions(description, "description")}
+              onBlur={() => {
+                handleInstructions(description, "description");
+              }}
               placeholder={naming.surveyPage.description.value}
             ></textarea>
           </div>
@@ -175,6 +193,7 @@ export const Survey: FC = () => {
         <div>
           {/* <p>Instructions</p> */}
           <textarea
+            id="instructionsTextarea"
             className={`${styles.input} ${styles.inputField}`}
             value={instructs}
             onChange={handleInstructionsChange}

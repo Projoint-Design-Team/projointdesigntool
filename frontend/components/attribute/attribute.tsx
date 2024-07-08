@@ -74,7 +74,7 @@ export const Attribute: FC<PropsAttributeComponent> = ({
   }, [isEditing]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAttributeName(e.target.value.trim());
+    setAttributeName(e.target.value.trimStart());
   };
 
   const handleBlur = () => {
@@ -84,7 +84,7 @@ export const Attribute: FC<PropsAttributeComponent> = ({
       setAttributeName("Untitled");
       handleAttributeNameChange("Untitled", attribute.key);
     } else {
-      handleAttributeNameChange(attributeName.trim(), attribute.key);
+      handleAttributeNameChange(attributeName.trimStart(), attribute.key);
     }
   };
 
