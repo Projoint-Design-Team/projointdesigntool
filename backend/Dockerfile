@@ -36,6 +36,9 @@ RUN mkdir $APP_HOME/logs
 
 WORKDIR $APP_HOME
 
+RUN chown -R app:app $APP_HOME
+RUN chmod -R 755 $APP_HOME/logs
+
 RUN apt-get update && apt-get install -y libpq-dev
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
