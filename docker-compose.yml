@@ -12,6 +12,7 @@ services:
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
+      - log_volume:/home/app/logs
       - docs_volume:/home/app/docs
     ports:
       - 8000:8000
@@ -41,3 +42,4 @@ volumes:
   static_volume:
   media_volume:
   docs_volume:
+  log_volume:

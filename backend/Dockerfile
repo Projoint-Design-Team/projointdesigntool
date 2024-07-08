@@ -32,6 +32,8 @@ ENV APP_HOME=/home/app/web
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/staticfiles
 RUN mkdir $APP_HOME/mediafiles
+RUN mkdir $APP_HOME/logs
+
 WORKDIR $APP_HOME
 
 RUN apt-get update && apt-get install -y libpq-dev
