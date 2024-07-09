@@ -10,7 +10,10 @@ import { Droppable } from "react-beautiful-dnd";
 import ExportDropdown from "../export/export";
 import { SurveyOutcomeTypes } from "./__outcome-types/survey__outcome-types";
 import { shortenName } from "../utils/helpers";
+import { Button } from "../ui/button";
+import { SurveyFixedProfile } from "./__fixed-profile/survey__fixed-profile";
 
+// Function to calculate the time elapsed since the last edit
 const getTimeElapsed = (lastEdited: Date) => {
   const now = new Date();
   const elapsed = now.getTime() - lastEdited.getTime(); // time in milliseconds
@@ -26,6 +29,7 @@ const getTimeElapsed = (lastEdited: Date) => {
 };
 
 export const Survey: FC = () => {
+  // Destructure necessary functions and state from the attributes context
   const {
     setEdited,
     attributes,
@@ -34,36 +38,41 @@ export const Survey: FC = () => {
     handleInstructions,
   } = useAttributes();
 
+  // Destructure necessary functions and state from the document context
   const { currentDoc, lastEdited, setLastEdited, setCurrentDoc } =
     useContext(DocumentContext);
 
-  // Handle name change
+  // State to handle document name editing
   const [isEditing, setIsEditing] = useState(false);
   const [docName, setDocName] = useState<string>(currentDoc);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Update docName state when currentDoc changes
   useEffect(() => {
     if (docName !== currentDoc) {
       setDocName(currentDoc);
     }
   }, [currentDoc]);
 
+  // Focus on the input field when editing starts
   useEffect(() => {
     if (isEditing) {
       inputRef.current?.focus();
     }
   }, [isEditing]);
 
+  // Handle changes to the document name input field
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDocName(e.target.value);
   };
 
+  // Handle blur event on the document name input field
   const handleBlur = () => {
     setIsEditing(false);
     setLastEdited(new Date());
     setEdited(true);
-    // Here you can call a function to save the docName
 
+    // Save the document name or set to "Untitled" if empty
     if (docName.trim() === "") {
       setCurrentDoc("Untitled");
       setDocName("Untitled");
@@ -72,6 +81,7 @@ export const Survey: FC = () => {
     }
   };
 
+  // State to handle description and instructions
   const [description, setDescription] = useState<string>(
     instructions ? instructions.description : ""
   );
@@ -79,11 +89,13 @@ export const Survey: FC = () => {
     instructions ? instructions.instructions : ""
   );
 
+  // Update description and instructions when instructions change
   useEffect(() => {
     setDescription(instructions ? instructions.description : "");
     setInstructions(instructions ? instructions.instructions : "");
   }, [instructions]);
 
+  // Adjust the height of the textareas when description or instructions change
   useEffect(() => {
     const textarea = document.getElementById(
       "descriptionTextarea"
@@ -97,20 +109,22 @@ export const Survey: FC = () => {
     if (textarea2) {
       adjustHeight(textarea2);
     }
-  }, [description]);
+  }, [description, instructs]);
 
+  // Function to adjust the height of a textarea to fit its content
   const adjustHeight = (element: HTMLTextAreaElement) => {
     element.style.height = "auto"; // Temporarily make height auto to get the correct scroll height
     element.style.height = element.scrollHeight + "px"; // Set height to scroll height
   };
 
-  // Usage within your React component
+  // Handle changes to the description textarea
   const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const textarea = event.target;
     setDescription(textarea.value.trimStart());
     adjustHeight(textarea);
   };
 
+  // Handle changes to the instructions textarea
   const handleInstructionsChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
@@ -152,7 +166,10 @@ export const Survey: FC = () => {
 
             <div>Last edited: {getTimeElapsed(lastEdited)}</div>
           </div>
-          <ExportDropdown size="small" />
+          <div className={styles.buttons}>
+            <SurveyFixedProfile />
+            <ExportDropdown size="small" />
+          </div>
         </div>
 
         <div>

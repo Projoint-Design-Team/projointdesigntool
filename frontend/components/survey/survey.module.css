@@ -314,3 +314,8 @@
 .atrributeInfo {
   width: 100%;
 }
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+}

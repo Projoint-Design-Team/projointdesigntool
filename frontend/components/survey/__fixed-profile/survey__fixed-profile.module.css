@@ -1,0 +1,121 @@
+.modalBefore {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-direction: row;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-gray);
+}
+
+.modalHeader h2 {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--dark-blue-p);
+}
+
+.modalHeader svg:hover {
+  cursor: pointer;
+}
+
+.modalContent {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.editableInput {
+  offset: none;
+  border: none;
+  background-color: var(--white);
+  border: 1px solid var(--border-gray);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  color: var(--blue-h);
+  font-size: 1rem;
+}
+
+.editableInput:focus {
+  border-color: var(--blue);
+  box-shadow: none;
+  outline: none;
+}
+
+.modalContent h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--dark-blue-p);
+}
+
+.modalContent ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  background-color: var(--white);
+  border-radius: 0.25rem;
+  padding: 1rem;
+}
+
+.modalContent li {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  border-top: 1px solid var(--border-gray);
+}
+
+.modalContent li div {
+  width: 100%;
+  padding: 0.5rem;
+  height: 100%;
+}
+
+.modalContent li div:first-child {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+}
+
+.modalButtonContainer {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.modalContentHeader div {
+  margin: 0;
+}
+
+.modalButton {
+  background-color: var(--blue);
+  border: 1px solid var(--blue-p);
+  border-radius: 0.25rem;
+  padding: 0.75rem 2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.modalButton:hover {
+  cursor: pointer;
+  background-color: var(--dark-blue-p);
+}
+
+.modalContentListHeader {
+  font-weight: 600;
+}

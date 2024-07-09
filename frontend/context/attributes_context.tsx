@@ -55,6 +55,11 @@ export interface SettingsProps {
   randomize: boolean;
 }
 
+interface FixedProfileProps {
+  attribute: string;
+  level: string;
+}
+
 interface AttributeContextType {
   attributes: Attribute[];
   setAttributes: React.Dispatch<React.SetStateAction<Attribute[]>>;
@@ -92,6 +97,10 @@ interface AttributeContextType {
   cleanInvalidRestrictions: () => void;
   processProfileRestrictions: () => RestrictionProps[];
   processCrossRestrictions: () => RestrictionProps[];
+  fixedProfile: FixedProfileProps[];
+  setFixedProfile: React.Dispatch<React.SetStateAction<FixedProfileProps[]>>;
+  fixedProfileEnabled: boolean;
+  setFixedProfileEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AttributeContext = createContext<AttributeContextType | undefined>(
@@ -138,6 +147,10 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     randomize: false,
   });
 
+  const [fixedProfile, setFixedProfile] = useState<FixedProfileProps[]>([]);
+  const [fixedProfileEnabled, setFixedProfileEnabled] =
+    useState<boolean>(false);
+
   // "numProfiles": 2,
   // "numTasks": 5,
   // "randomize": false,
@@ -163,6 +176,12 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
         );
         setInstructions(parsedData.instructions);
         setSettings(parsedData.settings ? parsedData.settings : settings);
+        setFixedProfile(parsedData.fixedProfile ? parsedData.fixedProfile : []);
+        setFixedProfileEnabled(
+          parsedData.fixedProfileEnabled
+            ? parsedData.fixedProfileEnabled
+            : false
+        );
       } else {
         setAttributes([]);
       }
@@ -182,6 +201,8 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
         instructions: instructions,
         settings: settings,
         crossRestrictions: crossRestrictions,
+        fixedProfile: fixedProfile,
+        fixedProfileEnabled: fixedProfileEnabled,
       };
       localStorage.setItem(
         `attributes-${currentDocID}`,
@@ -200,6 +221,8 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     currentDoc,
     restrictions,
     instructions,
+    fixedProfile,
+    fixedProfileEnabled,
   ]);
 
   // TODO: Change keys so there is no possiblity of duplicate keys
@@ -564,6 +587,10 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     toggleAttributeLocked,
     processProfileRestrictions,
     processCrossRestrictions,
+    fixedProfile,
+    setFixedProfile,
+    fixedProfileEnabled,
+    setFixedProfileEnabled,
   };
 
   return (
