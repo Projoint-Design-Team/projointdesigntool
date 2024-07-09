@@ -182,15 +182,6 @@ export const SurveyFixedProfile: FC<SurveyFixedProfileProps> = ({}) => {
                   ))}
                 </ul>
               )}
-
-              {/* <div className={styles.modalButtonContainer}>
-                <button
-                  onClick={() => closeModal()}
-                  className={styles.modalButton}
-                >
-                  Export
-                </button>
-              </div> */}
             </div>
           </Box>
         </Modal>

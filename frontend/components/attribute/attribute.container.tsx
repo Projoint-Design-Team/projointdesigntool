@@ -26,21 +26,10 @@ interface PropsAttributeContainer {
 
 export const AttributeContainer: FC<PropsAttributeContainer> = ({
   attribute,
-  addNewAttribute,
-  cancelNewAttribute,
   index,
 }) => {
   const [show, setShow] = useState<boolean>(false);
   const [newLevel, setNewLevel] = useState<string>("");
-  const [name, setName] = useState<string>("");
-
-  // Handle key press for AttributeComponent
-  // const handleKeyPressAttribute = (event: React.KeyboardEvent) => {
-  //   if (event.key === "Enter" && newLevel.trim() !== "" && addLevel) {
-  //     if (attribute) addLevel(attribute.name, newLevel);
-  //     setNewLevel("");
-  //   }
-  // };
 
   const { setHighlightedAttribute } = useContext(HighlightedContext);
 
@@ -50,7 +39,6 @@ export const AttributeContainer: FC<PropsAttributeContainer> = ({
     } else {
       setHighlightedAttribute(-1);
     }
-    // setHighlighted(!show);
     setShow(!show);
   };
 
