@@ -25,6 +25,6 @@ jobs:
         script: |
           cd projointdesigntool
           git pull origin main
-          echo "Before Docker Compose Up"
-          docker compose up
-          echo "After Docker Compose Up"
+          docker compose down
+          docker rmi $(docker images -q)
+          docker compose up -d
