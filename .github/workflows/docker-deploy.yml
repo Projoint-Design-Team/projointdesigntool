@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - as13966/ssh
 
 jobs:
   build-and-deploy:
@@ -22,8 +21,10 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
-        port: 4410
+        port: ${{ secrets.PORT }}
         script: |
-          cd projointdesigntool/
-          echo ${{ secrets.PASSWORD }} | sudo -S docker compose down
-          echo ${{ secrets.PASSWORD }} | sudo -S docker compose up -d
+          cd projointdesigntool
+          git pull origin main
+          echo "Before Docker Compose Up"
+          docker compose up
+          echo "After Docker Compose Up"
