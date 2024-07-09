@@ -18,10 +18,10 @@ jobs:
     - name: SSH and Deploy Docker Containers Using Password
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        port: ${{ secrets.PORT }}
+        host: ${{ secrets.HOST }} # IP address of the server
+        username: ${{ secrets.USERNAME }} # Username given by IT Team
+        password: ${{ secrets.PASSWORD }} # Password given by IT Team
+        port: ${{ secrets.PORT }} # Port number of the server
         script: |
           cd projointdesigntool
           git pull origin main
