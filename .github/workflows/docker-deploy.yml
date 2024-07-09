@@ -12,7 +12,7 @@ jobs:
     - name: Check out the repo
       uses: actions/checkout@v2
 
-    - name: SSH and Deploy Docker Containers Using Password
+    - name: Pull and Deploy Docker Containers Using Password
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }} # IP address of the server
