@@ -1,7 +1,7 @@
 // "use client";
 
 import { DocumentContext } from "../../context/document_context";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import Preview, { IPreview } from "../../components/preview/preview";
 
 import { GetServerSideProps } from "next";
@@ -24,12 +24,11 @@ function PreviewPage({ params }: IServerProps) {
     const parsedData = localData ? JSON.parse(localData) : {};
     const documentName = parsedData?.name;
     setCurrentDoc(documentName);
-  }, []);
+  }, [documentID, setCurrentDoc]);
 
   useEffect(() => {
     setCurrentDocID(documentID);
-    // console.log("whatis happening", currentDoc)
-  }, [documentID]);
+  }, [documentID, setCurrentDocID]);
 
   const {
     attributes,
@@ -44,7 +43,7 @@ function PreviewPage({ params }: IServerProps) {
 
   const [refresh, setRefresh] = useState<boolean>(true);
 
-  const previewData = async () => {
+  const previewData = useCallback(async () => {
     // const previews = await getPreview(attributes, restrictions);
     cleanInvalidRestrictions();
     const previews = await getPreview(
@@ -58,7 +57,14 @@ function PreviewPage({ params }: IServerProps) {
       previews: previews.previews,
       instructions: instructions,
     });
-  };
+  }, [
+    attributes,
+    processProfileRestrictions,
+    processCrossRestrictions,
+    settings.numProfiles,
+    instructions,
+    cleanInvalidRestrictions,
+  ]);
 
   useEffect(() => {
     previewData();

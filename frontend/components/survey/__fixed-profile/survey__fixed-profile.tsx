@@ -27,6 +27,14 @@ export const SurveyFixedProfile: FC<SurveyFixedProfileProps> = ({}) => {
     [key: string]: string;
   }>({});
 
+  useEffect(() => {
+    const initialSelectedLvls = fixedProfile.reduce((acc, profile) => {
+      acc[profile.attribute] = profile.level;
+      return acc;
+    }, {} as { [key: string]: string });
+    setSelectedLvls(initialSelectedLvls);
+  }, [fixedProfile]);
+
   const openModal = () => {
     setModalIsOpen(true);
   };
