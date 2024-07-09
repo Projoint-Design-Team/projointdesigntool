@@ -146,7 +146,7 @@ LOGGING = {
         "file": {
             "level": "INFO",
             "class": "logging.FileHandler",
-            "filename": os.path.join("/home/app/docs", "api_requests.log"),
+            "filename": os.path.join("/home/app/web/logs", "api_requests.log"),
             "formatter": "simple",
         },
     },

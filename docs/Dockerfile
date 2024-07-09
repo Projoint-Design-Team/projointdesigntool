@@ -9,6 +9,3 @@ WORKDIR /home/app/
 
 # Copy the docs directory contents
 COPY . .
-
-RUN chmod -R 755 /home/app/docs
-RUN chmod -R 755 /home/app/docs/api_requests.log
