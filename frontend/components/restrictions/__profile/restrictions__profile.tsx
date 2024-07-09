@@ -11,7 +11,13 @@ import naming from "@/naming/english.json";
 export interface RestrictionsProfileProps {}
 
 export const RestrictionsProfile: FC<RestrictionsProfileProps> = ({}) => {
-  const { restrictions, saveRestriction } = useAttributes();
+  const {
+    restrictions,
+    setRestrictions,
+    saveRestriction,
+    cleanInvalidRestrictions,
+    processProfileRestrictions,
+  } = useAttributes();
 
   const isRestrictionDone = (restriction: RestrictionProps) => {
     const notDone = ({ attribute, level }: any) => {
@@ -23,7 +29,7 @@ export const RestrictionsProfile: FC<RestrictionsProfileProps> = ({}) => {
   };
 
   const [newRestrictions, setNewRestrictions] = useState<RestrictionProps[]>(
-    restrictions ? restrictions : []
+    restrictions ? processProfileRestrictions() : []
   );
 
   const handleUpdate = (change: boolean) => {
@@ -34,11 +40,15 @@ export const RestrictionsProfile: FC<RestrictionsProfileProps> = ({}) => {
     useState<boolean>(true);
 
   useEffect(() => {
-    setNewRestrictions(restrictions ? restrictions : []);
-  }, [restrictions]);
+    console.log("restrictions", restrictions);
+    cleanInvalidRestrictions();
+    setRestrictions(processProfileRestrictions());
+    setNewRestrictions(processProfileRestrictions());
+  }, []);
 
   const handleSave = (restriction: RestrictionProps) => {
     saveRestriction(restriction);
+    // setNewRestrictions([restrictions ? restrictions : []]);
   };
 
   const handleAddRestriction = () => {

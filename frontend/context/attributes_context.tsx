@@ -87,7 +87,11 @@ interface AttributeContextType {
   storageChanged: number;
   setStorageChanged: React.Dispatch<React.SetStateAction<number>>;
   restrictions: RestrictionProps[];
+  setRestrictions: React.Dispatch<React.SetStateAction<RestrictionProps[]>>;
   crossRestrictions: RestrictionProps[];
+  setCrossRestrictions: React.Dispatch<
+    React.SetStateAction<RestrictionProps[]>
+  >;
   saveRestriction: (restriction: RestrictionProps, cross?: boolean) => void;
   deleteRestriction: (restrictionId: string, cross?: boolean) => void;
   instructions: IInstructions;
@@ -220,6 +224,7 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     edited,
     currentDoc,
     restrictions,
+    crossRestrictions,
     instructions,
     fixedProfile,
     fixedProfileEnabled,
@@ -577,8 +582,10 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     setStorageChanged,
     deleteAttribute,
     restrictions,
+    setRestrictions,
     saveRestriction,
     crossRestrictions,
+    setCrossRestrictions,
     deleteRestriction,
     instructions,
     settings,

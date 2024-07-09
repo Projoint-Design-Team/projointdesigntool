@@ -25,24 +25,24 @@ export const addSurvey = ({
   const dataToSave = {
     attributes: attributes,
     lastEdited: new Date(),
-    name: value.filename.split(".")[0],
+    name: value && value.filename ? value.filename.split(".")[0] : "Untitled",
     instructions: {
-      description: value.qDescription,
-      instructions: value.qText,
-      outcomeType: value.qType,
+      description: value && value.qDescription ? value.qDescription : "",
+      instructions: value && value.qText ? value.qText : "",
+      outcomeType: value && value.qType ? value.qType : "",
     },
     restrictions: restrictions,
     crossRestrictions: crossRestrictions,
     settings: {
-      numProfiles: value.num_profiles ? value.num_profiles : 2,
-      numTasks: value.num_tasks ? value.num_tasks : 2,
-      repeatedTasks: value.repeated_tasks ? value.repeated_tasks : true,
-      repeatedTasksFlipped: value.repeated_tasks_flipped
+      numProfiles: value && value.num_profiles ? value.num_profiles : 2,
+      numTasks: value && value.num_tasks ? value.num_tasks : 2,
+      repeatedTasks: value && value.repeated_tasks ? value.repeated_tasks : true,
+      repeatedTasksFlipped: value && value.repeated_tasks_flipped
         ? value.repeated_tasks_flipped
         : false,
-      taskToRepeat: value.task_to_repeat ? value.task_to_repeat : 1,
-      whereToRepeat: value.where_to_repeat ? value.where_to_repeat : 1,
-      randomize: value.randomize ? value.randomize : false,
+      taskToRepeat: value && value.task_to_repeat ? value.task_to_repeat : 1,
+      whereToRepeat: value && value.where_to_repeat ? value.where_to_repeat : 1,
+      randomize: value && value.randomize ? value.randomize : false,
     },
   };
   localStorage.setItem(`attributes-${uniqueId}`, JSON.stringify(dataToSave));

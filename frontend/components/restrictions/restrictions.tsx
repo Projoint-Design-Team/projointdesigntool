@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./restrictions.module.css";
 
 import ExportDropdown from "../export/export";
 import naming from "@/naming/english.json";
 import { RestrictionsProfile } from "./__profile/restrictions__profile";
 import { RestrictionsCrossProfile } from "./__cross-profile/restrictions__cross-profile";
+import { useAttributes } from "@/context/attributes_context";
 
 export interface StatementProps {
   part: "if" | "then" | "and" | "or";
@@ -16,6 +17,14 @@ export interface StatementProps {
 
 export const Restrictions = () => {
   const [activeChoose, setActiveChoose] = useState<"one" | "cross">("one");
+
+  const { processProfileRestrictions, processCrossRestrictions } =
+    useAttributes();
+
+  useEffect(() => {
+    processProfileRestrictions();
+    processCrossRestrictions();
+  }, []);
 
   return (
     <section className={styles.section}>
