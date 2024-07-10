@@ -47,6 +47,7 @@ class ShortSurveySerializer(serializers.ModelSerializer):
     num_profiles = serializers.IntegerField(default=2, min_value=2)
     filename = serializers.CharField(required=True)
     csv_lines = serializers.IntegerField(default=500)
+    fixed_profile = serializers.JSONField(required=False, default=dict)
 
     class Meta:
         model = Survey
@@ -57,6 +58,7 @@ class ShortSurveySerializer(serializers.ModelSerializer):
             "num_profiles",
             "filename",
             "csv_lines",
+            "fixed_profile",
         ]
 
     def validate_attributes(self, value):

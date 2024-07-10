@@ -72,6 +72,7 @@
 	"filename": "survey.js",
 	"csv_lines": 500,
 	"num_tasks": 5,
+	"fixed_profile": {},
 	"repeated_tasks": false,
 	"repeated_tasks_flipped": false,
 	"task_to_repeat": 0,

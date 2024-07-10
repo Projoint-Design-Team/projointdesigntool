@@ -121,6 +121,7 @@ class PreviewSurveyTests(TestCase):
             ],
             "num_profiles": 2,
             "filename": "preview",
+            "fixed_profile": {"att1": "level1", "att2": "level2", "att3": "level3"},
         }
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -372,6 +373,14 @@ class ExportCsvTests(TestCase):
             "num_profiles": 2,
             "csv_lines": 10000,
             "filename": "survey.csv",
+            "fixed_profile": {
+                "att1": "lvl1",
+                "att2": "lvl2",
+                "att3": "lvl3",
+                "att4": "lvl4",
+                "att5": "lvl5",
+                "att6": "lvl6",
+            },
         }
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

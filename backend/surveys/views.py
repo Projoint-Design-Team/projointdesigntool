@@ -113,6 +113,7 @@ def preview_survey(request):
         restrictions = validated_data["restrictions"]
         cross_restrictions = validated_data["cross_restrictions"]
         num_profiles = validated_data["num_profiles"]
+        fixed_profile = validated_data["fixed_profile"]
 
         attributes_list = _generate_unlocked_order(attributes)
         answer = {"attributes": [], "previews": []}
@@ -120,6 +121,12 @@ def preview_survey(request):
             num_profiles, attributes_list, restrictions, cross_restrictions
         )
         answer["attributes"] = [key for key in answer["previews"][0].keys()]
+
+        # Sub fixed profile instead of first profile
+        if fixed_profile:
+            fixed_prof = {key: fixed_profile[key] for key in answer["attributes"]}
+            answer["previews"][0] = fixed_prof
+
         return Response(answer, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=400)
@@ -259,6 +266,7 @@ def export_csv(request):
         num_profiles = validated_data["num_profiles"]
         csv_lines = validated_data["csv_lines"]
         filename = validated_data["filename"]
+        fixed_profile = validated_data["fixed_profile"]
 
         _populate_csv(
             attributes,
@@ -267,6 +275,7 @@ def export_csv(request):
             cross_restrictions,
             csv_lines,
             filename,
+            fixed_profile,
         )
         return _send_file_response(filename)
     else:
