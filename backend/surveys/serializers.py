@@ -107,7 +107,6 @@ class SurveySerializer(ShortSurveySerializer):
     where_to_repeat = serializers.IntegerField(default=4, min_value=0, allow_null=True)
     random = serializers.BooleanField(default=False, allow_null=True)
     randomize = serializers.BooleanField(default=False, allow_null=True)
-    advanced = serializers.JSONField(default=dict)
 
     class Meta(ShortSurveySerializer.Meta):
         fields = ShortSurveySerializer.Meta.fields + [
@@ -118,7 +117,6 @@ class SurveySerializer(ShortSurveySerializer):
             "where_to_repeat",
             "random",
             "randomize",
-            "advanced",
         ]
 
 

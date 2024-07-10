@@ -319,7 +319,6 @@ def _create_js_file(request):
         randomize = validated_data["randomize"]
         repeated_tasks = validated_data["repeated_tasks"]
         random = validated_data["random"]
-        advanced = validated_data["advanced"]
         task_to_repeat = validated_data["task_to_repeat"]
         where_to_repeat = validated_data["where_to_repeat"]
         repeated_tasks_flipped = validated_data["repeated_tasks_flipped"]
@@ -364,27 +363,6 @@ def _create_js_file(request):
 
             if randomize == 1:
                 file_js.write(temp_2_randomize)
-                if len(advanced) != 0:  # Advanced randomization option
-                    attributes_order = [
-                        key for key, value in advanced.items() if value != 0
-                    ]
-                    attributes_random = [
-                        key for key, value in advanced.items() if value == 0
-                    ]
-                    # random.shuffle(attributes_random)
-
-                    attributes_order.sort(key=lambda x: x[1])
-                    final_order = []
-
-                    for i in range(1, len(advanced) + 1):
-                        if i in advanced.values():
-                            final_order.append(attributes_order[0])
-                            attributes_order.pop(0)
-                        else:
-                            final_order.append(attributes_random[-1])
-                            attributes_random.pop()
-
-                    file_js.write("featureArrayKeys = " + str(final_order))
                 file_js.write(temp_2)
             else:
                 file_js.write("var featureArrayKeys = Object.keys(featurearray);\n\n")

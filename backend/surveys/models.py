@@ -21,5 +21,3 @@ class Survey(models.Model):
     )
     random = models.BooleanField(default=False)
     randomize = models.BooleanField(default=False)
-
-    advanced = models.JSONField(blank=True, default=dict)  # QUALTRICS LOGIC
