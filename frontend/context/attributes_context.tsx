@@ -66,6 +66,7 @@ interface AttributeContextType {
   isCreatingAttribute: boolean;
   setIsCreatingAttribute: React.Dispatch<React.SetStateAction<boolean>>;
   getAttributeById: (id: number) => Attribute | undefined;
+  getLevelById: (levelId: number, attributeName: string) => string;
   addNewAttribute: (name: string) => void;
   addLevelToAttribute: (attributeKey: number, newLevel: string) => void;
   deleteLevelFromAttribute: (attributeKey: number, levelId: number) => void; // Changed levelIndex to levelId
@@ -576,6 +577,7 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     handleCreateAttribute,
     setEdited,
     getAttributeById,
+    getLevelById,
     handleAttributeNameChange,
     handleInstructions,
     storageChanged,

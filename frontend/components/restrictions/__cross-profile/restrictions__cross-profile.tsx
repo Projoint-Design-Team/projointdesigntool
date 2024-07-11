@@ -13,7 +13,13 @@ export interface RestrictionsCrossProfileProps {}
 export const RestrictionsCrossProfile: FC<
   RestrictionsCrossProfileProps
 > = ({}) => {
-  const { crossRestrictions, saveRestriction } = useAttributes();
+  const {
+    crossRestrictions,
+    saveRestriction,
+    cleanInvalidRestrictions,
+    getAttributeById,
+    getLevelById,
+  } = useAttributes();
 
   const isRestrictionDone = (restriction: RestrictionProps) => {
     const notDone = ({ attribute, level }: any) => {
@@ -32,11 +38,20 @@ export const RestrictionsCrossProfile: FC<
     setCanAddNewRestriction(change);
   };
 
+  const [cleaned, setCleaned] = useState<boolean>(false);
+
   const [canAddNewRestriction, setCanAddNewRestriction] =
     useState<boolean>(true);
 
   useEffect(() => {
-    setNewRestrictions(crossRestrictions ? crossRestrictions : []);
+    if (crossRestrictions) {
+      setNewRestrictions(crossRestrictions);
+    }
+
+    if (!cleaned && crossRestrictions.length > 0) {
+      cleanInvalidRestrictions();
+      setCleaned(true);
+    }
   }, [crossRestrictions]);
 
   const handleSave = (restriction: RestrictionProps) => {
@@ -75,21 +90,55 @@ export const RestrictionsCrossProfile: FC<
   const handleRestrictions = (id: string) => {
     setNewRestrictions((prev) => prev.filter((r) => r.id !== id));
   };
+
+  const isValidRestriction = (restriction: RestrictionProps) => {
+    if (
+      restriction.ifStates.every(
+        (state) =>
+          state.attribute === "select attribute" &&
+          state.level === "select level"
+      ) &&
+      restriction.elseStates.every(
+        (state) =>
+          state.attribute === "select attribute" &&
+          state.level === "select level"
+      )
+    ) {
+      return true;
+    }
+
+    const validIfStates = restriction.ifStates.every((state) => {
+      const attribute = getAttributeById(parseInt(state.attribute));
+      const level = getLevelById(parseInt(state.level), state.attribute);
+      return attribute && level;
+    });
+
+    const validElseStates = restriction.elseStates.every((state) => {
+      const attribute = getAttributeById(parseInt(state.attribute));
+      const level = getLevelById(parseInt(state.level), state.attribute);
+      return attribute && level;
+    });
+
+    return validIfStates && validElseStates;
+  };
+
   return (
     <>
       <div className={styles.left}>
         <ul className={styles.restrictions}>
           {newRestrictions &&
-            newRestrictions.map((restr, _index) => (
-              <Restriction
-                key={restr.id}
-                {...restr}
-                handleUpdate={handleUpdate}
-                saveRestriction={handleSave}
-                handleRestrictions={handleRestrictions}
-                cross={true}
-              />
-            ))}
+            newRestrictions
+              .filter(isValidRestriction)
+              .map((restr, _index) => (
+                <Restriction
+                  key={restr.id}
+                  {...restr}
+                  handleUpdate={handleUpdate}
+                  saveRestriction={handleSave}
+                  handleRestrictions={handleRestrictions}
+                  cross={true}
+                />
+              ))}
         </ul>
       </div>
       <div className={styles.right}>

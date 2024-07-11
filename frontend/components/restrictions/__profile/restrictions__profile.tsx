@@ -13,10 +13,10 @@ export interface RestrictionsProfileProps {}
 export const RestrictionsProfile: FC<RestrictionsProfileProps> = ({}) => {
   const {
     restrictions,
-    setRestrictions,
     saveRestriction,
     cleanInvalidRestrictions,
-    processProfileRestrictions,
+    getAttributeById,
+    getLevelById,
   } = useAttributes();
 
   const isRestrictionDone = (restriction: RestrictionProps) => {
@@ -29,8 +29,10 @@ export const RestrictionsProfile: FC<RestrictionsProfileProps> = ({}) => {
   };
 
   const [newRestrictions, setNewRestrictions] = useState<RestrictionProps[]>(
-    restrictions ? processProfileRestrictions() : []
+    []
   );
+
+  const [cleaned, setCleaned] = useState<boolean>(false);
 
   const handleUpdate = (change: boolean) => {
     setCanAddNewRestriction(change);
@@ -40,11 +42,15 @@ export const RestrictionsProfile: FC<RestrictionsProfileProps> = ({}) => {
     useState<boolean>(true);
 
   useEffect(() => {
-    console.log("restrictions", restrictions);
-    cleanInvalidRestrictions();
-    setRestrictions(processProfileRestrictions());
-    setNewRestrictions(processProfileRestrictions());
-  }, []);
+    if (restrictions) {
+      setNewRestrictions(restrictions);
+    }
+
+    if (!cleaned && restrictions.length > 0) {
+      cleanInvalidRestrictions();
+      setCleaned(true);
+    }
+  }, [restrictions]);
 
   const handleSave = (restriction: RestrictionProps) => {
     saveRestriction(restriction);
@@ -83,20 +89,54 @@ export const RestrictionsProfile: FC<RestrictionsProfileProps> = ({}) => {
   const handleRestrictions = (id: string) => {
     setNewRestrictions((prev) => prev.filter((r) => r.id !== id));
   };
+
+  const isValidRestriction = (restriction: RestrictionProps) => {
+    if (
+      restriction.ifStates.every(
+        (state) =>
+          state.attribute === "select attribute" &&
+          state.level === "select level"
+      ) &&
+      restriction.elseStates.every(
+        (state) =>
+          state.attribute === "select attribute" &&
+          state.level === "select level"
+      )
+    ) {
+      return true;
+    }
+
+    const validIfStates = restriction.ifStates.every((state) => {
+      const attribute = getAttributeById(parseInt(state.attribute));
+      const level = getLevelById(parseInt(state.level), state.attribute);
+      return attribute && level;
+    });
+
+    const validElseStates = restriction.elseStates.every((state) => {
+      const attribute = getAttributeById(parseInt(state.attribute));
+      const level = getLevelById(parseInt(state.level), state.attribute);
+      return attribute && level;
+    });
+
+    return validIfStates && validElseStates;
+  };
+
   return (
     <>
       <div className={styles.left}>
         <ul className={styles.restrictions}>
           {newRestrictions &&
-            newRestrictions.map((restr, _index) => (
-              <Restriction
-                key={restr.id}
-                {...restr}
-                handleUpdate={handleUpdate}
-                saveRestriction={handleSave}
-                handleRestrictions={handleRestrictions}
-              />
-            ))}
+            newRestrictions
+              .filter(isValidRestriction)
+              .map((restr, _index) => (
+                <Restriction
+                  key={restr.id}
+                  {...restr}
+                  handleUpdate={handleUpdate}
+                  saveRestriction={handleSave}
+                  handleRestrictions={handleRestrictions}
+                />
+              ))}
         </ul>
       </div>
       <div className={styles.right}>
