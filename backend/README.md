@@ -1,97 +1,89 @@
 # Projoint Django Project
 
-Projoint is a Django-based project that provides a robust platform for managing projects and collaborations. This README file includes instructions on how to set up the project, create a superuser, and use the API endpoints.
+Projoint is a Django-based project that provides a robust platform for managing projects and collaborations, with a focus on surveys and document management.
+
+## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Directory Structure](#directory-structure)
+- [Update Requirements](#update-requirements)
+- [Running the Development Server](#running-the-development-server)
+- [API Documentation](#api-documentation)
+- [Testing APIs](#testing-apis)
+- [Qualtrics Clean Up](#qualtrics-clean-up)
+- [Environment Setup](#environment-setup)
 
 ## Prerequisites
-
 Before you begin, ensure you have the following installed on your system:
-
 - Python (>=3.6)
 - Pip (package installer for Python)
 
 ## Installation
-
-1. Clone the repository to your local machine:
-
-```bash
-git clone https://github.com/aaronrkaufman/projointdesigntool.git
-cd projoint
-```
+1. Navigate to the backend folder:
+   ```bash
+   cd backend
+   ```
 
 2. Create a virtual environment:
-
-```bash
-python3 -m venv venv
-```
+   ```bash
+   python3 -m venv venv
+   ```
 
 3. Activate the virtual environment (for Linux/macOS):
-
-```bash
-source venv/bin/activate
-```
+   ```bash
+   source venv/bin/activate
+   ```
 
 4. Install project dependencies:
-
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 5. Apply database migrations:
+   ```bash
+   python3 manage.py makemigrations
+   python3 manage.py migrate
+   ```
 
-```bash
-python3 manage.py makemigrations
-python3 manage.py migrate
-```
+## Directory Structure
+- **`documents/`** - Contains models, views, serializers for managing document-related operations.
+- **`projoint/`** - Core Django project folder including settings, urls, and WSGI/ASGI modules.
+- **`surveys/`** - Handles survey-related models, views, serializers, and URL configurations.
+- **`Dockerfile`** - Docker configuration for setting up the Django application.
+- **`entrypoint.sh`** - Script to initialize the Docker container.
+- **`manage.py`** - A command-line utility that lets you interact with this Django project.
+- **`requirements.txt`** - List of modules needed for the project to run.
 
 ## Update Requirements
-
-If you have added any new libraries, run this command to update the requirements specifications
-
+Update the `requirements.txt` file if you've added new dependencies:
 ```bash
 pip freeze > requirements.txt
 ```
 
-## Create a Superuser
-
-To create a superuser for accessing the Django admin interface and managing the application:
-
-```bash
-python manage.py createsuperuser
-```
-
-Follow the prompts to enter your desired username, email address, and password.
-
 ## Running the Development Server
-
-To run the development server and access the API and admin interface, use the following command:
-
+To start the server:
 ```bash
 python3 manage.py runserver
 ```
 
 ## API Documentation
-
-Documentation exists at
-
+Access Swagger UI documentation at:
 ```
 http://127.0.0.1:8000/api/swagger-ui/
 ```
 
 ## Testing APIs
-
-To test specific command, run the module name of the API
-
-```bash
-python3 manage.py test $module
-```
-
-for example
-
+Run tests for specific modules like this:
 ```bash
 python3 manage.py test surveys
 ```
 
-## Environment Setup
-To run this project locally, you need to set up the following environment variables in your `.env` file:
+## Qualtrics Clean Up
+Clean up the surveys from the Qualtrics account by running
+```bash
+python3 delete_surveys_from_qualtrics.py
+```
 
-- `QUALTRICS_API_KEY`: API key for accessing Qualtrics service.
+## Environment Setup
+Set up necessary environment variables in your `.env` file:
+- `QUALTRICS_API_KEY`: Key for accessing Qualtrics services.

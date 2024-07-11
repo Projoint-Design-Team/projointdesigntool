@@ -557,7 +557,7 @@ class QualtricsTests(TestCase):
                         {"name": "level1", "weight": 0.5},
                         {"name": "another1", "weight": 0.5},
                     ],
-                    "locked": False,
+                    "locked": True,
                 },
                 {
                     "name": "att2",
@@ -573,7 +573,7 @@ class QualtricsTests(TestCase):
                         {"name": "level3", "weight": 0.9},
                         {"name": "another3", "weight": 0.1},
                     ],
-                    "locked": False,
+                    "locked": True,
                 },
             ],
             "restrictions": [
@@ -596,13 +596,18 @@ class QualtricsTests(TestCase):
             "filename": "survey.qsf",
             "num_profiles": 2,
             "num_tasks": 5,
-            "randomize": True,
+            "fixed_profile": {},
+            "randomize": False,
             "repeated_tasks": False,
             "random": False,
             "task_to_repeat": 0,
             "where_to_repeat": 0,
             "repeated_tasks_flipped": False,
             "csv_lines": 500,
+            "qDescription": "This is a test survey",
+            "doubleQ": False,
+            "qText": "This is a test question",
+            "qType": "MC",
         }
         self.valid_survey_path = os.path.join(
             settings.BASE_DIR, "surveys", "tests", "test_data", "valid_survey.json"

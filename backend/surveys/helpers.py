@@ -282,7 +282,7 @@ def _send_file_response(filename):
     )
     response.closed = file.close
     # Delete the file
-    os.remove(filename)
+    # os.remove(filename)
     return response
 
 
