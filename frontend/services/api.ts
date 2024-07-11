@@ -150,14 +150,14 @@ export const getPreview = async (
 };
 
 export const getTutorials = async () => {
-  const response = await api.get("/common/docs/list/");
+  const response = await api.get("/documents/docs/list/");
   return response.data;
 };
 
 export const getTutorial = async (tutorial: string) => {
   const tutorialWithoutMd = tutorial.replace(".md", "");
 
-  const response = await api.get(`/common/docs/${tutorialWithoutMd}/`);
+  const response = await api.get(`/documents/docs/${tutorialWithoutMd}/`);
   return response.data;
 };
 
