@@ -60,6 +60,7 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
     cleanInvalidRestrictions,
     processProfileRestrictions,
     processCrossRestrictions,
+    fixedProfile,
   } = useAttributes();
   const [docName, setDocName] = useState<string>(currentDoc);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -86,6 +87,7 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
       docName,
       setDownloadStatus,
       settings,
+      fixedProfile,
       numRows,
       processProfileRestrictions(),
       processCrossRestrictions(),

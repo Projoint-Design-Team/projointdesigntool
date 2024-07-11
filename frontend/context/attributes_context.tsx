@@ -55,7 +55,7 @@ export interface SettingsProps {
   randomize: boolean;
 }
 
-interface FixedProfileProps {
+export interface FixedProfileProps {
   attribute: string;
   level: string;
 }

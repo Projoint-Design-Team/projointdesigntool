@@ -37,6 +37,7 @@ function PreviewPage({ params }: IServerProps) {
     cleanInvalidRestrictions,
     processProfileRestrictions,
     processCrossRestrictions,
+    fixedProfile,
   } = useAttributes();
 
   const [profiles, setProfiles] = useState<IPreview | null>(null);
@@ -50,7 +51,8 @@ function PreviewPage({ params }: IServerProps) {
       attributes,
       processProfileRestrictions(),
       processCrossRestrictions(),
-      settings.numProfiles
+      settings.numProfiles,
+      fixedProfile
     );
     setProfiles({
       attributes: previews.attributes,
