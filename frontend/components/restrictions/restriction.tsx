@@ -29,10 +29,12 @@ export const Restriction: React.FC<
   handleRestrictions,
   cross,
 }) => {
+  // State for if and else statements
   const [ifStatements, setIfStatements] = useState<StatementProps[]>(ifStates);
   const [elseStatements, setElseStatements] =
     useState<StatementProps[]>(elseStates);
 
+  // Function to add a new if statement
   const addIfStatement = () => {
     setIfStatements((prev) => [
       ...prev,
@@ -46,12 +48,14 @@ export const Restriction: React.FC<
     ]);
   };
 
+  // Function to delete an if statement
   const deleteIfStatement = (attributeIndex: number) => {
     setIfStatements((prev) =>
       prev.filter((_, index) => index !== attributeIndex)
     );
   };
 
+  // Function to add a new else statement (DECIDED THAT NOT NEEDED)
   const addElseStatement = () => {
     setElseStatements((prev) => [
       ...prev,
@@ -65,12 +69,14 @@ export const Restriction: React.FC<
     ]);
   };
 
+  // Function to delete an else statement
   const deleteElseStatement = (attributeIndex: number) => {
     setElseStatements((prev) =>
       prev.filter((_, index) => index !== attributeIndex)
     );
   };
 
+  // Function to update an if statement
   const changeIfStatement = (
     index: number,
     { attribute, level, equals, part }: Partial<StatementProps>
@@ -91,6 +97,7 @@ export const Restriction: React.FC<
     );
   };
 
+  // Function to update an else statement
   const changeElseStatement = (
     index: number,
     { attribute, level, equals, part }: Partial<StatementProps>
@@ -111,16 +118,18 @@ export const Restriction: React.FC<
     );
   };
 
+  // Function to check if the restriction is complete
   const isRestrictionDone = () => {
-    const notDone = ({ attribute, level }: any) => {
-      return attribute == "select attribute" || level == "select level";
-    };
+    const notDone = ({ attribute, level }: StatementProps) =>
+      attribute === "select attribute" || level === "select level";
     return ifStatements.some(notDone) || elseStatements.some(notDone);
   };
 
+  // Effect to update parent component and save restriction
   useEffect(() => {
-    handleUpdate(!isRestrictionDone());
-    if (!isRestrictionDone()) {
+    const isDone = !isRestrictionDone();
+    handleUpdate(isDone);
+    if (isDone) {
       saveRestriction({
         ifStates: ifStatements,
         elseStates: elseStatements,
@@ -131,12 +140,12 @@ export const Restriction: React.FC<
 
   const { deleteRestriction } = useAttributes();
 
+  // Function to handle restriction deletion
   const handleDeleteRestriction = () => {
+    handleRestrictions(id);
     if (!isRestrictionDone()) {
-      handleRestrictions(id);
       deleteRestriction(id, cross);
     } else {
-      handleRestrictions(id);
       handleUpdate(true);
     }
   };
@@ -145,24 +154,17 @@ export const Restriction: React.FC<
     <div className={styles.restrictionContainer}>
       <div className={styles.statements}>
         <div className={styles.ifStatements}>
-          <Statement
-            statement={ifStatements[0]}
-            index={0}
-            changeStatement={changeIfStatement}
-            cross={cross}
-          />
-          {ifStatements.map((item, index) => {
-            if (index === 0) return "";
-            return (
-              <Statement
-                key={item.id}
-                statement={item}
-                index={index}
-                changeStatement={changeIfStatement}
-                deleteStatement={deleteIfStatement}
-              />
-            );
-          })}
+          {/* Render if statements */}
+          {ifStatements.map((item, index) => (
+            <Statement
+              key={item.id}
+              statement={item}
+              index={index}
+              changeStatement={changeIfStatement}
+              deleteStatement={index !== 0 ? deleteIfStatement : undefined}
+              cross={cross}
+            />
+          ))}
           {!cross && (
             <div className={styles.addCondition} onClick={addIfStatement}>
               <PlusIcon stroke={`var(--blue)`} />{" "}
@@ -171,24 +173,18 @@ export const Restriction: React.FC<
           )}
         </div>
         <div className={styles.elseStatements}>
-          <Statement
-            statement={elseStatements[0]}
-            index={0}
-            changeStatement={changeElseStatement}
-            cross={cross}
-          />
-          {elseStatements.map((item, index) => {
-            if (index === 0) return "";
-            return (
-              <Statement
-                changeStatement={changeElseStatement}
-                key={index}
-                statement={item}
-                index={index}
-                deleteStatement={deleteElseStatement}
-              />
-            );
-          })}
+          {/* Render else statements */}
+          {elseStatements.map((item, index) => (
+            <Statement
+              key={item.id}
+              statement={item}
+              index={index}
+              changeStatement={changeElseStatement}
+              deleteStatement={index !== 0 ? deleteElseStatement : undefined}
+              cross={cross}
+            />
+          ))}
+          {/* Commented out add else statement functionality */}
           {/* <div className={styles.addCondition} onClick={addElseStatement}>
             <PlusIcon stroke={`var(--blue)`} /> Add condition
           </div> */}

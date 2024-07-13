@@ -1,16 +1,16 @@
 import React, { FC, useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import styles from "./restrictions__profile.module.css";
 import { PlusIcon } from "@/components/ui/icons";
 import { useAttributes } from "@/context/attributes_context";
 import { Button } from "@/components/ui/button";
 import { RestrictionProps, Restriction } from "../restriction";
-import { v4 as uuidv4 } from "uuid";
 import naming from "@/naming/english.json";
 
 export interface RestrictionsProfileProps {}
 
-export const RestrictionsProfile: FC<RestrictionsProfileProps> = ({}) => {
+export const RestrictionsProfile: FC<RestrictionsProfileProps> = () => {
   const {
     restrictions,
     saveRestriction,
@@ -19,28 +19,14 @@ export const RestrictionsProfile: FC<RestrictionsProfileProps> = ({}) => {
     getLevelById,
   } = useAttributes();
 
-  const isRestrictionDone = (restriction: RestrictionProps) => {
-    const notDone = ({ attribute, level }: any) => {
-      return attribute == "select attribute" || level == "select level";
-    };
-    return (
-      restriction.ifStates.some(notDone) || restriction.elseStates.some(notDone)
-    );
-  };
-
   const [newRestrictions, setNewRestrictions] = useState<RestrictionProps[]>(
     []
   );
-
   const [cleaned, setCleaned] = useState<boolean>(false);
-
-  const handleUpdate = (change: boolean) => {
-    setCanAddNewRestriction(change);
-  };
-
   const [canAddNewRestriction, setCanAddNewRestriction] =
     useState<boolean>(true);
 
+  // Update restrictions when they change and clean invalid ones
   useEffect(() => {
     if (restrictions) {
       setNewRestrictions(restrictions);
@@ -50,13 +36,14 @@ export const RestrictionsProfile: FC<RestrictionsProfileProps> = ({}) => {
       cleanInvalidRestrictions();
       setCleaned(true);
     }
-  }, [restrictions]);
+  }, [restrictions, cleanInvalidRestrictions, cleaned]);
 
+  // Handle saving a restriction
   const handleSave = (restriction: RestrictionProps) => {
     saveRestriction(restriction);
-    // setNewRestrictions([restrictions ? restrictions : []]);
   };
 
+  // Add a new restriction
   const handleAddRestriction = () => {
     if (canAddNewRestriction) {
       setNewRestrictions((prev) => [
@@ -86,57 +73,48 @@ export const RestrictionsProfile: FC<RestrictionsProfileProps> = ({}) => {
     }
   };
 
+  // Remove a restriction
   const handleRestrictions = (id: string) => {
     setNewRestrictions((prev) => prev.filter((r) => r.id !== id));
   };
 
+  // Check if a restriction is valid
   const isValidRestriction = (restriction: RestrictionProps) => {
+    const isDefaultState = (state: any) =>
+      state.attribute === "select attribute" && state.level === "select level";
+
     if (
-      restriction.ifStates.every(
-        (state) =>
-          state.attribute === "select attribute" &&
-          state.level === "select level"
-      ) &&
-      restriction.elseStates.every(
-        (state) =>
-          state.attribute === "select attribute" &&
-          state.level === "select level"
-      )
+      restriction.ifStates.every(isDefaultState) &&
+      restriction.elseStates.every(isDefaultState)
     ) {
       return true;
     }
 
-    const validIfStates = restriction.ifStates.every((state) => {
+    const isValidState = (state: any) => {
       const attribute = getAttributeById(parseInt(state.attribute));
       const level = getLevelById(parseInt(state.level), state.attribute);
       return attribute && level;
-    });
+    };
 
-    const validElseStates = restriction.elseStates.every((state) => {
-      const attribute = getAttributeById(parseInt(state.attribute));
-      const level = getLevelById(parseInt(state.level), state.attribute);
-      return attribute && level;
-    });
-
-    return validIfStates && validElseStates;
+    return (
+      restriction.ifStates.every(isValidState) &&
+      restriction.elseStates.every(isValidState)
+    );
   };
 
   return (
     <>
       <div className={styles.left}>
         <ul className={styles.restrictions}>
-          {newRestrictions &&
-            newRestrictions
-              .filter(isValidRestriction)
-              .map((restr, _index) => (
-                <Restriction
-                  key={restr.id}
-                  {...restr}
-                  handleUpdate={handleUpdate}
-                  saveRestriction={handleSave}
-                  handleRestrictions={handleRestrictions}
-                />
-              ))}
+          {newRestrictions.filter(isValidRestriction).map((restr) => (
+            <Restriction
+              key={restr.id}
+              {...restr}
+              handleUpdate={setCanAddNewRestriction}
+              saveRestriction={handleSave}
+              handleRestrictions={handleRestrictions}
+            />
+          ))}
         </ul>
       </div>
       <div className={styles.right}>

@@ -1,30 +1,30 @@
 import React, { useState, useRef, useEffect } from "react";
-import styles from "./dropdown.module.css"; // Import your styles here
+import styles from "./dropdown.module.css";
 import { ExpandIcon } from "../ui/icons";
 
+// Interface defining the props for the CustomDropdown component
 interface IDropdown {
-  items: string[];
-  value: string;
-  setSelected: (item: string) => void;
-  sign?: boolean;
-  type?: string;
-  color?: boolean;
+  items: string[]; // Array of items to display in the dropdown
+  value: string; // Currently selected value
+  setSelected: (item: string) => void; // Function to update selected value
+  sign?: boolean; // Optional: Indicates if sign is needed (unused in current implementation)
+  type?: string; // Optional: Type of dropdown (unused in current implementation)
+  color?: boolean; // Optional: Determines if color styling should be applied
 }
 
 const CustomDropdown: React.FC<IDropdown> = ({
   items,
   setSelected,
-  type,
-  sign,
   value,
   color,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  //   const [selectedValue, setSelectedValue] = useState<string | number>(text);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Toggle dropdown open/close state
   const toggleOpen = () => setIsOpen(!isOpen);
 
+  // Handle clicks outside the dropdown to close it
   const handleClickOutside = (event: MouseEvent) => {
     if (
       dropdownRef.current &&
@@ -34,6 +34,7 @@ const CustomDropdown: React.FC<IDropdown> = ({
     }
   };
 
+  // Add and remove event listener for handling clicks outside dropdown
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -41,6 +42,7 @@ const CustomDropdown: React.FC<IDropdown> = ({
     };
   }, []);
 
+  // Handle selection of an option
   const selectOption = (value: string) => {
     setSelected(value);
     setIsOpen(false);
@@ -57,13 +59,13 @@ const CustomDropdown: React.FC<IDropdown> = ({
       </button>
       {isOpen && (
         <ul className={`${styles.dropdownContent} ${styles.active}`}>
-          {items.map((number, index) => (
+          {items.map((item, index) => (
             <li
-              key={number + index}
-              onClick={() => selectOption(number)}
+              key={`${item}-${index}`}
+              onClick={() => selectOption(item)}
               className={styles.dropdownItem}
             >
-              {number}
+              {item}
             </li>
           ))}
         </ul>
