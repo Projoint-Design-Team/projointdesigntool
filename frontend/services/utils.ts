@@ -1,5 +1,10 @@
 import { RestrictionProps } from "@/components/restrictions/restriction";
-import { Attribute, SettingsProps } from "../context/attributes_context";
+import {
+  Attribute,
+  FixedProfileProps,
+  Level,
+  SettingsProps,
+} from "../context/attributes_context";
 import { StatementProps } from "@/components/restrictions/restrictions";
 
 export const preproccessAttributes = (attributes: Attribute[]) => {
@@ -87,4 +92,25 @@ export const preprocessSettings = (settings: SettingsProps) => {
     randomize: settings.randomize,
   };
   return processedSettings;
+};
+
+export const preprocessFixedProfile = (
+  fixedProfile: FixedProfileProps[],
+  getAttributeName: (id: number) => Attribute | undefined
+): { [key: string]: string } => {
+  const processedFixedProfile: { [key: string]: string } = {};
+  for (const profile of fixedProfile) {
+    const attribute = getAttributeName(parseInt(profile.attribute));
+    if (!attribute) {
+      return {};
+    }
+    const level = attribute.levels.find(
+      (level) => level.id === parseInt(profile.level)
+    );
+    if (!level) {
+      return {};
+    }
+    processedFixedProfile[attribute.name] = level.name;
+  }
+  return processedFixedProfile;
 };

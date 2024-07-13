@@ -9,6 +9,7 @@ import { SettingsLine } from "./__line/settings__line";
 import { SettingsNumberRange } from "./__number-range/settings__number-range";
 import ExportDropdown from "../export/export";
 import naming from "@/naming/english.json";
+import { SurveyFixedProfile } from "./__fixed-profile/survey__fixed-profile";
 
 export const Settings = () => {
   const { currentDoc, lastEdited, setLastEdited, setCurrentDoc } =
@@ -211,6 +212,7 @@ export const Settings = () => {
           {/* This setting determines the order in which the attributes are presented to the user. The default is non-random, which means the attributes are presented in the order they are defined in the document. The other options randomize the order in different ways. */}
         </div>
         <SettingsLine />
+        <SurveyFixedProfile />
       </div>
     </section>
   );

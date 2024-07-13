@@ -7,6 +7,7 @@ import Preview, { IPreview } from "../../components/preview/preview";
 import { GetServerSideProps } from "next";
 import { useAttributes } from "../../context/attributes_context";
 import { getPreview } from "../../services/api";
+import { preprocessFixedProfile } from "@/services/utils";
 
 interface IServerProps {
   params: {
@@ -38,6 +39,9 @@ function PreviewPage({ params }: IServerProps) {
     processProfileRestrictions,
     processCrossRestrictions,
     fixedProfile,
+    fixedProfileEnabled,
+    getAttributeById,
+    getLevelById,
   } = useAttributes();
 
   const [profiles, setProfiles] = useState<IPreview | null>(null);
@@ -52,7 +56,9 @@ function PreviewPage({ params }: IServerProps) {
       processProfileRestrictions(),
       processCrossRestrictions(),
       settings.numProfiles,
-      fixedProfile
+      fixedProfileEnabled
+        ? preprocessFixedProfile(fixedProfile, getAttributeById)
+        : {}
     );
     setProfiles({
       attributes: previews.attributes,

@@ -26,7 +26,7 @@ export const downloadSurvey = async (
   filename: string,
   setDownloadStatus: (status: any) => void,
   settings: SettingsProps,
-  fixedProfile: FixedProfileProps[],
+  fixedProfile: { [key: string]: string },
   csv_lines?: number,
   restrictions?: RestrictionProps[],
   crossRestrictions?: RestrictionProps[],
@@ -123,7 +123,7 @@ export const getPreview = async (
   restrictions: RestrictionProps[],
   crossRestrictions: RestrictionProps[],
   numProfiles: number,
-  fixedProfile: FixedProfileProps[]
+  fixedProfile: { [key: string]: string }
 ): Promise<{ attributes: string[]; previews: string[][] }> => {
   try {
     const processedAttributes = preproccessAttributes(attributes);

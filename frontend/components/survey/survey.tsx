@@ -10,8 +10,6 @@ import { Droppable } from "react-beautiful-dnd";
 import ExportDropdown from "../export/export";
 import { SurveyOutcomeTypes } from "./__outcome-types/survey__outcome-types";
 import { shortenName } from "../utils/helpers";
-import { Button } from "../ui/button";
-import { SurveyFixedProfile } from "./__fixed-profile/survey__fixed-profile";
 
 // Function to calculate the time elapsed since the last edit
 const getTimeElapsed = (lastEdited: Date) => {
@@ -167,7 +165,6 @@ export const Survey: FC = () => {
             <div>Last edited: {getTimeElapsed(lastEdited)}</div>
           </div>
           <div className={styles.buttons}>
-            <SurveyFixedProfile />
             <ExportDropdown size="small" />
           </div>
         </div>
