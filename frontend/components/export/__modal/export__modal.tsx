@@ -12,6 +12,7 @@ import { useDownload } from "@/context/download_context";
 import { downloadSurvey } from "@/services/api";
 import { DocumentContext } from "@/context/document_context";
 import { useAttributes } from "@/context/attributes_context";
+import { preprocessFixedProfile } from "@/services/utils";
 
 export interface ExportModalProps {}
 
@@ -60,6 +61,9 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
     cleanInvalidRestrictions,
     processProfileRestrictions,
     processCrossRestrictions,
+    fixedProfile,
+    fixedProfileEnabled,
+    getAttributeById,
   } = useAttributes();
   const [docName, setDocName] = useState<string>(currentDoc);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -86,6 +90,9 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
       docName,
       setDownloadStatus,
       settings,
+      fixedProfileEnabled
+        ? preprocessFixedProfile(fixedProfile, getAttributeById)
+        : {},
       numRows,
       processProfileRestrictions(),
       processCrossRestrictions(),

@@ -115,96 +115,69 @@ export const SurveyFixedProfile: FC<SurveyFixedProfileProps> = ({}) => {
     setEdited(true);
   };
 
+  const filteredProfile = () => {
+    return fixedProfile.filter((profile) =>
+      getAttributeById(parseInt(profile.attribute))
+    );
+  };
+
   return (
     <>
-      <Button onClick={openModal} text="Fixed Profile" />
-      {modalIsOpen && (
-        <Modal
-          open={modalIsOpen}
-          onClose={closeModal}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          className={styles.modal}
-        >
-          <Box sx={modalStyle}>
-            <div className={styles.modalHeader}>
-              <h2 id="export-modal-title">
-                {naming.surveyPage.fixedProfile.value}
-              </h2>
-              <XIcon onClick={() => closeModal()} />
-            </div>
-            <div className={styles.modalContent}>
-              <div className={styles.modalContentHeader}>
-                <SettingsCheckbox
-                  checked={fixedProfileEnabled}
-                  onChange={handleFixedProfileEnabled}
-                  label={naming.surveyPage.fixedProfile.description.value}
-                  explanation={
-                    naming.surveyPage.fixedProfile.description.subtitle
-                  }
-                />
+      <div className={styles.modalContent}>
+        <div className={styles.modalContentHeader}>
+          <SettingsCheckbox
+            checked={fixedProfileEnabled}
+            onChange={handleFixedProfileEnabled}
+            label={naming.surveyPage.fixedProfile.description.value}
+            explanation={naming.surveyPage.fixedProfile.description.subtitle}
+          />
+        </div>
+
+        <ul>
+          <li className={styles.modalContentListHeader}>
+            <div>Attribute</div>
+            <div>Level</div>
+          </li>
+          {filteredProfile().map((profile, index) => (
+            <li key={index}>
+              <div>
+                {shortenName(
+                  getAttributeById(parseInt(profile.attribute))!.name,
+                  20
+                )}
               </div>
-              {fixedProfileEnabled && (
-                <ul>
-                  <li className={styles.modalContentListHeader}>
-                    <div>Attribute</div>
-                    <div>Level</div>
-                  </li>
-                  {fixedProfile.map((profile, index) => (
-                    <li key={index}>
-                      <div>
-                        {shortenName(
-                          getAttributeById(parseInt(profile.attribute))!.name,
-                          20
-                        )}
-                      </div>
-                      <CustomDropdown
-                        value={
-                          selectedLvls[profile.attribute] == "select level"
-                            ? "select level"
-                            : shortenName(
-                                getLevelById(
-                                  parseInt(selectedLvls[profile.attribute]),
-                                  profile.attribute
-                                ),
-                                18
-                              )
-                        }
-                        items={
+              <CustomDropdown
+                value={
+                  selectedLvls[profile.attribute] == "select level"
+                    ? "select level"
+                    : shortenName(
+                        getLevelById(
+                          parseInt(selectedLvls[profile.attribute]),
                           profile.attribute
-                            ? getAttributeLevels(profile.attribute).map(
-                                (level) => level.name
-                              )
-                            : []
-                        }
-                        setSelected={(levelName) =>
-                          handleSelectLevel(levelName, profile.attribute)
-                        }
-                        color={
-                          selectedLvls[profile.attribute] == "select level"
-                            ? true
-                            : false
-                        }
-                      />
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </Box>
-        </Modal>
-      )}
+                        ),
+                        18
+                      )
+                }
+                items={
+                  profile.attribute
+                    ? getAttributeLevels(profile.attribute).map(
+                        (level) => level.name
+                      )
+                    : []
+                }
+                setSelected={(levelName) =>
+                  handleSelectLevel(levelName, profile.attribute)
+                }
+                color={
+                  selectedLvls[profile.attribute] == "select level"
+                    ? true
+                    : false
+                }
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
   );
-};
-
-const modalStyle = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 450,
-  bgcolor: "var(--light-blue)",
-  borderRadius: "1rem",
-  // p: 2,
 };

@@ -1,6 +1,10 @@
 // services/api.ts
 import axios from "axios";
-import { Attribute, SettingsProps } from "../context/attributes_context";
+import {
+  Attribute,
+  FixedProfileProps,
+  SettingsProps,
+} from "../context/attributes_context";
 import {
   preproccessAttributes,
   preprocessCrossRestrictions,
@@ -22,7 +26,7 @@ export const downloadSurvey = async (
   filename: string,
   setDownloadStatus: (status: any) => void,
   settings: SettingsProps,
-
+  fixedProfile: { [key: string]: string },
   csv_lines?: number,
   restrictions?: RestrictionProps[],
   crossRestrictions?: RestrictionProps[],
@@ -79,6 +83,7 @@ export const downloadSurvey = async (
         restrictions: processedRestrictions,
         cross_restrictions: processedCrossRestrictions,
         filename: file,
+        fixed_profile: fixedProfile,
         ...processedSettings,
         ...preprocessedInstructions,
       },
@@ -117,7 +122,8 @@ export const getPreview = async (
   attributes: Attribute[],
   restrictions: RestrictionProps[],
   crossRestrictions: RestrictionProps[],
-  numProfiles: number
+  numProfiles: number,
+  fixedProfile: { [key: string]: string }
 ): Promise<{ attributes: string[]; previews: string[][] }> => {
   try {
     const processedAttributes = preproccessAttributes(attributes);
@@ -131,6 +137,7 @@ export const getPreview = async (
       cross_restrictions: processedCrossRestrictions,
       filename: "preview",
       num_profiles: numProfiles,
+      fixed_profile: fixedProfile,
     });
 
     // Extract attributes and previews from the response
