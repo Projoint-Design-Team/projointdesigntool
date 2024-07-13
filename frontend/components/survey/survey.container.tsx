@@ -6,6 +6,7 @@ import { HighlightedProvider } from "../../context/highlighted";
 import { Attribute, useAttributes } from "../../context/attributes_context";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 
+// Helper function to reorder items in an array
 const reorder = (
   list: IAttribute[],
   startIndex: number,
@@ -22,30 +23,28 @@ export const SurveyContainer: FC = () => {
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination, type } = result;
-    // Dropped outside the list
+
+    // If dropped outside the list or in a different droppable, do nothing
     if (!destination || source.droppableId !== destination.droppableId) {
       return;
     }
 
-    // If the source and destination droppables are the same
+    let newAttributes = [...attributes];
 
     if (source.droppableId.startsWith("droppable-attributes")) {
-      const reorderedItems = reorder(
+      // Reordering attributes
+      newAttributes = reorder(
         attributes,
-        result.source.index,
-        result.destination!.index
-      );
-      setEdited(true);
-      // console.log("what????", attributes, reorderedItems);
-      setAttributes(reorderedItems as Attribute[]);
+        source.index,
+        destination.index
+      ) as Attribute[];
     } else {
-      const newAttributes = [...attributes];
-      // Find the attribute by droppableId, which should match the attribute's key
+      // Reordering levels within an attribute
       const attributeIndex = newAttributes.findIndex(
         (attr) => `droppable-levels-${attr.key}` === source.droppableId
       );
+
       if (attributeIndex !== -1) {
-        // Reorder levels within the attribute
         const [movedLevel] = newAttributes[attributeIndex].levels.splice(
           source.index,
           1
@@ -56,11 +55,11 @@ export const SurveyContainer: FC = () => {
           movedLevel
         );
       }
-      // console.log("what?");
-      setEdited(true);
-      setAttributes(newAttributes);
-      // Update the state with the new attributes array
     }
+
+    // Update state
+    setEdited(true);
+    setAttributes(newAttributes);
   };
 
   return (

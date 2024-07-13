@@ -1,33 +1,48 @@
 import React, { FC, useEffect, useState } from "react";
-
 import styles from "./survey__outcome-types.module.css";
 import CustomDropdown from "@/components/restrictions/dropdown";
 import { SettingsExplanation } from "@/components/settings/__explanation/settings__explanation";
 import { useAttributes } from "@/context/attributes_context";
 import naming from "@/naming/english.json";
 
+// Define the prop types for SurveyOutcomeTypes component
 export interface SurveyOutcomeTypesProps {}
 
-const mapping = {
+// Mapping of outcome types to their display names
+const outcomeTypeMapping = {
   mcq: "Multiple Choice Question",
   slider: "Slider",
   ranking: "Ranking",
 };
 
-export const SurveyOutcomeTypes: FC<SurveyOutcomeTypesProps> = ({}) => {
+export const SurveyOutcomeTypes: FC<SurveyOutcomeTypesProps> = () => {
   const { instructions, handleInstructions } = useAttributes();
-  const [selected, setSelected] = useState<"mcq" | "slider" | "ranking">(
+  const [selected, setSelected] = useState<keyof typeof outcomeTypeMapping>(
     instructions?.outcomeType || "mcq"
   );
 
+  // Update instructions when selected outcome type changes
   useEffect(() => {
-    // Correctly pass the outcomeType to handleInstructions
     handleInstructions(selected, "outcomeType");
   }, [selected]);
 
+  // Update selected outcome type when instructions change
   useEffect(() => {
-    setSelected(instructions?.outcomeType || "mcq");
+    if (instructions?.outcomeType) {
+      setSelected(instructions.outcomeType);
+    }
   }, [instructions]);
+
+  // Handle outcome type selection
+  const handleOutcomeTypeSelection = (item: string) => {
+    const selectedType = Object.entries(outcomeTypeMapping).find(
+      ([, value]) => value === item
+    )?.[0] as keyof typeof outcomeTypeMapping;
+
+    if (selectedType) {
+      setSelected(selectedType);
+    }
+  };
 
   return (
     <div className={styles.survey__outcome_types}>
@@ -39,21 +54,9 @@ export const SurveyOutcomeTypes: FC<SurveyOutcomeTypesProps> = ({}) => {
       </div>
 
       <CustomDropdown
-        items={["Multiple Choice Question", "Slider", "Ranking"]}
-        value={mapping[selected]}
-        setSelected={(item) => {
-          switch (item) {
-            case "Multiple Choice Question":
-              setSelected("mcq");
-              break;
-            case "Slider":
-              setSelected("slider");
-              break;
-            case "Ranking":
-              setSelected("ranking");
-              break;
-          }
-        }}
+        items={Object.values(outcomeTypeMapping)}
+        value={outcomeTypeMapping[selected]}
+        setSelected={handleOutcomeTypeSelection}
       />
     </div>
   );
