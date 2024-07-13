@@ -1,4 +1,4 @@
-# ProJoint Project
+# Projoint Project
 
 Welcome to the ProJoint project repository. This project is designed to provide a web-based interface to build Qualtrics surveys for conjoint experiments, designed for compatibility with the projoint library, accessible at [ProJoint](https://projoint.abudhabi.nyu.edu/).
 

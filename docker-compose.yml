@@ -12,7 +12,7 @@ services:
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
-      - docs_volume:/home/app/docs
+      - docs_volume:/home/app/web/docs
     ports:
       - 8000:8000
     depends_on:
