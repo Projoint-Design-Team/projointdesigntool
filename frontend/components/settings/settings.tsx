@@ -12,11 +12,12 @@ import naming from "@/naming/english.json";
 import { SurveyFixedProfile } from "./__fixed-profile/survey__fixed-profile";
 
 export const Settings = () => {
+  // Context and custom hooks
   const { currentDoc, lastEdited, setLastEdited, setCurrentDoc } =
     useContext(DocumentContext);
-
   const { setEdited, settings, updateSettings } = useAttributes();
 
+  // Local state
   const [numProfiles, setNumProfiles] = useState(settings.numProfiles);
   const [numTasks, setNumTasks] = useState(settings.numTasks);
   const [repeatedTasks, setRepeatedTasks] = useState(settings.repeatedTasks);
@@ -25,12 +26,15 @@ export const Settings = () => {
   );
   const [taskToRepeat, setTaskToRepeat] = useState(settings.taskToRepeat);
   const [whereToRepeat, setWhereToRepeat] = useState(settings.whereToRepeat);
-
   const [isEditing, setIsEditing] = useState(false);
   const [docName, setDocName] = useState<string>(currentDoc);
+
+  // Refs
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Effects
   useEffect(() => {
+    // Update local state when settings change
     setNumProfiles(settings.numProfiles);
     setNumTasks(settings.numTasks);
     setTaskToRepeat(settings.taskToRepeat);
@@ -40,78 +44,61 @@ export const Settings = () => {
   }, [settings]);
 
   useEffect(() => {
+    // Update docName when currentDoc changes
     if (docName !== currentDoc) {
       setDocName(currentDoc);
     }
   }, [currentDoc]);
 
   useEffect(() => {
+    // Focus on input when editing
     if (isEditing) {
       inputRef.current?.focus();
     }
   }, [isEditing]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDocName(e.target.value);
-  };
-
   useEffect(() => {
-    // Ensure taskToRepeat is within the new range of tasks
+    // Ensure taskToRepeat and whereToRepeat are within valid ranges
+    const updatedSettings = { ...settings };
+    let hasChanges = false;
+
     if (taskToRepeat > numTasks) {
-      setTaskToRepeat(numTasks);
+      updatedSettings.taskToRepeat = numTasks;
+      hasChanges = true;
     }
 
     if (whereToRepeat < taskToRepeat) {
-      setWhereToRepeat(taskToRepeat);
+      updatedSettings.whereToRepeat = taskToRepeat;
+      hasChanges = true;
+    } else if (whereToRepeat > numTasks + 1) {
+      updatedSettings.whereToRepeat = numTasks + 1;
+      hasChanges = true;
     }
 
-    // Ensure whereToRepeat is within the new range of tasks + 1
-    if (whereToRepeat > numTasks + 1) {
-      setWhereToRepeat(numTasks + 1);
+    if (hasChanges) {
+      updateSettings(updatedSettings);
     }
   }, [numTasks, taskToRepeat, whereToRepeat]);
+
+  // Event handlers
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDocName(e.target.value);
+  };
 
   const handleBlur = () => {
     setIsEditing(false);
     setLastEdited(new Date());
     setEdited(true);
-    // Here you can call a function to save the docName
-    if (docName.trim() === "") {
-      setCurrentDoc("Untitled");
-      setDocName("Untitled");
-    } else {
-      setCurrentDoc(docName);
-    }
+
+    // Update document name, use "Untitled" if empty
+    const newDocName = docName.trim() === "" ? "Untitled" : docName;
+    setCurrentDoc(newDocName);
+    setDocName(newDocName);
   };
 
-  const handleNumProfilesChange = (newValue: number) => {
-    // setNumProfiles(newValue);
-    updateSettings({ ...settings, numProfiles: newValue });
-  };
-
-  const handleNumTasksChange = (newValue: number) => {
-    // setNumTasks(newValue);
-    updateSettings({ ...settings, numTasks: newValue });
-  };
-
-  const handleRepeatedTasksChange = (newValue: boolean) => {
-    // setRepeatedTasks(newValue);
-    updateSettings({ ...settings, repeatedTasks: newValue });
-  };
-
-  const handleRepeatedTasksFlippedChange = (newValue: boolean) => {
-    // setRepeatedTasksFlipped(newValue);
-    updateSettings({ ...settings, repeatedTasksFlipped: newValue });
-  };
-
-  const handleTaskToRepeatChange = (newValue: number) => {
-    // setTaskToRepeat(newValue);
-    updateSettings({ ...settings, taskToRepeat: newValue });
-  };
-
-  const handleWhereToRepeatChange = (newValue: number) => {
-    // setWhereToRepeat(newValue);
-    updateSettings({ ...settings, whereToRepeat: newValue });
+  // Generic handler for updating settings
+  const handleSettingChange = (key: string, value: number | boolean) => {
+    updateSettings({ ...settings, [key]: value });
   };
 
   return (
@@ -131,7 +118,6 @@ export const Settings = () => {
             onChange={handleInputChange}
             onBlur={handleBlur}
             className={styles.editableInput}
-            // additional styling or attributes
           />
           <SettingsExplanation
             explanation={<p>{naming.settingsPage.name.subtitle}</p>}
@@ -140,17 +126,16 @@ export const Settings = () => {
         <SettingsLine />
         <SettingsNumberRange
           value={numProfiles}
-          onChange={handleNumProfilesChange}
+          onChange={(value) => handleSettingChange("numProfiles", value)}
           min={1}
           max={10}
           label={naming.settingsPage.numberProfiles.value}
           explanation={naming.settingsPage.numberProfiles.subtitle}
         />
-
         <SettingsLine />
         <SettingsNumberRange
           value={numTasks}
-          onChange={handleNumTasksChange}
+          onChange={(value) => handleSettingChange("numTasks", value)}
           min={1}
           max={10}
           label={naming.settingsPage.numberTasks.value}
@@ -158,7 +143,9 @@ export const Settings = () => {
         />
         <SettingsCheckbox
           checked={repeatedTasks}
-          onChange={(e) => handleRepeatedTasksChange(e.target.checked)}
+          onChange={(e) =>
+            handleSettingChange("repeatedTasks", e.target.checked)
+          }
           label={naming.settingsPage.repeatedTask.value}
           explanation={naming.settingsPage.repeatedTask.subtitle}
         />
@@ -167,23 +154,22 @@ export const Settings = () => {
             <SettingsCheckbox
               checked={repeatedTasksFlipped}
               onChange={(e) =>
-                handleRepeatedTasksFlippedChange(e.target.checked)
+                handleSettingChange("repeatedTasksFlipped", e.target.checked)
               }
               label={naming.settingsPage.shuffled.value}
               explanation={naming.settingsPage.shuffled.subtitle}
             />
             <SettingsNumberRange
               value={taskToRepeat}
-              onChange={handleTaskToRepeatChange}
+              onChange={(value) => handleSettingChange("taskToRepeat", value)}
               min={1}
               max={numTasks}
               label={naming.settingsPage.whichRepeat.value}
               explanation={naming.settingsPage.whichRepeat.subtitle}
             />
-
             <SettingsNumberRange
               value={whereToRepeat}
-              onChange={handleWhereToRepeatChange}
+              onChange={(value) => handleSettingChange("whereToRepeat", value)}
               min={taskToRepeat}
               max={numTasks + 1}
               label={naming.settingsPage.whereRepeat.value}
@@ -194,7 +180,6 @@ export const Settings = () => {
         <SettingsLine />
         <div className={styles.ordering}>
           <h3>{naming.settingsPage.attributesOrdering.value}</h3>
-
           <SettingsRadioGroup
             options={[
               "Task randomized",
@@ -209,7 +194,6 @@ export const Settings = () => {
               <p>{naming.settingsPage.attributesOrdering.subtitle}</p>
             }
           />
-          {/* This setting determines the order in which the attributes are presented to the user. The default is non-random, which means the attributes are presented in the order they are defined in the document. The other options randomize the order in different ways. */}
         </div>
         <SettingsLine />
         <SurveyFixedProfile />

@@ -20,18 +20,21 @@ export const SettingsNumberRange: FC<SettingsNumberRangeProps> = ({
   label,
   explanation,
 }) => {
+  // Increment the value by 1 if it's less than the max limit
   const handleIncrement = () => {
     if (value < max) {
       onChange(value + 1);
     }
   };
 
+  // Decrement the value by 1 if it's greater than the min limit
   const handleDecrement = () => {
     if (value > min) {
       onChange(value - 1);
     }
   };
 
+  // Ensure the value is within the min and max range when input loses focus
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const newValue = Number(e.target.value);
     if (newValue < min) {
@@ -41,6 +44,7 @@ export const SettingsNumberRange: FC<SettingsNumberRangeProps> = ({
     }
   };
 
+  // Handle changes in the input field
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let inputStr = e.target.value;
     // Remove leading zeros and handle empty or zero-only strings
@@ -49,10 +53,7 @@ export const SettingsNumberRange: FC<SettingsNumberRangeProps> = ({
 
     e.target.value = sanitizedInput;
 
-    if (newValue === 0) {
-      onChange(0);
-      return;
-    }
+    // Update the value if it's within the valid range
     if (Number.isInteger(newValue) && newValue >= min && newValue <= max) {
       onChange(newValue);
     }

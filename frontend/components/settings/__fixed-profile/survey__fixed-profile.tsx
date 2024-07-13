@@ -2,9 +2,6 @@ import React, { FC, useEffect, useState } from "react";
 
 import styles from "./survey__fixed-profile.module.css";
 import { useAttributes } from "@/context/attributes_context";
-import { Box, Modal } from "@mui/material";
-import { XIcon } from "@/components/ui/icons";
-import { Button } from "@/components/ui/button";
 import CustomDropdown from "@/components/restrictions/dropdown";
 import { shortenName } from "@/components/utils/helpers";
 import { SettingsCheckbox } from "@/components/settings/__checkbox/settings__checkbox";
@@ -22,11 +19,13 @@ export const SurveyFixedProfile: FC<SurveyFixedProfileProps> = ({}) => {
     fixedProfileEnabled,
     setFixedProfileEnabled,
   } = useAttributes();
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  // State to keep track of selected levels for each attribute
   const [selectedLvls, setSelectedLvls] = useState<{
     [key: string]: string;
   }>({});
 
+  // Initialize selected levels based on fixedProfile
   useEffect(() => {
     const initialSelectedLvls = fixedProfile.reduce((acc, profile) => {
       acc[profile.attribute] = profile.level;
@@ -35,28 +34,21 @@ export const SurveyFixedProfile: FC<SurveyFixedProfileProps> = ({}) => {
     setSelectedLvls(initialSelectedLvls);
   }, [fixedProfile]);
 
-  const openModal = () => {
-    setModalIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalIsOpen(false);
-  };
-
+  // Update fixedProfile when attributes change
   useEffect(() => {
     if (attributes.length > 0) {
       let updatedFixedProfile = [...fixedProfile];
 
-      // Add new attributes
+      // Add new attributes to fixedProfile
       attributes.forEach((attribute) => {
         const exists = fixedProfile.some(
           (profile) => profile.attribute === attribute.key.toString()
         );
         if (!exists) {
-          setSelectedLvls({
-            ...selectedLvls,
+          setSelectedLvls((prevSelectedLvls) => ({
+            ...prevSelectedLvls,
             [attribute.key.toString()]: "select level",
-          });
+          }));
           updatedFixedProfile.push({
             attribute: attribute.key.toString(),
             level: "select level",
@@ -76,27 +68,31 @@ export const SurveyFixedProfile: FC<SurveyFixedProfileProps> = ({}) => {
     }
   }, [attributes]);
 
+  // Get levels for a specific attribute
   const getAttributeLevels = (attributeKey: string) => {
     const index = attributes.findIndex(
       (attr) => attr.key == parseInt(attributeKey)
     );
     return attributes[index] ? attributes[index].levels : [];
   };
+
+  // Get level name by its ID for a specific attribute
   const getLevelById = (levelId: number, attributeKey: string) => {
     const attribute = getAttributeLevels(attributeKey);
     const index = attribute.findIndex((level) => level.id == levelId);
     return attribute[index] ? attribute[index].name : "";
   };
 
+  // Handle selection of a level for an attribute
   const handleSelectLevel = (levelName: string, attributeKey: string) => {
     const level = getAttributeLevels(attributeKey).find(
       (level) => level.name == levelName
     );
     if (level) {
-      setSelectedLvls({
-        ...selectedLvls,
+      setSelectedLvls((prevSelectedLvls) => ({
+        ...prevSelectedLvls,
         [attributeKey]: level.id.toString(),
-      });
+      }));
       setFixedProfile(
         fixedProfile.map((profile) =>
           profile.attribute === attributeKey
@@ -108,6 +104,7 @@ export const SurveyFixedProfile: FC<SurveyFixedProfileProps> = ({}) => {
     }
   };
 
+  // Handle enabling/disabling of fixed profile
   const handleFixedProfileEnabled = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -115,6 +112,7 @@ export const SurveyFixedProfile: FC<SurveyFixedProfileProps> = ({}) => {
     setEdited(true);
   };
 
+  // Filter fixedProfile to only include valid attributes
   const filteredProfile = () => {
     return fixedProfile.filter((profile) =>
       getAttributeById(parseInt(profile.attribute))

@@ -13,6 +13,7 @@ export interface SettingsCheckboxProps {
   explanation: string;
 }
 
+// Renders a custom checkbox with label and explanation
 export const SettingsCheckbox: FC<SettingsCheckboxProps> = ({
   checked,
   onChange,
@@ -33,10 +34,11 @@ export const SettingsCheckbox: FC<SettingsCheckboxProps> = ({
   </div>
 );
 
+// Custom styled switch component based on Material-UI Switch
 const Android12Switch = styled(Switch)(({ theme }) => ({
   padding: 8,
   "& .MuiSwitch-track": {
-    borderRadius: 22 / 2,
+    borderRadius: 11,
     "&::before, &::after": {
       content: '""',
       position: "absolute",

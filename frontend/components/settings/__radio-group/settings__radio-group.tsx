@@ -5,8 +5,9 @@ import Radio, { RadioProps } from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
+// Custom styled component for the radio button icon
 const BpIcon = styled("span")(({ theme }) => ({
-  borderRadius: "4px", // Changed from "50%" to "4px" for a more rectangular shape
+  borderRadius: "4px", // Rectangular shape with rounded corners
   width: 20,
   height: 20,
   boxShadow:
@@ -34,8 +35,9 @@ const BpIcon = styled("span")(({ theme }) => ({
   },
 }));
 
+// Custom styled component for the checked radio button icon
 const BpCheckedIcon = styled(BpIcon)({
-  backgroundColor: "var(--blue)", // Solid fill color
+  backgroundColor: "var(--blue)", // Solid fill color for checked state
   backgroundImage: "none", // Remove gradient for a solid fill
   "&::before": {
     display: "none", // Remove the inner circle
@@ -45,7 +47,7 @@ const BpCheckedIcon = styled(BpIcon)({
   },
 });
 
-// Inspired by blueprintjs
+// Custom radio button component using the styled icons
 function BpRadio(props: RadioProps) {
   return (
     <Radio
@@ -58,11 +60,13 @@ function BpRadio(props: RadioProps) {
   );
 }
 
+// Props interface for SettingsRadioGroup component
 export interface SettingsRadioGroupProps {
   options: string[];
   defaultValue: string;
 }
 
+// Component to render a group of custom radio buttons
 export const SettingsRadioGroup: FC<SettingsRadioGroupProps> = ({
   options,
   defaultValue,
