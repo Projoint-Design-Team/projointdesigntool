@@ -1,5 +1,4 @@
 import React, { FC, useState } from "react";
-
 import styles from "./preview__slider.module.css";
 import { IProfile } from "../preview";
 import Box from "@mui/material/Box";
@@ -7,17 +6,14 @@ import Slider from "@mui/material/Slider";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
+// Constants for slider range
 const MAX = 10;
 const MIN = 0;
+
+// Marks for the slider endpoints
 const marks = [
-  {
-    value: MIN,
-    label: "",
-  },
-  {
-    value: MAX,
-    label: "",
-  },
+  { value: MIN, label: "" },
+  { value: MAX, label: "" },
 ];
 
 export interface PreviewSliderProps {
@@ -25,9 +21,12 @@ export interface PreviewSliderProps {
 }
 
 export const PreviewSlider: FC<PreviewSliderProps> = ({ profiles }) => {
+  // Initialize state with default value of 5 for each profile
   const [profileValues, setProfileValues] = useState<number[]>(
     profiles.map(() => 5)
   );
+
+  // Handle slider value change
   const handleChange = (
     _: Event,
     newValue: number | number[],
@@ -39,6 +38,7 @@ export const PreviewSlider: FC<PreviewSliderProps> = ({ profiles }) => {
       return newValues;
     });
   };
+
   return (
     <div className={styles.preview__slider}>
       <ul className={styles.preview__slider__list}>
@@ -71,9 +71,11 @@ export const PreviewSlider: FC<PreviewSliderProps> = ({ profiles }) => {
   );
 };
 
+// iOS-style box shadow
 const iOSBoxShadow =
   "0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)";
 
+// Styled Slider component with iOS-like appearance
 const IOSSlider = styled(Slider)(({ theme }) => ({
   color: theme.palette.mode === "dark" ? "#0a84ff" : "#007bff",
   height: 5,

@@ -1,6 +1,5 @@
-// CarSelection.tsx
 import React, { useEffect, useMemo, useState } from "react";
-import styles from "./preview.module.css"; // Make sure to create this CSS module
+import styles from "./preview.module.css";
 import { Button } from "../ui/button";
 import { IInstructions, useAttributes } from "../../context/attributes_context";
 import ExportDropdown from "../export/export";
@@ -9,6 +8,7 @@ import { PreviewMcq } from "./__mcq/preview__mcq";
 import { PreviewRanking } from "./__ranking/preview__ranking";
 import { PreviewSlider } from "./__slider/preview__slider";
 
+// Define the props for the Preview component
 export interface IPreview {
   attributes: string[];
   previews: string[][];
@@ -17,20 +17,22 @@ export interface IPreview {
   refresh?: boolean;
 }
 
+// Define the structure for profile data
 export interface IProfile {
   value: string;
   id: string;
 }
 
-const Preview = ({
+const Preview: React.FC<IPreview> = ({
   attributes,
   previews,
   instructions,
   setRefresh,
   refresh,
-}: IPreview) => {
-  const [testData, setTestData] = useState<string[]>([]);
+}) => {
+  const [previewData, setPreviewData] = useState<string[]>([]);
 
+  // Memoize the profiles to avoid unnecessary recalculations
   const profiles: IProfile[] = useMemo(
     () =>
       previews.map((_, index) => ({
@@ -40,45 +42,37 @@ const Preview = ({
     [previews]
   );
 
+  // Render the appropriate outcome component based on the instructions
   const renderOutcome = () => {
     switch (instructions?.outcomeType) {
       case "mcq":
-        return (
-          <PreviewMcq refresh={refresh ? refresh : false} options={profiles} />
-        );
+        return <PreviewMcq refresh={refresh || false} options={profiles} />;
       case "ranking":
         return (
-          <PreviewRanking
-            refresh={refresh ? refresh : false}
-            profiles={profiles}
-          />
+          <PreviewRanking refresh={refresh || false} profiles={profiles} />
         );
       case "slider":
         return <PreviewSlider profiles={profiles} />;
+      default:
+        return null;
     }
   };
 
+  // Generate the preview data when attributes or previews change
   useEffect(() => {
-    const testData2: string[] = [];
+    const newPreviewData: string[] = [];
 
-    for (let k = 0; k <= previews.length; k++) {
-      if (k === 0) {
-        testData2.push("");
-      } else {
-        testData2.push(`Profile ${k}`);
-      }
-    }
+    // Add header row
+    newPreviewData.push("");
+    previews.forEach((_, index) => newPreviewData.push(`Profile ${index + 1}`));
 
-    for (let j = 0; j < attributes.length; j++) {
-      for (let i = -1; i < previews.length; i++) {
-        if (i === -1) {
-          testData2.push(attributes[j]);
-        } else {
-          testData2.push(previews[i][j]);
-        }
-      }
-    }
-    setTestData(testData2);
+    // Add data rows
+    attributes.forEach((attribute, attrIndex) => {
+      newPreviewData.push(attribute);
+      previews.forEach((preview) => newPreviewData.push(preview[attrIndex]));
+    });
+
+    setPreviewData(newPreviewData);
   }, [attributes, previews]);
 
   return (
@@ -105,12 +99,12 @@ const Preview = ({
               gridTemplateColumns: `10rem repeat(${previews.length}, 18.5rem)`,
             }}
           >
-            {testData.map((preview, index) => (
+            {previewData.map((item, index) => (
               <div
                 className={`${styles.testData} ${
                   index <= previews.length ? styles.firstPreview : ""
                 } ${
-                  index >= testData.length - previews.length
+                  index >= previewData.length - previews.length
                     ? styles.lastPreview
                     : ""
                 } ${
@@ -120,7 +114,7 @@ const Preview = ({
                 }`}
                 key={index}
               >
-                <p>{preview}</p>
+                <p>{item}</p>
               </div>
             ))}
           </div>
