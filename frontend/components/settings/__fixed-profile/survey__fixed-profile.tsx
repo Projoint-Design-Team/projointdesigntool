@@ -126,8 +126,8 @@ export const SurveyFixedProfile: FC<SurveyFixedProfileProps> = ({}) => {
           <SettingsCheckbox
             checked={fixedProfileEnabled}
             onChange={handleFixedProfileEnabled}
-            label={naming.surveyPage.fixedProfile.description.value}
-            explanation={naming.surveyPage.fixedProfile.description.subtitle}
+            label={naming.settingsPage.fixedProfile.value}
+            explanation={naming.settingsPage.fixedProfile.subtitle}
           />
         </div>
 

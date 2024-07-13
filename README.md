@@ -3,17 +3,19 @@
 Welcome to the ProJoint project repository. This project is designed to provide a web-based interface to build Qualtrics surveys for conjoint experiments, designed for compatibility with the projoint library, accessible at [ProJoint](https://projoint.abudhabi.nyu.edu/).
 
 ## Installation
+
 Clone the repository to your local machine:
-   ```bash
-   git clone https://github.com/Projoint-Design-Team/projointdesigntool.git
-   ```
+
+```bash
+git clone https://github.com/Projoint-Design-Team/projointdesigntool.git
+```
 
 ## Repository Structure
 
 This repository is organized into several key directories:
 
 - `backend/`: Contains all backend Django application code.
-- `frontend/`: Frontend application code (details to be added).
+- `frontend/`: Frontend application code.
 - `docs/`: Documentation for the project.
 - `nginx/`: Nginx server configuration (details to be added).
 - `.github/workflows/`: CI/CD workflows using GitHub Actions.
@@ -23,6 +25,10 @@ This repository is organized into several key directories:
 The backend directory contains the Django project code. It is responsible for handling all server-side logic, database interactions, and API services.
 
 For more details, refer to the backend [README.md](backend/README.md).
+
+## Frontend
+
+The frontend of the ProJoint project, developed using Next.js, provides a dynamic user interface for designing and managing surveys for conjoint experiments. It features an interactive, component-based architecture leveraging React and Material-UI for responsive and intuitive user interactions. For detailed setup and development practices, refer to the [frontend documentation](frontend/README.md).
 
 ## Documentation
 
@@ -43,10 +49,6 @@ CI/CD pipelines are defined under `.github/workflows/`. The `docker-deploy.yml` 
 
 - **Automatic Deployment**: Automatically deploys the latest version of the code to the production server upon commits to the main branch.
 - **Github Secrets**: Pulls information from Github Action Secrets to secure the confidential information
-
-## Frontend
-
-Details about the frontend setup and technologies used will be added here.
 
 ## Nginx
 
