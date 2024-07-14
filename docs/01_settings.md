@@ -14,7 +14,7 @@ This is the number of distinct comparison tasks the respondent sees. More tasks 
 
 This toggles whether one of the tasks respondents see is an exact duplicate of a previous task. By comparing the rate at which respondents give the same answer to identical questions, it is possible to measure and correct for a certain type of measurement error in conjoint studies. We strongly recommend turning this on.
 
-### Repeated Task is Shuffled
+### Repeated task is shuffled
 
 Option to either flip columns same for repeated tasks
 
