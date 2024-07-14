@@ -33,7 +33,7 @@ from .serializer import DocumentationSerializer
 )
 @api_view(["GET"])
 def get_doc(request, identifier):
-    file_path = os.path.join(settings.BASE_DIR, "../docs", f"{identifier}.md")
+    file_path = os.path.join(settings.BASE_DIR, "docs", f"{identifier}.md")
     try:
         if not os.path.exists(file_path):
             raise Http404("Document not found")
@@ -67,7 +67,7 @@ def get_doc(request, identifier):
 )
 @api_view(["GET"])
 def list_docs(request):
-    docs_path = os.path.join(settings.BASE_DIR, "../docs")
+    docs_path = os.path.join(settings.BASE_DIR, "docs")
     print(settings.BASE_DIR)
     print(docs_path)
     markdown_files = [f for f in os.listdir(docs_path) if f.endswith(".md")]
