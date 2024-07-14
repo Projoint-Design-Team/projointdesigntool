@@ -32,7 +32,6 @@ ENV APP_HOME=/home/app/web
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/staticfiles
 RUN mkdir $APP_HOME/mediafiles
-RUN mkdir $APP_HOME/docs
 WORKDIR $APP_HOME
 
 RUN apt-get update && apt-get install -y libpq-dev
@@ -44,7 +43,6 @@ COPY ./entrypoint.sh $APP_HOME
 
 COPY . $APP_HOME
 
-COPY ../docs /home/app/web/docs
 
 RUN chown -R app:app $APP_HOME
 
