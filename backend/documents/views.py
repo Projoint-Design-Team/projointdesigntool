@@ -68,5 +68,7 @@ def get_doc(request, identifier):
 @api_view(["GET"])
 def list_docs(request):
     docs_path = os.path.join(settings.BASE_DIR, "../docs")
+    print(settings.BASE_DIR)
+    print(docs_path)
     markdown_files = [f for f in os.listdir(docs_path) if f.endswith(".md")]
     return Response(markdown_files)
