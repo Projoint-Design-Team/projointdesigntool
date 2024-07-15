@@ -125,7 +125,7 @@
     },
     "fixedProfile": {
       "value": "Enable fixed profile",
-      "subtitle": "If enabled, the following attributes will be fixed for all participants."
+      "subtitle": "One profile in each task will be fixed for all participants. Note that this overrides any across-profile restrictions."
     }
   }
 }
