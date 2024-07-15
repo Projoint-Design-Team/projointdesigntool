@@ -37,7 +37,7 @@ const Preview: React.FC<IPreview> = ({
   const profiles: IProfile[] = useMemo(
     () =>
       previews.map((_, index) => ({
-        value: `Profile ${index + 1}`,
+        value: `${profileNaming} ${index + 1}`,
         id: `${index + 1}`,
       })),
     [previews]

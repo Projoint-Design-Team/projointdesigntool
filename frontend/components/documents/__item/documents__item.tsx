@@ -52,9 +52,9 @@ export const DocumentItem = ({ name, active, id }: IDoc) => {
             </div>
           </div>
           <ul className={styles.helpers}>
-            <Link href={`/${encodedName}/preview`}>
-              <li className={isPath("/preview") ? styles.activeLink : ""}>
-                Preview
+            <Link href={`/${encodedName}/settings`}>
+              <li className={isPath("/settings") ? styles.activeLink : ""}>
+                Settings
               </li>
             </Link>
             <Link href={`/${encodedName}/restrictions`}>
@@ -62,9 +62,9 @@ export const DocumentItem = ({ name, active, id }: IDoc) => {
                 Restrictions
               </li>
             </Link>
-            <Link href={`/${encodedName}/settings`}>
-              <li className={isPath("/settings") ? styles.activeLink : ""}>
-                Settings
+            <Link href={`/${encodedName}/preview`}>
+              <li className={isPath("/preview") ? styles.activeLink : ""}>
+                Preview
               </li>
             </Link>
           </ul>
