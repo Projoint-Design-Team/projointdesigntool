@@ -43,6 +43,7 @@ COPY ./entrypoint.sh $APP_HOME
 
 COPY . $APP_HOME
 
+
 RUN chown -R app:app $APP_HOME
 
 USER app

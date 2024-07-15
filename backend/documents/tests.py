@@ -9,7 +9,7 @@ class DocumentTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         # document file path
-        cls.document_file = os.path.join(settings.BASE_DIR, "../docs", "example.md")
+        cls.document_file = os.path.join(settings.BASE_DIR, "content", "example.md")
 
         # Populate the document markdown file with some content
         with open(cls.document_file, "w") as file:
@@ -48,7 +48,7 @@ class DocumentationFileTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         # Create a temporary directory and add some Markdown files
-        cls.docs_path = os.path.join(settings.BASE_DIR, "../docs")
+        cls.docs_path = os.path.join(settings.BASE_DIR, "content")
         cls.files = ["test1.md", "test2.md", "not_a_md_file.txt"]
         for file in cls.files:
             with open(os.path.join(cls.docs_path, file), "w") as f:

@@ -16,7 +16,7 @@ This repository is organized into several key directories:
 
 - `backend/`: Contains all backend Django application code.
 - `frontend/`: Frontend application code.
-- `docs/`: Documentation for the project.
+- `backend/content/`: Content for the project.
 - `nginx/`: Nginx server configuration (details to be added).
 - `.github/workflows/`: CI/CD workflows using GitHub Actions.
 
@@ -32,7 +32,7 @@ The frontend of the ProJoint project, developed using Next.js, provides a dynami
 
 ## Documentation
 
-Documentation related to the project is located in the `docs/` directory. This includes:
+Documentation related to the project is located in the `backend/content/` directory. This includes:
 
 - `00_tutorial.md`: A tutorial to help new users get started.
 - `01_settings.md`: Configuration settings and their explanations.
