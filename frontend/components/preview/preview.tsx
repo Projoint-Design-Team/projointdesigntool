@@ -31,6 +31,7 @@ const Preview: React.FC<IPreview> = ({
   refresh,
 }) => {
   const [previewData, setPreviewData] = useState<string[]>([]);
+  const { profileNaming } = useAttributes();
 
   // Memoize the profiles to avoid unnecessary recalculations
   const profiles: IProfile[] = useMemo(
@@ -64,7 +65,9 @@ const Preview: React.FC<IPreview> = ({
 
     // Add header row
     newPreviewData.push("");
-    previews.forEach((_, index) => newPreviewData.push(`Profile ${index + 1}`));
+    previews.forEach((_, index) =>
+      newPreviewData.push(`${profileNaming} ${index + 1}`)
+    );
 
     // Add data rows
     attributes.forEach((attribute, attrIndex) => {

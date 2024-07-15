@@ -95,6 +95,10 @@
       "value": "Number of profiles",
       "subtitle": "Changes the number of profiles in preview section"
     },
+    "profileNaming": {
+      "value": "Profile naming",
+      "subtitle": "Name of the profiles"
+    },
     "numberTasks": {
       "value": "Number of tasks",
       "subtitle": "Set of choices presented to the respondent in a single screen (i.e. pair of candidates)"

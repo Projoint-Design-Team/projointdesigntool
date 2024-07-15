@@ -69,7 +69,7 @@ interface AttributeContextType {
   getLevelById: (levelId: number, attributeName: string) => string;
   addNewAttribute: (name: string) => void;
   addLevelToAttribute: (attributeKey: number, newLevel: string) => void;
-  deleteLevelFromAttribute: (attributeKey: number, levelId: number) => void; // Changed levelIndex to levelId
+  deleteLevelFromAttribute: (attributeKey: number, levelId: number) => void;
   deleteAttribute: (key: number) => void;
   updateWeight: (attributeKey: number, newWeights: number[]) => void;
   cancelNewAttribute: () => void;
@@ -81,7 +81,7 @@ interface AttributeContextType {
   handleLevelNameChange: (
     attributeKey: number,
     newName: string,
-    levelId: number // Changed levelIndex to levelId
+    levelId: number
   ) => void;
   handleAttributeNameChange: (newName: string, key: number) => void;
   setEdited: (edited: boolean) => void;
@@ -106,6 +106,8 @@ interface AttributeContextType {
   setFixedProfile: React.Dispatch<React.SetStateAction<FixedProfileProps[]>>;
   fixedProfileEnabled: boolean;
   setFixedProfileEnabled: React.Dispatch<React.SetStateAction<boolean>>;
+  profileNaming: string;
+  setProfileNaming: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const AttributeContext = createContext<AttributeContextType | undefined>(
@@ -129,6 +131,7 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     useContext(DocumentContext);
   const [prevDocID, setPrevDocID] = useState<string>("");
   const [edited, setEdited] = useState<boolean>(false);
+  const [attributesEdited, setAttributesEdited] = useState<boolean>(false);
   const [storageChanged, setStorageChanged] = useState<number>(0);
 
   const [restrictions, setRestrictions] = useState<RestrictionProps[]>([]);
@@ -156,18 +159,12 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
   const [fixedProfileEnabled, setFixedProfileEnabled] =
     useState<boolean>(false);
 
-  // "numProfiles": 2,
-  // "numTasks": 5,
-  // "randomize": false,
-  // "repeat_task": false,
-  // "random": false,
-  // "duplicate_first": 0,
-  // "duplicate_second": 4,
-  // "noFlip": false
+  const [profileNaming, setProfileNaming] = useState<string>("Profile");
 
   useEffect(() => {
     if (currentDocID && currentDocID !== prevDocID) {
       setEdited(false);
+      setAttributesEdited(false);
       setPrevDocID(currentDocID);
       const localData = localStorage.getItem(`attributes-${currentDocID}`);
       if (localData) {
@@ -187,6 +184,9 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
             ? parsedData.fixedProfileEnabled
             : false
         );
+        setProfileNaming(
+          parsedData.profileNaming ? parsedData.profileNaming : "Profile"
+        );
       } else {
         setAttributes([]);
       }
@@ -197,10 +197,13 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
 
   useEffect(() => {
     if (currentDocID && currentDocID === prevDocID && edited) {
-      setLastEdited(new Date());
+      if (attributesEdited) {
+        setLastEdited(new Date());
+        setAttributesEdited(false);
+      }
       const dataToSave = {
         attributes: attributes,
-        lastEdited: new Date(),
+        lastEdited: lastEdited,
         name: currentDoc,
         restrictions: restrictions,
         instructions: instructions,
@@ -208,6 +211,7 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
         crossRestrictions: crossRestrictions,
         fixedProfile: fixedProfile,
         fixedProfileEnabled: fixedProfileEnabled,
+        profileNaming: profileNaming,
       };
       localStorage.setItem(
         `attributes-${currentDocID}`,
@@ -229,19 +233,20 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     instructions,
     fixedProfile,
     fixedProfileEnabled,
+    profileNaming,
   ]);
 
-  // TODO: Change keys so there is no possiblity of duplicate keys
   const addNewAttribute = (name: string) => {
     const newAttribute: Attribute = {
       name,
       levels: [],
-      key: Date.now(), // Using Date.now() to ensure a unique key
+      key: Date.now(),
       locked: false,
     };
     setAttributes([...attributes, newAttribute]);
     setIsCreatingAttribute(false);
     setEdited(true);
+    setAttributesEdited(true);
   };
 
   const toggleAttributeLocked = (key: number) => {
@@ -253,6 +258,8 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
         return attribute;
       });
     });
+    setEdited(true);
+    setAttributesEdited(true);
   };
 
   const handleInstructions = (
@@ -294,6 +301,7 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
       return newAttributes;
     });
     setEdited(true);
+    setAttributesEdited(true);
   };
 
   const handleCreateAttribute = () => setIsCreatingAttribute(true);
@@ -301,14 +309,13 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
   const addLevelToAttribute = (attributeKey: number, newLevel: string) => {
     AddLevelToAttribute(attributeKey, newLevel, setAttributes);
     setEdited(true);
+    setAttributesEdited(true);
   };
 
-  const deleteLevelFromAttribute = (
-    attributeKey: number,
-    levelId: number // Changed levelIndex to levelId
-  ) => {
+  const deleteLevelFromAttribute = (attributeKey: number, levelId: number) => {
     DeleteLevelFromAttribute(attributeKey, levelId, setAttributes);
     setEdited(true);
+    setAttributesEdited(true);
   };
 
   const cancelNewAttribute = () => setIsCreatingAttribute(false);
@@ -316,10 +323,11 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
   const handleLevelNameChange = (
     attributeKey: number,
     newName: string,
-    levelId: number // Changed levelIndex to levelId
+    levelId: number
   ) => {
     LevelNameChange(attributeKey, newName, levelId, setAttributes);
     setEdited(true);
+    setAttributesEdited(true);
   };
 
   const handleAttributeNameChange = (newName: string, key: number) => {
@@ -332,6 +340,7 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
       });
     });
     setEdited(true);
+    setAttributesEdited(true);
   };
 
   const getAttributeById = (id: number) => {
@@ -391,7 +400,6 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
       return validCrossRestrictions;
     });
 
-    // Assuming we have a function to save the entire array of restrictions to local storage
     setEdited(true);
   };
 
@@ -600,6 +608,8 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     setFixedProfile,
     fixedProfileEnabled,
     setFixedProfileEnabled,
+    profileNaming,
+    setProfileNaming,
   };
 
   return (

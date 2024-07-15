@@ -15,7 +15,13 @@ export const Settings = () => {
   // Context and custom hooks
   const { currentDoc, lastEdited, setLastEdited, setCurrentDoc } =
     useContext(DocumentContext);
-  const { setEdited, settings, updateSettings } = useAttributes();
+  const {
+    setEdited,
+    settings,
+    updateSettings,
+    profileNaming,
+    setProfileNaming,
+  } = useAttributes();
 
   // Local state
   const [numProfiles, setNumProfiles] = useState(settings.numProfiles);
@@ -132,6 +138,25 @@ export const Settings = () => {
           label={naming.settingsPage.numberProfiles.value}
           explanation={naming.settingsPage.numberProfiles.subtitle}
         />
+        <div className={styles.name}>
+          <label>
+            <h3>{naming.settingsPage.profileNaming.value}</h3>
+          </label>
+          <input
+            value={profileNaming}
+            onChange={(e) => setProfileNaming(e.target.value)}
+            onBlur={(e) => {
+              const trimmedValue = e.target.value.trim();
+              if (trimmedValue === "") {
+                setProfileNaming("Profile");
+              }
+            }}
+            className={styles.editableInput}
+          />
+          <SettingsExplanation
+            explanation={<p>{naming.settingsPage.profileNaming.subtitle}</p>}
+          />
+        </div>
         <SettingsLine />
         <SettingsNumberRange
           value={numTasks}
