@@ -96,23 +96,32 @@ export const Attribute: FC<PropsAttributeComponent> = ({
     });
   };
 
-  const saveWeights = () => {
-    const totalWeight = currentWeights.reduce((acc, weight) => acc + weight, 0);
+  const marginError = 0.3;
 
-    if (totalWeight === 100) {
+  const saveWeights = () => {
+    const totalWeight = currentWeights.reduce(
+      (acc, weight) => acc + parseFloat(weight.toFixed(1)),
+      0
+    );
+
+    if (Math.abs(100 - totalWeight) <= marginError) {
       // Save logic here
       console.log("Weights are valid and saved.");
-      updateWeight(highlightedAttribute, currentWeights);
+      updateWeight(
+        highlightedAttribute,
+        currentWeights.map((weight) => parseFloat(weight.toFixed(1)))
+      );
     } else {
-      // TODO make something else
-      setCurrentWeights(attribute.levels.map((lvl) => lvl.weight));
-      alert("Total weight must be 100.");
+      alert(
+        "Total weight must sum up to approximately 100 within a margin of 0.2."
+      );
     }
     setShowWeights(false);
   };
 
   useEffect(() => {
-    setTotalWeight(currentWeights.reduce((acc, weight) => acc + weight, 0));
+    const total = currentWeights.reduce((acc, weight) => acc + weight, 0);
+    setTotalWeight(parseFloat(total.toFixed(1)));
   }, [currentWeights, attribute.levels]);
 
   return (
@@ -252,7 +261,10 @@ export const Attribute: FC<PropsAttributeComponent> = ({
                 : styles.notvisible
             }`}
             style={{
-              border: totalWeight === 100 ? "" : "2px solid var(--red)",
+              border:
+                Math.abs(100 - totalWeight) <= marginError
+                  ? ""
+                  : "2px solid var(--red)",
             }}
           >
             {show && highlightedAttribute === attribute.key ? (

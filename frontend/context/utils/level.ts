@@ -37,18 +37,16 @@ export const AddLevelToAttribute = (
       if (attribute.key === attributeKey) {
         const newLevelId =
           attribute.levels.reduce((maxId, lvl) => Math.max(maxId, lvl.id), 0) +
-          1; // Calculate new levelId
+          1;
         const newNumberOfLevels = attribute.levels.length + 1;
 
-        // Calculate weights to sum up to 100, distributed as evenly as possible
-        const baseWeight = Math.floor(100 / newNumberOfLevels);
-        const remainder = 100 % newNumberOfLevels;
-        const newLevels = attribute.levels.map((lvl, index) => {
-          return {
-            ...lvl,
-            weight: index < remainder ? baseWeight + 1 : baseWeight,
-          };
-        });
+        const totalWeight = 100;
+        const equalWeight = (totalWeight / newNumberOfLevels).toFixed(1);
+
+        const newLevels = attribute.levels.map((lvl) => ({
+          ...lvl,
+          weight: parseFloat(equalWeight),
+        }));
 
         return {
           ...attribute,
@@ -57,8 +55,7 @@ export const AddLevelToAttribute = (
             {
               name: newLevel,
               id: newLevelId,
-              weight:
-                newNumberOfLevels <= remainder ? baseWeight + 1 : baseWeight,
+              weight: parseFloat(equalWeight),
             },
           ],
         };
@@ -82,15 +79,12 @@ export const DeleteLevelFromAttribute = (
 
         const newNumberOfLevels = newLevels.length;
         // Calculate weights to sum up to 100, distributed as evenly as possible
-        const baseWeight = Math.floor(100 / newNumberOfLevels);
-        const remainder = 100 % newNumberOfLevels;
-        newLevels = newLevels.map((lvl, index) => {
-          return {
-            ...lvl,
-            weight: index < remainder ? baseWeight + 1 : baseWeight,
-            id: lvl.id, // Keep original id
-          };
-        });
+        const totalWeight = 100;
+        const equalWeight = (totalWeight / newNumberOfLevels).toFixed(1);
+        newLevels = newLevels.map((lvl) => ({
+          ...lvl,
+          weight: parseFloat(equalWeight),
+        }));
 
         return {
           ...attribute,

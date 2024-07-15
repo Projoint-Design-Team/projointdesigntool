@@ -268,7 +268,7 @@
 .attribute_weights {
   width: 5rem;
   border-left: 1px solid var(--border-gray);
-  padding: 1rem;
+  padding: 1rem 0;
   transition: none;
 }
 
