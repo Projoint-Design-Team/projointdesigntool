@@ -53,6 +53,7 @@ export interface SettingsProps {
   taskToRepeat: number;
   whereToRepeat: number;
   randomize: boolean;
+  ordering: "task" | "participant" | "non_random";
 }
 
 export interface FixedProfileProps {
@@ -153,6 +154,7 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     taskToRepeat: 1,
     whereToRepeat: 1,
     randomize: false,
+    ordering: "task",
   });
 
   const [fixedProfile, setFixedProfile] = useState<FixedProfileProps[]>([]);

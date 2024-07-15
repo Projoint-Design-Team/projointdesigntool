@@ -32,6 +32,8 @@ export const Settings = () => {
   );
   const [taskToRepeat, setTaskToRepeat] = useState(settings.taskToRepeat);
   const [whereToRepeat, setWhereToRepeat] = useState(settings.whereToRepeat);
+  const [ordering, setOrdering] = useState(settings.ordering);
+
   const [isEditing, setIsEditing] = useState(false);
   const [docName, setDocName] = useState<string>(currentDoc);
 
@@ -47,6 +49,7 @@ export const Settings = () => {
     setWhereToRepeat(settings.whereToRepeat);
     setRepeatedTasks(settings.repeatedTasks);
     setRepeatedTasksFlipped(settings.repeatedTasksFlipped);
+    setOrdering(settings.ordering);
   }, [settings]);
 
   useEffect(() => {
@@ -103,7 +106,10 @@ export const Settings = () => {
   };
 
   // Generic handler for updating settings
-  const handleSettingChange = (key: string, value: number | boolean) => {
+  const handleSettingChange = (
+    key: string,
+    value: number | boolean | string
+  ) => {
     updateSettings({ ...settings, [key]: value });
   };
 
@@ -211,7 +217,13 @@ export const Settings = () => {
               "Non random",
               "Participant randomized",
             ]}
-            defaultValue="Task randomized"
+            defaultValue={orderingOptions(ordering)}
+            onChange={(e) =>
+              handleSettingChange(
+                "ordering",
+                reverseOrderingOptions(e.target.value)
+              )
+            }
           />
           <SettingsExplanation
             learnMoreLink
@@ -225,4 +237,26 @@ export const Settings = () => {
       </div>
     </section>
   );
+};
+
+const orderingOptions = (ordering: string) => {
+  switch (ordering) {
+    case "task":
+      return "Task randomized";
+    case "participant":
+      return "Participant randomized";
+    default:
+      return "Non random";
+  }
+};
+
+const reverseOrderingOptions = (option: string) => {
+  switch (option) {
+    case "Task randomized":
+      return "task";
+    case "Participant randomized":
+      return "participant";
+    default:
+      return "non_random";
+  }
 };

@@ -64,18 +64,21 @@ function BpRadio(props: RadioProps) {
 export interface SettingsRadioGroupProps {
   options: string[];
   defaultValue: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 // Component to render a group of custom radio buttons
 export const SettingsRadioGroup: FC<SettingsRadioGroupProps> = ({
   options,
   defaultValue,
+  onChange,
 }) => (
   <div className={styles.settings__radio_group}>
     <RadioGroup
-      defaultValue={defaultValue}
+      value={defaultValue}
       aria-labelledby="radio_button"
       name="radio_button"
+      onChange={onChange}
     >
       {options.map((option) => (
         <FormControlLabel
