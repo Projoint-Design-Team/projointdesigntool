@@ -586,14 +586,19 @@ def _rearrange_and_write_profiles(writer, profiles_list, profiles):
 
 
 def _create_csv_profiles(
-    profiles_num, attribute_list, restrictions, cross_restrictions, fixed_profile
+    profiles_num,
+    attribute_list,
+    restrictions,
+    cross_restrictions,
+    fixed_profile,
+    fixed_profile_position,
 ):
     profiles = _create_profiles(
         profiles_num, attribute_list, restrictions, cross_restrictions
     )
     if fixed_profile:
         fixed_prof = {key: fixed_profile[key] for key in profiles[0].keys()}
-        profiles[0] = fixed_prof
+        profiles[fixed_profile_position] = fixed_prof
     return [[item for pair in profile.items() for item in pair] for profile in profiles]
 
 
@@ -605,6 +610,7 @@ def _populate_csv(
     csv_lines,
     filename,
     fixed_profile,
+    fixed_profile_position,
 ):
     with open(filename, "w") as file:
         writer = csv.writer(file)
@@ -619,6 +625,7 @@ def _populate_csv(
                 restrictions,
                 cross_restrictions,
                 fixed_profile,
+                fixed_profile_position,
             )
             _rearrange_and_write_profiles(writer, profiles_list, profiles)
 

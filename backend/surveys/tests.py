@@ -122,6 +122,7 @@ class PreviewSurveyTests(TestCase):
             "num_profiles": 2,
             "filename": "preview",
             "fixed_profile": {"att1": "level1", "att2": "level2", "att3": "level3"},
+            "fixed_profile_position": 1,
         }
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

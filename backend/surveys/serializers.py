@@ -48,6 +48,7 @@ class ShortSurveySerializer(serializers.ModelSerializer):
     filename = serializers.CharField(required=True)
     csv_lines = serializers.IntegerField(default=500)
     fixed_profile = serializers.JSONField(required=False, default=dict)
+    fixed_profile_position = serializers.IntegerField(default=0)
 
     class Meta:
         model = Survey
@@ -59,6 +60,7 @@ class ShortSurveySerializer(serializers.ModelSerializer):
             "filename",
             "csv_lines",
             "fixed_profile",
+            "fixed_profile_position",
         ]
 
     def validate_attributes(self, value):
@@ -86,6 +88,21 @@ class ShortSurveySerializer(serializers.ModelSerializer):
         Custom validation that checks each restriction for logic errors or inconsistencies.
         """
         restrictions = data["restrictions"]
+
+        fixed_profile = data["fixed_profile"]
+        fixed_position = data["fixed_profile_position"]
+
+        if fixed_position != 0 and not fixed_profile:
+            raise serializers.ValidationError(
+                "Fixed profile must be provided if a fixed position is specified."
+            )
+
+        num_profiles = data["num_profiles"]
+        if not (0 <= fixed_position < num_profiles):
+            raise serializers.ValidationError(
+                f"Fixed profile position must be between 0 and {num_profiles - 1}."
+            )
+
         for restriction in restrictions:
             if "logical" in restriction["condition"] and cond["logical"] not in [
                 "||",

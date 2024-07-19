@@ -21,3 +21,4 @@ class Survey(models.Model):
     random = models.BooleanField(default=False)
     randomize = models.BooleanField(default=False)
     fixed_profile = models.JSONField(default=dict)
+    fixed_profile_position = models.IntegerField(default=0)

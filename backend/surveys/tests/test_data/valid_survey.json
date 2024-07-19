@@ -73,6 +73,7 @@
 	"csv_lines": 500,
 	"num_tasks": 5,
 	"fixed_profile": {},
+	"fixed_profile_position": 0,
 	"repeated_tasks": false,
 	"repeated_tasks_flipped": false,
 	"task_to_repeat": 0,
