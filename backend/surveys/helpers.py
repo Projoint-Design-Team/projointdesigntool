@@ -282,7 +282,7 @@ def _send_file_response(filename):
     )
     response.closed = file.close
     # Delete the file
-    os.remove(filename)
+    # os.remove(filename)
     return response
 
 
@@ -690,7 +690,7 @@ def _validate_file(request, file_type, content_type):
 """ """""" """""" """""" """""" """""" """""" """"""
 
 
-def _create_html(i, num_attr, profiles, qNum, noFlip, qText):
+def _create_html(i, num_attr, profiles, qNum, noFlip, qText, profile_naming):
     # if i == 0:
     #     text_out = "<span>Blank page</span>"
     #     return text_out
@@ -708,7 +708,9 @@ def _create_html(i, num_attr, profiles, qNum, noFlip, qText):
     for k in range(profiles):
         header = (
             header
-            + '<td style="text-align: center;">\n<strong>Choice '
+            + '<td style="text-align: center;">\n<strong>'
+            + profile_naming
+            + " "
             + str(k + 1)
             + "</strong></td>\n"
         )
@@ -770,6 +772,9 @@ def _create_survey(
     repeated_tasks_flipped,
     doubleQ,
     qText,
+    qType,
+    qDescription,
+    profile_naming,
 ):
     url = "https://yul1.qualtrics.com/API/v3/survey-definitions"  # CHANGE DATA CENTER
     payload = {"SurveyName": name, "Language": "EN", "ProjectCategory": "CORE"}
@@ -782,26 +787,46 @@ def _create_survey(
         if i == 0:
             currText = "This block needs to be placed above your conjoint question blocks.<br>However, you may alter the contents of this block (i.e add an introduction to survey)."
             blockID = bl
-        if i != 0:
+        elif i != 0:
             blockID = __CreateBlock(surveyID, bl, user_token)
-            currText += qText
-            currText += "\n"
-            currText = _create_html(i, num_attr, profiles, i, 0, qText)
-        # if i==where_to_repeat:
-        # currText = _create_html(task_to_repeat, num_attr, profiles, i-1, repeated_tasks_flipped)
-        currQ = _create_question(
-            surveyID, currText, blockID, user_token, profiles, js, i
-        )
-        if doubleQ and i != 0:
-            currQ = _create_question(
-                surveyID, " ", blockID, user_token, profiles, js, i
+            currText = _create_html(i, num_attr, profiles, i, 0, qText, profile_naming)
+        elif i == where_to_repeat:
+            currText = _create_html(
+                task_to_repeat,
+                num_attr,
+                profiles,
+                i - 1,
+                repeated_tasks_flipped,
+                qText,
+                profile_naming,
             )
+        _create_question(
+            surveyID,
+            " " if doubleQ and i != 0 else currText,
+            qDescription,
+            blockID,
+            user_token,
+            profiles,
+            js,
+            i,
+            profile_naming,
+        )
 
     _emb_fields(surveyID, user_token, num_attr, profiles, task)
     return surveyID
 
 
-def _create_question(surveyID, text, blockID, user_token, profiles, js, i):
+def _create_question(
+    surveyID,
+    text,
+    qDescription,
+    blockID,
+    user_token,
+    profiles,
+    js,
+    i,
+    profile_naming,
+):
     url = f"https://yul1.qualtrics.com/API/v3/survey-definitions/{surveyID}/questions"
     querystring = {"blockId": blockID}
     headers = {
@@ -815,7 +840,7 @@ def _create_question(surveyID, text, blockID, user_token, profiles, js, i):
 
     # Create the answer choices based on the number specified
     answer_choices = {
-        str(i): {"Display": f"Profile {i}"} for i in range(1, num_choices + 1)
+        str(i): {"Display": f"{profile_naming} {i}"} for i in range(1, num_choices + 1)
     }
 
     # Define the payload to create a multiple-choice question within the specified block
@@ -832,12 +857,13 @@ def _create_question(surveyID, text, blockID, user_token, profiles, js, i):
         payload = {
             "QuestionText": question_text,
             "QuestionType": "MC",
+            # "QuestionDescription": qDescription,
             "Selector": "SAVR",
             "Choices": answer_choices,
             "DataExportTag": data_tag,
             "Language": [],
         }
-    response = requests.post(url, json=payload, headers=headers, params=querystring)
+    requests.post(url, json=payload, headers=headers, params=querystring)
 
 
 def _get_flow(surveyID, user_token):

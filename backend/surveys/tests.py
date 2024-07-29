@@ -609,6 +609,7 @@ class QualtricsTests(TestCase):
             "doubleQ": False,
             "qText": "This is a test question",
             "qType": "MC",
+            "profile_naming": "DAAAAA",
         }
         self.valid_survey_path = os.path.join(
             settings.BASE_DIR, "surveys", "tests", "test_data", "valid_survey.json"

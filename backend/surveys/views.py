@@ -343,6 +343,8 @@ def export_qsf(request):
         doubleQ = validated_data["doubleQ"]
         qType = validated_data["qType"]
         qText = validated_data["qText"]
+        qDescription = validated_data["qDescription"]
+        profile_naming = validated_data["profile_naming"]
 
         user_token = os.getenv("QUALTRICS_API_KEY")
 
@@ -360,6 +362,9 @@ def export_qsf(request):
             repeated_tasks_flipped,
             doubleQ,
             qText,
+            qType,
+            qDescription,
+            profile_naming,
         )
         success = _download_survey(surveyID, user_token, doubleQ, qType, filename)
         if success:
