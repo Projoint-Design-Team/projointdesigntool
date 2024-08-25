@@ -489,7 +489,7 @@ class ExportJsonTests(TestCase):
             "filename": "survey_export.json",
             "qDescription": "This is a test survey",
             "qInstruction": "This is a test question",
-            "qType": "MC",
+            "qType": "mcq",
         }
 
     def test_export_json_success(self):
@@ -608,7 +608,7 @@ class QualtricsTests(TestCase):
             "qDescription": "This is a test survey",
             "doubleQ": False,
             "qInstruction": "This is a test question",
-            "qType": "MC",
+            "qType": "mcq",
             "profile_naming": "DAAAAA",
         }
         self.valid_survey_path = os.path.join(

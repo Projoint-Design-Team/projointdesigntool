@@ -83,5 +83,5 @@
 	"qDescription": "This is a test survey",
 	"doubleQ": false,
 	"qInstruction": "This is a test question",
-	"qType": "MC"
+	"qType": "mcq"
 }

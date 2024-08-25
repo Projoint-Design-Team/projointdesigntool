@@ -150,7 +150,7 @@ class ExtraSurveySerializer(SurveySerializer):
         default="Please carefully review the options detailed below, \
             then please answer the questions. Which of these choices do you prefer?"
     )
-    qType = serializers.CharField(default="MC")
+    qType = serializers.CharField(default="mcq")
 
     class Meta(SurveySerializer.Meta):
         fields = SurveySerializer.Meta.fields + [

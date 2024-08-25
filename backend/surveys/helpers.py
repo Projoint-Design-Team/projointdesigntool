@@ -932,9 +932,9 @@ def _download_survey(surveyID, user_token, doubleQ, qType, filename):
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
-    if qType == "MC":
+    if qType == "mcq":
         questionType = ["MC", "SAVR"]
-    elif qType == "Rank":
+    elif qType == "ranking":
         questionType = ["RO", "DND"]
     else:
         questionType = ["Slider", "HSLIDER"]
