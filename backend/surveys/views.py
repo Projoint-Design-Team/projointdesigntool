@@ -362,7 +362,6 @@ def export_qsf(request):
             repeated_tasks_flipped,
             doubleQ,
             qInstruction,
-            qType,
             qDescription,
             profile_naming,
         )

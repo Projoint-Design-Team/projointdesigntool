@@ -777,7 +777,6 @@ def _create_survey(
     repeated_tasks_flipped,
     doubleQ,
     qInstruction,
-    qType,
     qDescription,
     profile_naming,
 ):
@@ -791,7 +790,6 @@ def _create_survey(
     _create_question(
         surveyID,
         "DO NOT to remove this block with the Javascript.<br>However, you may alter the contents of this block (i.e add an introduction to survey).",
-        qDescription,
         _get_flow(surveyID, user_token),
         user_token,
         profiles,
@@ -819,7 +817,6 @@ def _create_survey(
         _create_question(
             surveyID,
             " " if doubleQ else currText,
-            qDescription,
             __CreateBlock(surveyID, user_token),
             user_token,
             profiles,
@@ -835,7 +832,6 @@ def _create_survey(
 def _create_question(
     surveyID,
     text,
-    qDescription,
     blockID,
     user_token,
     profiles,
@@ -865,6 +861,9 @@ def _create_question(
             "QuestionText": question_text,
             "DataExportTag": "Introduction",
             "QuestionType": "DB",
+            "Selector": "TB",
+            "DefaultChoices": False,
+            "QuestionDescription": "blah",
             "QuestionJS": js,
             "Language": [],
         }
@@ -873,7 +872,6 @@ def _create_question(
         payload = {
             "QuestionText": question_text,
             "QuestionType": "MC",
-            # "QuestionDescription": qDescription,
             "Selector": "SAVR",
             "Choices": answer_choices,
             "DataExportTag": data_tag,
@@ -913,7 +911,7 @@ def _emb_fields(surveyID, user_token, num_attr, profiles, tasks):
     }
 
     # Make the API request to set embedded fields without values
-    response = requests.post(url, json=payload, headers=headers)
+    requests.post(url, json=payload, headers=headers)
 
 
 def _download_survey(surveyID, user_token, doubleQ, qType, filename):
@@ -943,39 +941,40 @@ def _download_survey(surveyID, user_token, doubleQ, qType, filename):
     if response.status_code == 200:
         response_json = response.json()
         qsf_data = response_json.get("result", {})
-        # for element in qsf_data.get('SurveyElements', []):
-        #     if 'Payload' in element:
-        #         payload = element['Payload']
-        #         if payload and 'DataExportTag' in payload and payload['DataExportTag'] != 'Introduction':
-        #             payload['QuestionJS'] = False
 
         if doubleQ:
             counter = 0
             for j in qsf_data["SurveyElements"]:
-                if "Payload" in j:
+                if "Payload" in j and isinstance(j["Payload"], dict):
                     counter += 1
                     curr = j["Payload"]
-                    if curr and curr["DataExportTag"] == "Introduction":
+                    if (
+                        "DataExportTag" in curr
+                        and curr["DataExportTag"] == "Introduction"
+                    ):
                         continue
-                    if curr and "QuestionType" in curr:
+                    if "QuestionType" in curr:
                         if counter % 2 == 1:
                             curr["QuestionType"] = questionType[0]
                         else:
                             curr["QuestionType"] = questionType2[0]
-                    if curr and "Selector" in curr:
+                    if "Selector" in curr:
                         if counter % 2 == 1:
                             curr["Selector"] = questionType[1]
                         else:
                             curr["Selector"] = questionType2[1]
         else:
             for j in qsf_data["SurveyElements"]:
-                if "Payload" in j:
+                if "Payload" in j and isinstance(j["Payload"], dict):
                     curr = j["Payload"]
-                    if curr and curr["DataExportTag"] == "Introduction":
+                    if (
+                        "DataExportTag" in curr
+                        and curr["DataExportTag"] == "Introduction"
+                    ):
                         continue
-                    if curr and "QuestionType" in curr:
+                    if "QuestionType" in curr:
                         curr["QuestionType"] = questionType[0]
-                    if curr and "Selector" in curr:
+                    if "Selector" in curr:
                         curr["Selector"] = questionType[1]
 
         with open(filename, "w") as qsf_file:
