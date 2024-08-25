@@ -864,10 +864,11 @@ def _create_question(
         payload = {
             "QuestionText": question_text,
             "DataExportTag": "Introduction",
-            "QuestionType": "TE",
+            "QuestionType": "DB",
             "QuestionJS": js,
             "Language": [],
         }
+        print("HEREREE")
     else:
         data_tag = f"Q{i}"
         payload = {
@@ -955,6 +956,8 @@ def _download_survey(surveyID, user_token, doubleQ, qType, filename):
                 if "Payload" in j:
                     counter += 1
                     curr = j["Payload"]
+                    if curr and "DataExportTag" in curr:
+                        continue
                     if curr and "QuestionType" in curr:
                         if counter % 2 == 1:
                             curr["QuestionType"] = questionType[0]
@@ -969,6 +972,8 @@ def _download_survey(surveyID, user_token, doubleQ, qType, filename):
             for j in qsf_data["SurveyElements"]:
                 if "Payload" in j:
                     curr = j["Payload"]
+                    if curr and "DataExportTag" in curr:
+                        continue
                     if curr and "QuestionType" in curr:
                         curr["QuestionType"] = questionType[0]
                     if curr and "Selector" in curr:
