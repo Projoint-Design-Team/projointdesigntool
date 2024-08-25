@@ -28,7 +28,7 @@ export const addSurvey = ({
     name: value && value.filename ? value.filename.split(".")[0] : "Untitled",
     instructions: {
       description: value && value.qDescription ? value.qDescription : "",
-      instructions: value && value.qText ? value.qText : "",
+      instructions: value && value.qInstruction ? value.qInstruction : "",
       outcomeType: value && value.qType ? value.qType : "",
     },
     restrictions: restrictions,

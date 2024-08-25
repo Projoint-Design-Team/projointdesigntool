@@ -690,7 +690,9 @@ def _validate_file(request, file_type, content_type):
 """ """""" """""" """""" """""" """""" """""" """"""
 
 
-def _create_html(i, num_attr, profiles, qNum, noFlip, qText, profile_naming):
+def _create_html(
+    i, num_attr, profiles, qNum, noFlip, profile_naming, qInstruction, qDescription
+):
     # if i == 0:
     #     text_out = "<span>Blank page</span>"
     #     return text_out
@@ -699,7 +701,7 @@ def _create_html(i, num_attr, profiles, qNum, noFlip, qText, profile_naming):
         "<span>Question "
         + str(qNum)
         + "</span>\n<br /><br />\n<span>"
-        + qText
+        + qDescription
         + '</span>\n<br />\n<div>\n<br />\n<table class="UserTable">\n<tbody>\n'
     )
 
@@ -742,15 +744,18 @@ def _create_html(i, num_attr, profiles, qNum, noFlip, qText, profile_naming):
     # Ending
     footer = "</tbody>\n</table>\n</div>"
 
+    # Description
+    inst = "<span>" + qInstruction + "</span>\n<br />"
+
     text_out = top + header
     for j in rows:
         text_out = text_out + j
 
-    text_out = text_out + footer
+    text_out = text_out + footer + inst
     return text_out
 
 
-def __CreateBlock(surveyID, bl, user_token):
+def __CreateBlock(surveyID, user_token):
     url = "https://yul1.qualtrics.com/API/v3/survey-definitions/" + surveyID + "/blocks"
     payload = {"Type": "Standard", "Description": "Block"}
     headers = {"Content-Type": "application/json", "X-API-TOKEN": user_token}
@@ -771,40 +776,51 @@ def _create_survey(
     where_to_repeat,
     repeated_tasks_flipped,
     doubleQ,
-    qText,
+    qInstruction,
     qType,
     qDescription,
     profile_naming,
 ):
-    url = "https://yul1.qualtrics.com/API/v3/survey-definitions"  # CHANGE DATA CENTER
+    url = "https://yul1.qualtrics.com/API/v3/survey-definitions"
     payload = {"SurveyName": name, "Language": "EN", "ProjectCategory": "CORE"}
     headers = {"Content-Type": "application/json", "X-API-TOKEN": user_token}
     response = requests.request("POST", url, json=payload, headers=headers).json()
     surveyID = response["result"]["SurveyID"]
 
-    for i in range(task + 1):
-        bl = _get_flow(surveyID, user_token)
-        if i == 0:
-            currText = "This block needs to be placed above your conjoint question blocks.<br>However, you may alter the contents of this block (i.e add an introduction to survey)."
-            blockID = bl
-        elif i != 0:
-            blockID = __CreateBlock(surveyID, bl, user_token)
-            currText = _create_html(i, num_attr, profiles, i, 0, qText, profile_naming)
-        elif i == where_to_repeat:
+    # FIRST DO NOT REMOVE QUESTION
+    _create_question(
+        surveyID,
+        "DO NOT to remove this block with the Javascript.<br>However, you may alter the contents of this block (i.e add an introduction to survey).",
+        qDescription,
+        _get_flow(surveyID, user_token),
+        user_token,
+        profiles,
+        js,
+        0,
+        profile_naming,
+    )
+
+    for i in range(1, task + 1):
+        if i == where_to_repeat:
             currText = _create_html(
                 task_to_repeat,
                 num_attr,
                 profiles,
                 i - 1,
                 repeated_tasks_flipped,
-                qText,
                 profile_naming,
+                qInstruction,
+                qDescription,
+            )
+        else:
+            currText = _create_html(
+                i, num_attr, profiles, i, 0, profile_naming, qInstruction, qDescription
             )
         _create_question(
             surveyID,
-            " " if doubleQ and i != 0 else currText,
+            " " if doubleQ else currText,
             qDescription,
-            blockID,
+            __CreateBlock(surveyID, user_token),
             user_token,
             profiles,
             js,
@@ -870,7 +886,6 @@ def _get_flow(surveyID, user_token):
     url = "https://yul1.qualtrics.com/API/v3/survey-definitions/" + surveyID + "/flow"
     headers = {"Content-Type": "application/json", "X-API-TOKEN": user_token}
     response = requests.request("GET", url, headers=headers).json()
-    # print(response["result"]["Flow"][0]["ID"])
     return response["result"]["Flow"][0]["ID"]
 
 

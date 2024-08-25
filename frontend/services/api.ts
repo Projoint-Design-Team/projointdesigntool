@@ -34,7 +34,7 @@ export const downloadSurvey = async (
     qDescription: string;
     doubleQ: boolean;
     qType: string;
-    qText: string;
+    qInstruction: string;
   }
 ) => {
   const fileExtension = (filename: string) => {

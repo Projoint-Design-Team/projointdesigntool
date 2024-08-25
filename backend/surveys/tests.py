@@ -488,7 +488,7 @@ class ExportJsonTests(TestCase):
             "num_profiles": 2,
             "filename": "survey_export.json",
             "qDescription": "This is a test survey",
-            "qText": "This is a test question",
+            "qInstruction": "This is a test question",
             "qType": "MC",
         }
 
@@ -607,7 +607,7 @@ class QualtricsTests(TestCase):
             "csv_lines": 500,
             "qDescription": "This is a test survey",
             "doubleQ": False,
-            "qText": "This is a test question",
+            "qInstruction": "This is a test question",
             "qType": "MC",
             "profile_naming": "DAAAAA",
         }

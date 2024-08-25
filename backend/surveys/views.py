@@ -342,7 +342,7 @@ def export_qsf(request):
         repeated_tasks_flipped = validated_data["repeated_tasks_flipped"]
         doubleQ = validated_data["doubleQ"]
         qType = validated_data["qType"]
-        qText = validated_data["qText"]
+        qInstruction = validated_data["qInstruction"]
         qDescription = validated_data["qDescription"]
         profile_naming = validated_data["profile_naming"]
 
@@ -361,7 +361,7 @@ def export_qsf(request):
             where_to_repeat,
             repeated_tasks_flipped,
             doubleQ,
-            qText,
+            qInstruction,
             qType,
             qDescription,
             profile_naming,

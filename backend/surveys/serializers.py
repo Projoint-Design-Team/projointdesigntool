@@ -146,7 +146,7 @@ class ExtraSurveySerializer(SurveySerializer):
     qDescription = serializers.CharField(
         default="Enter your description here! Here are two profiles A and B."
     )
-    qText = serializers.CharField(
+    qInstruction = serializers.CharField(
         default="Please carefully review the options detailed below, \
             then please answer the questions. Which of these choices do you prefer?"
     )
@@ -157,5 +157,5 @@ class ExtraSurveySerializer(SurveySerializer):
             "qDescription",
             "doubleQ",
             "qType",
-            "qText",
+            "qInstruction",
         ]

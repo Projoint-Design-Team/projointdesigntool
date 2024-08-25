@@ -103,7 +103,7 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
             : instructions.description,
         doubleQ: false,
         qType: instructions.outcomeType,
-        qText:
+        qInstruction:
           instructions.instructions === ""
             ? "Please carefully review the options detailed below, then please answer the questions."
             : instructions.instructions,

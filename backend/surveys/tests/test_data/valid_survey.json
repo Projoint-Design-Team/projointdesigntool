@@ -82,6 +82,6 @@
 	"randomize": false,
 	"qDescription": "This is a test survey",
 	"doubleQ": false,
-	"qText": "This is a test question",
+	"qInstruction": "This is a test question",
 	"qType": "MC"
 }
