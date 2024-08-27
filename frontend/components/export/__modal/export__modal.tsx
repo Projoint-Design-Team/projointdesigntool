@@ -64,6 +64,7 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
     fixedProfile,
     fixedProfileEnabled,
     getAttributeById,
+    profileNaming,
   } = useAttributes();
   const [docName, setDocName] = useState<string>(currentDoc);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -93,6 +94,7 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
       fixedProfileEnabled
         ? preprocessFixedProfile(fixedProfile, getAttributeById)
         : {},
+      profileNaming,
       numRows,
       processProfileRestrictions(),
       processCrossRestrictions(),
