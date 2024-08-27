@@ -4,7 +4,7 @@ import styles from "./settings__explanation.module.css";
 
 // Define props interface for SettingsExplanation component
 export interface SettingsExplanationProps {
-  explanation: ReactNode;
+  explanation: string;
   learnMoreLink?: boolean;
 }
 
@@ -12,11 +12,14 @@ export interface SettingsExplanationProps {
 export const SettingsExplanation: FC<SettingsExplanationProps> = ({
   explanation,
   learnMoreLink = false,
-}) => (
-  <div className={styles.settings__explanation}>
-    {learnMoreLink && <LearnMoreIcon />} {explanation}
-  </div>
-);
+}) => {
+  return (
+    <div className={styles.settings__explanation}>
+      {learnMoreLink && <LearnMoreIcon />}
+      <span dangerouslySetInnerHTML={{ __html: explanation }} />
+    </div>
+  );
+};
 
 // LearnMoreIcon component renders an SVG icon for "Learn More"
 const LearnMoreIcon: FC = () => (

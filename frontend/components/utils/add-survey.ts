@@ -87,7 +87,7 @@ export const reintegrateRestrictions = (
   };
 
   const validRestrictions = processedRestrictions.filter((restriction) => {
-    console.log(restriction.condition);
+
     const validIfStates = restriction.condition.every(
       (statement: any, index: number) => {
         return (

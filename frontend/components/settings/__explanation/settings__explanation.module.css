@@ -5,3 +5,8 @@
   gap: 0.375rem;
   margin-top: 0.5rem;
 }
+
+.settings__explanation a {
+  /* color: var(--color-primary); */
+  text-decoration: underline;
+}

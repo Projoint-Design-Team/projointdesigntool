@@ -132,7 +132,7 @@ export const Settings = () => {
             className={styles.editableInput}
           />
           <SettingsExplanation
-            explanation={<p>{naming.settingsPage.name.subtitle}</p>}
+            explanation={naming.settingsPage.name.subtitle}
           />
         </div>
         <SettingsLine />
@@ -160,7 +160,7 @@ export const Settings = () => {
             className={styles.editableInput}
           />
           <SettingsExplanation
-            explanation={<p>{naming.settingsPage.profileNaming.subtitle}</p>}
+            explanation={naming.settingsPage.profileNaming.subtitle}
           />
         </div>
         <SettingsLine />
@@ -227,9 +227,7 @@ export const Settings = () => {
           />
           <SettingsExplanation
             learnMoreLink
-            explanation={
-              <p>{naming.settingsPage.attributesOrdering.subtitle}</p>
-            }
+            explanation={naming.settingsPage.attributesOrdering.subtitle}
           />
         </div>
         <SettingsLine />

@@ -3,6 +3,7 @@
 import { SurveyContainer } from "../../components/survey/survey.container";
 import { DocumentContext } from "../../context/document_context";
 import { useContext, useEffect } from "react";
+import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 
 interface IServerProps {
@@ -12,17 +13,23 @@ interface IServerProps {
 }
 
 function DocumentPage({ params }: IServerProps) {
+  const router = useRouter();
   const documentID = decodeURIComponent(params.document);
-
   const { setCurrentDoc, setCurrentDocID } = useContext(DocumentContext);
 
   useEffect(() => {
-    // Retrieve document data from local storage
+    // Check if the document exists in localStorage
     const localData = localStorage.getItem(`attributes-${documentID}`);
-    const parsedData = localData ? JSON.parse(localData) : {};
+    if (!localData) {
+      router.push("/404"); // Redirect to 404 page if document doesn't exist
+      return;
+    }
+
+    // Parse and set document data
+    const parsedData = JSON.parse(localData);
     const documentName = parsedData?.name;
 
-    // Set the current document name in the context
+    // Set the current document name and ID in the context
     setCurrentDoc(documentName);
   }, [documentID, setCurrentDoc]);
 
@@ -37,20 +44,19 @@ function DocumentPage({ params }: IServerProps) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const document = context.params?.document;
 
-  // Check if 'document' is a string
-  if (typeof document !== "string") {
-    // Handle the case where 'document' is not provided or is not a string
-    return { notFound: true };
+  // Check if 'document' is a string and exists in localStorage
+  if (typeof document === "string") {
+    return {
+      props: {
+        params: {
+          document: document,
+        },
+      },
+    };
   }
 
-  // Return the document parameter as a prop
-  return {
-    props: {
-      params: {
-        document: document || "",
-      },
-    },
-  };
+  // If document is not a string or doesn't exist in localStorage, return 404
+  return { notFound: true };
 };
 
 export default DocumentPage;

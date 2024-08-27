@@ -14,7 +14,7 @@ export const ExportFormat: FC<ExportFormatProps> = ({
   activeItem,
   handleItemClick,
 }) => {
-  console.log(formats[0].clickable ? styles.clickable : styles.notclickable);
+  // console.log(formats[0].clickable ? styles.clickable : styles.notclickable);
   return (
     <ul className={styles.export__format}>
       {formats.map((item, index) => (

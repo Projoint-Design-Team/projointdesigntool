@@ -105,7 +105,7 @@
     },
     "repeatedTask": {
       "value": "Repeated task",
-      "subtitle": "Option to repeat tasks"
+      "subtitle": "<a href='/tutorials/01_settings.md'> Option </a> to repeat tasks"
     },
     "shuffled": {
       "value": "Option to either flip columns same for repeated tasks",

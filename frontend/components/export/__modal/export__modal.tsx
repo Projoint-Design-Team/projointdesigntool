@@ -166,7 +166,6 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
             handleItemClick={handleItemClick}
           />
           {activeItem.name === "CSV" && (
-            <>
               <SettingsNumberRange
                 value={numRows}
                 onChange={handleNumRowsChange}
@@ -175,7 +174,6 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
                 label={english.export.methods.csv.rows.value}
                 explanation={english.export.methods.csv.rows.subtitle}
               />
-            </>
           )}
           <div className={styles.modalButtonContainer}>
             <button

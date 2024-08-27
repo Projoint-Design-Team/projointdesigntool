@@ -23,7 +23,7 @@ export const SettingsCheckbox: FC<SettingsCheckboxProps> = ({
   <div className={styles.settings__checkbox}>
     <div>
       <h3>{label}</h3>
-      <SettingsExplanation explanation={<p>{explanation}</p>} />
+      <SettingsExplanation explanation={explanation} />
     </div>
     <div className={styles.settings__checkbox__switch}>
       <FormControlLabel
