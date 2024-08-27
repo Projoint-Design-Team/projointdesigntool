@@ -156,7 +156,7 @@
   overflow-x: auto;
   scrollbar-width: thin;
   padding-bottom: 1rem;
-  scrollbar-color: var(--border-gray) transparent;
+  scrollbar-color: var(--dark-blue-p) var(--border-gray);
 }
 
 /* For Webkit browsers like Chrome, Safari */
@@ -165,11 +165,11 @@
 }
 
 .test::-webkit-scrollbar-track {
-  background: transparent; /* color of the tracking area */
+  background: var(--dark-gray); /* color of the tracking area */
 }
 
 .test::-webkit-scrollbar-thumb {
-  background-color: var(--border-gray); /* color of the scroll thumb */
+  background-color: var(--dark-blue-p); /* color of the scroll thumb */
   border-radius: 2px; /* roundness of the scroll thumb */
 }
 
