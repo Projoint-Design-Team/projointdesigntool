@@ -804,7 +804,7 @@ def _create_survey(
                 task_to_repeat,
                 num_attr,
                 profiles,
-                i - 1,
+                i,
                 repeated_tasks_flipped,
                 profile_naming,
                 qInstruction,

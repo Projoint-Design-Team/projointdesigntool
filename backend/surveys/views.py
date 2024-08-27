@@ -352,7 +352,7 @@ def export_qsf(request):
         surveyID = _create_survey(
             filename,
             user_token,
-            num_tasks,
+            max(num_tasks, where_to_repeat),
             len(attributes),
             num_profiles,
             "",
