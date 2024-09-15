@@ -555,55 +555,43 @@ class QualtricsTests(TestCase):
                 {
                     "name": "att1",
                     "levels": [
-                        {"name": "level1", "weight": 0.5},
-                        {"name": "another1", "weight": 0.5},
+                        {"name": "level1"},
+                        {"name": "another1"},
+                        {"name": "blah1"},
                     ],
                     "locked": True,
                 },
                 {
                     "name": "att2",
                     "levels": [
-                        {"name": "level2", "weight": 0.2},
-                        {"name": "another2", "weight": 0.8},
+                        {"name": "level2"},
+                        {"name": "another2"},
+                        {"name": "blah2"},
                     ],
                     "locked": True,
                 },
                 {
                     "name": "att3",
                     "levels": [
-                        {"name": "level3", "weight": 0.9},
-                        {"name": "another3", "weight": 0.1},
+                        {"name": "level3"},
+                        {"name": "another3"},
+                        {"name": "blah3"},
                     ],
-                    "locked": True,
+                    "locked": False,
                 },
             ],
-            "restrictions": [
-                {
-                    "condition": [
-                        {"attribute": "att1", "operation": "==", "value": "level1"},
-                        {
-                            "logical": "||",
-                            "attribute": "att2",
-                            "operation": "==",
-                            "value": "level2",
-                        },
-                    ],
-                    "result": [
-                        {"attribute": "att3", "operation": "!=", "value": "level3"}
-                    ],
-                }
-            ],
+            "restrictions": [],
             "cross_restrictions": [],
             "filename": "survey.qsf",
             "num_profiles": 2,
             "num_tasks": 5,
             "fixed_profile": {},
             "randomize": False,
-            "repeated_tasks": False,
+            "repeated_tasks": True,
             "random": False,
-            "task_to_repeat": 0,
-            "where_to_repeat": 0,
-            "repeated_tasks_flipped": False,
+            "task_to_repeat": 1,
+            "where_to_repeat": 6,
+            "repeated_tasks_flipped": True,
             "csv_lines": 500,
             "qDescription": "This is a test survey",
             "doubleQ": False,

@@ -201,7 +201,7 @@ export const Settings = () => {
             <SettingsNumberRange
               value={whereToRepeat}
               onChange={(value) => handleSettingChange("whereToRepeat", value)}
-              min={taskToRepeat}
+              min={taskToRepeat + 1}
               max={numTasks + 1}
               label={naming.settingsPage.whereRepeat.value}
               explanation={naming.settingsPage.whereRepeat.subtitle}

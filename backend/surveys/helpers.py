@@ -331,16 +331,14 @@ def _create_js_file(request):
             file_js.write(f"var restrictionarray = {restrictions};\n\n")
             file_js.write(
                 _create_array_or_prob_string(attributes, False)
-                if random == 1
+                if random
                 else "var probabilityarray = {};\n\n"
             )
 
             file_js.write(
                 "// Indicator for whether weighted randomization should be enabled or not\n"
             )
-            file_js.write(
-                f"var weighted =  {'true' if repeated_tasks else 'false'};\n\n"
-            )
+            file_js.write(f"var weighted =  {'true' if random else 'false'};\n\n")
             file_js.write("// K = Number of tasks displayed to the respondent\n")
             file_js.write("var K = " + str(num_tasks) + ";\n\n")
             file_js.write("// N = Number of profiles displayed in each task\n")
@@ -691,7 +689,7 @@ def _validate_file(request, file_type, content_type):
 
 
 def _create_html(
-    i, num_attr, profiles, qNum, noFlip, profile_naming, qInstruction, qDescription
+    i, num_attr, num_profiles, qNum, flip, profile_naming, qInstruction, qDescription
 ):
     # if i == 0:
     #     text_out = "<span>Blank page</span>"
@@ -707,7 +705,7 @@ def _create_html(
 
     # Create a header row
     header = "<tr>\n<td>&nbsp;</td>\n"
-    for k in range(profiles):
+    for k in range(num_profiles):
         header = (
             header
             + '<td style="text-align: center;">\n<strong>'
@@ -728,7 +726,7 @@ def _create_html(
             + str(m + 1)
             + "}</strong></td>\n"
         )
-        for n in range(profiles) if noFlip == 0 else range(profiles - 1, -1, -1):
+        for n in range(num_profiles) if not flip else range(num_profiles - 1, -1, -1):
             rows[m] = (
                 rows[m]
                 + "<td style='text-align: center;'>${e://Field/F-"
@@ -769,7 +767,7 @@ def _create_survey(
     user_token,
     task,
     num_attr,
-    profiles,
+    num_profiles,
     currText,
     js,
     task_to_repeat,
@@ -779,6 +777,7 @@ def _create_survey(
     qInstruction,
     qDescription,
     profile_naming,
+    repeated_tasks,
 ):
     url = "https://yul1.qualtrics.com/API/v3/survey-definitions"
     payload = {"SurveyName": name, "Language": "EN", "ProjectCategory": "CORE"}
@@ -792,40 +791,37 @@ def _create_survey(
         "DO NOT to remove this block with the Javascript.<br>However, you may alter the contents of this block (i.e add an introduction to survey).",
         _get_flow(surveyID, user_token),
         user_token,
-        profiles,
+        num_profiles,
         js,
         0,
         profile_naming,
     )
 
     for i in range(1, task + 1):
-        if i == where_to_repeat:
-            currText = _create_html(
-                task_to_repeat,
-                num_attr,
-                profiles,
-                i,
-                repeated_tasks_flipped,
-                profile_naming,
-                qInstruction,
-                qDescription,
-            )
-        else:
-            currText = _create_html(
-                i, num_attr, profiles, i, 0, profile_naming, qInstruction, qDescription
-            )
+        currText = _create_html(
+            task_to_repeat if repeated_tasks and i == where_to_repeat else i,
+            num_attr,
+            num_profiles,
+            i,
+            repeated_tasks_flipped if i == where_to_repeat else False,
+            profile_naming,
+            qInstruction,
+            qDescription,
+        )
+
+        block_id = __CreateBlock(surveyID, user_token)
         _create_question(
             surveyID,
             " " if doubleQ else currText,
-            __CreateBlock(surveyID, user_token),
+            block_id,
             user_token,
-            profiles,
+            num_profiles,
             js,
             i,
             profile_naming,
         )
 
-    _emb_fields(surveyID, user_token, num_attr, profiles, task)
+    _emb_fields(surveyID, user_token, num_attr, num_profiles, task)
     return surveyID
 
 
@@ -834,7 +830,7 @@ def _create_question(
     text,
     blockID,
     user_token,
-    profiles,
+    num_profiles,
     js,
     i,
     profile_naming,
@@ -846,19 +842,15 @@ def _create_question(
         "X-API-TOKEN": user_token,
     }
 
-    # Define the question text and number of answer choices
-    question_text = text
-    num_choices = profiles  # Replace "n" with the actual number of answer choices
-
     # Create the answer choices based on the number specified
     answer_choices = {
-        str(i): {"Display": f"{profile_naming} {i}"} for i in range(1, num_choices + 1)
+        str(i): {"Display": f"{profile_naming} {i}"} for i in range(1, num_profiles + 1)
     }
 
     # Define the payload to create a multiple-choice question within the specified block
     if i == 0:
         payload = {
-            "QuestionText": question_text,
+            "QuestionText": text,
             "DataExportTag": "Introduction",
             "QuestionType": "DB",
             "Selector": "TB",
@@ -870,7 +862,7 @@ def _create_question(
     else:
         data_tag = f"Q{i}"
         payload = {
-            "QuestionText": question_text,
+            "QuestionText": text,
             "QuestionType": "MC",
             "Selector": "SAVR",
             "Choices": answer_choices,
@@ -887,7 +879,7 @@ def _get_flow(surveyID, user_token):
     return response["result"]["Flow"][0]["ID"]
 
 
-def _emb_fields(surveyID, user_token, num_attr, profiles, tasks):
+def _emb_fields(surveyID, user_token, num_attr, num_profiles, tasks):
     url = (
         "https://yul1.qualtrics.com/API/v3/surveys/" + surveyID + "/embeddeddatafields"
     )
@@ -895,7 +887,7 @@ def _emb_fields(surveyID, user_token, num_attr, profiles, tasks):
 
     fields = []
     for i in range(1, tasks + 1):
-        for j in range(1, profiles + 1):
+        for j in range(1, num_profiles + 1):
             key = f"F-{i}-{j}"
             fields.append({"key": key, "type": "text"})
             for k in range(1, num_attr + 1):

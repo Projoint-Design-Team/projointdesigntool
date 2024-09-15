@@ -1,131 +1,131 @@
 {
-  "export": {
-    "value": "Export",
-    "title": "Export this survey",
-    "methods": {
-      "title": "Choose format",
-      "qualtrics": {
-        "value": "Qualtrics",
-        "subtitle": "Export this survey to a QSF file with embedded Javascript"
-      },
-      "csv": {
-        "value": "CSV",
-        "subtitle": "Generate test responses and export them to a CSV file",
-        "rows": {
-          "value": "Rows",
-          "subtitle": "Set the number of rows to export in CSV file"
-        }
-      },
-      "js": {
-        "value": "JS",
-        "subtitle": "Export a JavaScript file to embed into a Qualtrics survey"
-      },
-      "json": {
-        "value": "JSON",
-        "subtitle": "Export this survey to JSON file that you can import afterwards"
-      }
-    }
-  },
-  "import": {
-    "value": "Import",
-    "title": "Import a file",
-    "description": "Import a QSF or JSON file to be parsed into surveys"
-  },
-  "surveyPage": {
-    "description": {
-      "value": "Enter your description here! Example: 'Here are two profiles A and B.' "
-    },
+	"export": {
+		"value": "Export",
+		"title": "Export this survey",
+		"methods": {
+			"title": "Choose format",
+			"qualtrics": {
+				"value": "Qualtrics",
+				"subtitle": "Export this survey to a QSF file with embedded Javascript"
+			},
+			"csv": {
+				"value": "CSV",
+				"subtitle": "Generate test responses and export them to a CSV file",
+				"rows": {
+					"value": "Rows",
+					"subtitle": "Set the number of rows to export in CSV file"
+				}
+			},
+			"js": {
+				"value": "JS",
+				"subtitle": "Export a JavaScript file to embed into a Qualtrics survey"
+			},
+			"json": {
+				"value": "JSON",
+				"subtitle": "Export this survey to JSON file that you can import afterwards"
+			}
+		}
+	},
+	"import": {
+		"value": "Import",
+		"title": "Import a file",
+		"description": "Import a QSF or JSON file to be parsed into surveys"
+	},
+	"surveyPage": {
+		"description": {
+			"value": "Enter your description here! Example: 'Here are two profiles A and B.' "
+		},
 
-    "instructions": {
-      "value": "Enter your instructions here! Example: 'Do you prefer A or B?'"
-    },
+		"instructions": {
+			"value": "Enter your instructions here! Example: 'Do you prefer A or B?'"
+		},
 
-    "attribute": {
-      "editWeights": {
-        "value": "Edit Weights"
-      },
-      "saveWeights": {
-        "value": "Save Weights"
-      },
-      "deleteAttribute": {
-        "value": "Delete Attribute"
-      },
-      "addLevel": {
-        "value": "Add Level"
-      },
-      "addAttribute": {
-        "value": "Add Attribute"
-      }
-    },
-    "outcomeType": {
-      "value": "Select Outcome Type",
-      "subtitle": "Select the type of outcome you want to use for your survey. You can choose between a single outcome, multiple outcomes, or a range of outcomes."
-    }
-  },
-  "previewPage": {
-    "refreshButton": {
-      "value": "Refresh"
-    }
-  },
-  "restrictionsPage": {
-    "oneProfile": {
-      "value": "Within-profile",
-      "subtitle": "List of attribute-level pairs that can not be together in a profile"
-    },
-    "crossProfiles": {
-      "value": "Across-profile",
-      "subtitle": "List of attribute-level pairs that can not be together in different profiles"
-    },
-    "addCondition": {
-      "value": "Add condition"
-    },
-    "addRestriction": {
-      "value": "Add a restriction statement"
-    },
-    "addCrossRestriction": {
-      "value": "Add a cross restriction statement"
-    }
-  },
-  "settingsPage": {
-    "name": {
-      "value": "Settings",
-      "subtitle": "You can use any name you want. Keep it simple."
-    },
-    "numberProfiles": {
-      "value": "Number of profiles",
-      "subtitle": "Changes the number of profiles in preview section"
-    },
-    "profileNaming": {
-      "value": "Profile naming",
-      "subtitle": "Name of the profiles"
-    },
-    "numberTasks": {
-      "value": "Number of tasks",
-      "subtitle": "Set of choices presented to the respondent in a single screen (i.e. pair of candidates)"
-    },
-    "repeatedTask": {
-      "value": "Repeated task",
-      "subtitle": "<a href='/tutorials/01_settings.md'> Option </a> to repeat tasks"
-    },
-    "shuffled": {
-      "value": "Option to either flip columns same for repeated tasks",
-      "subtitle": "Option to either flip columns same for repeated tasks"
-    },
-    "whichRepeat": {
-      "value": "Which task to repeat?",
-      "subtitle": "A Task to repeat from 1 to N (the chosen number of tasks)"
-    },
-    "whereRepeat": {
-      "value": "Where to repeat?",
-      "subtitle": "Where to repeat from i (the chosen task) to N + 1 (the chosen number of tasks)"
-    },
-    "attributesOrdering": {
-      "value": "Ordering of attributes",
-      "subtitle": "Learn about attribute ordering."
-    },
-    "fixedProfile": {
-      "value": "Enable fixed profile",
-      "subtitle": "One profile in each task will be fixed for all participants. Note that this overrides any across-profile restrictions."
-    }
-  }
+		"attribute": {
+			"editWeights": {
+				"value": "Edit Weights"
+			},
+			"saveWeights": {
+				"value": "Save Weights"
+			},
+			"deleteAttribute": {
+				"value": "Delete Attribute"
+			},
+			"addLevel": {
+				"value": "Add Level"
+			},
+			"addAttribute": {
+				"value": "Add Attribute"
+			}
+		},
+		"outcomeType": {
+			"value": "Select Outcome Type",
+			"subtitle": "Select the type of outcome you want to use for your survey. You can choose between a single outcome, multiple outcomes, or a range of outcomes."
+		}
+	},
+	"previewPage": {
+		"refreshButton": {
+			"value": "Refresh"
+		}
+	},
+	"restrictionsPage": {
+		"oneProfile": {
+			"value": "Within-profile",
+			"subtitle": "List of attribute-level pairs that can not be together in a profile"
+		},
+		"crossProfiles": {
+			"value": "Across-profile",
+			"subtitle": "List of attribute-level pairs that can not be together in different profiles"
+		},
+		"addCondition": {
+			"value": "Add condition"
+		},
+		"addRestriction": {
+			"value": "Add a restriction statement"
+		},
+		"addCrossRestriction": {
+			"value": "Add a cross restriction statement"
+		}
+	},
+	"settingsPage": {
+		"name": {
+			"value": "Settings",
+			"subtitle": "You can use any name you want. Keep it simple."
+		},
+		"numberProfiles": {
+			"value": "Number of profiles",
+			"subtitle": "Changes the number of profiles in preview section"
+		},
+		"profileNaming": {
+			"value": "Profile naming",
+			"subtitle": "Name of the profiles"
+		},
+		"numberTasks": {
+			"value": "Number of tasks",
+			"subtitle": "Set of choices presented to the respondent in a single screen (i.e. pair of candidates)"
+		},
+		"repeatedTask": {
+			"value": "Repeated task",
+			"subtitle": "<a href='/tutorials/01_settings.md'> Option </a> to repeat tasks"
+		},
+		"shuffled": {
+			"value": "Option to either flip columns same for repeated tasks",
+			"subtitle": "Option to either flip columns same for repeated tasks"
+		},
+		"whichRepeat": {
+			"value": "Which task to repeat?",
+			"subtitle": "A Task to repeat from 1 to N (the chosen number of tasks)"
+		},
+		"whereRepeat": {
+			"value": "Where to repeat?",
+			"subtitle": "Where to repeat from i + 1 (next of the chosen task) to N + 1 (the chosen number of tasks)"
+		},
+		"attributesOrdering": {
+			"value": "Ordering of attributes",
+			"subtitle": "Learn about attribute ordering."
+		},
+		"fixedProfile": {
+			"value": "Enable fixed profile",
+			"subtitle": "One profile in each task will be fixed for all participants. Note that this overrides any across-profile restrictions."
+		}
+	}
 }

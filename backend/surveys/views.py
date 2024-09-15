@@ -339,6 +339,7 @@ def export_qsf(request):
         num_tasks = validated_data["num_tasks"]
         task_to_repeat = validated_data["task_to_repeat"]
         where_to_repeat = validated_data["where_to_repeat"]
+        repeated_tasks = validated_data["repeated_tasks"]
         repeated_tasks_flipped = validated_data["repeated_tasks_flipped"]
         doubleQ = validated_data["doubleQ"]
         qType = validated_data["qType"]
@@ -364,6 +365,7 @@ def export_qsf(request):
             qInstruction,
             qDescription,
             profile_naming,
+            repeated_tasks,
         )
         success = _download_survey(surveyID, user_token, doubleQ, qType, filename)
         if success:
