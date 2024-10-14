@@ -10,7 +10,7 @@ RUN npm run build
 # Production stage
 FROM node:alpine
 WORKDIR /app
-COPY --from=builder /app/.env.production ./
+#COPY --from=builder /app/.env.production ./ (uncomment this line when you create ".env.production" file with environment variables )
 COPY --from=builder /app/.env.local ./
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
