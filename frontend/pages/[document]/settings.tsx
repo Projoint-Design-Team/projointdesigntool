@@ -22,12 +22,12 @@ function SettingsPage({ params }: IServerProps) {
     const parsedData = localData ? JSON.parse(localData) : {};
     const documentName = parsedData?.name;
     setCurrentDoc(documentName);
-  }, []);
+  }, [documentID, setCurrentDoc]);
 
   useEffect(() => {
     setCurrentDocID(documentID);
     // console.log("whatis happening", currentDoc)
-  }, [documentID]);
+  }, [documentID, setCurrentDocID]);
 
   return <Settings />;
 }

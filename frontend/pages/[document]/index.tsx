@@ -31,12 +31,12 @@ function DocumentPage({ params }: IServerProps) {
 
     // Set the current document name and ID in the context
     setCurrentDoc(documentName);
-  }, [documentID, setCurrentDoc]);
+  }, [documentID, setCurrentDoc, router]);
 
   useEffect(() => {
     // Set the current document ID in the context
     setCurrentDocID(documentID);
-  }, [documentID, setCurrentDocID]);
+  }, [documentID, setCurrentDocID, router]);
 
   return <SurveyContainer />;
 }

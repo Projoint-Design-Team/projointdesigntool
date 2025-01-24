@@ -60,12 +60,12 @@ export const Attribute: FC<PropsAttributeComponent> = ({
 
   useEffect(() => {
     !show && setHighlightedAttribute(-1);
-  }, [show]);
+  }, [show, setHighlightedAttribute]);
 
   useEffect(() => {
     highlightedAttribute === attribute.key &&
       setCurrentWeights(attribute.levels.map((lvl) => lvl.weight));
-  }, [highlightedAttribute, attribute.levels]);
+  }, [highlightedAttribute, attribute.key, attribute.levels,setCurrentWeights]);
 
   useEffect(() => {
     if (isEditing) {
