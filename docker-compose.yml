@@ -1,33 +1,56 @@
 services:
   backend:
     container_name: backend
-    build: backend
+    build:
+      context: ./backend
     command: gunicorn projoint.wsgi:application --timeout 120 --bind 0.0.0.0:8000
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
-    ports:
-      - 8000:8000
-
+    expose:
+      - 8000
+    networks:
+      - projoint_network
+    environment:
+      - DJANGO_SETTINGS_MODULE=projoint.settings
+      - DJANGO_ALLOWED_HOSTS=projoint.aaronrkaufman.com,backend,localhost,127.0.0.1
+      - CSRF_TRUSTED_ORIGINS=https://projoint.aaronrkaufman.com
 
   frontend:
     container_name: frontend
-    build: frontend
-    ports:
-      - 3000:3000
+    build:
+      context: ./frontend
+    expose:
+      - 3000
+    networks:
+      - projoint_network
+    environment:
+      - NEXT_PUBLIC_API_URL=https://projoint.aaronrkaufman.com/api
 
   nginx:
     container_name: nginx
-    build: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
     ports:
       - 443:443
     depends_on:
       - backend
       - frontend
+    networks:
+      - projoint_network
 
 volumes:
   static_volume:
   media_volume:
+
+networks: 
+  projoint_network:
+    name: projoint_network
+    driver: bridge
