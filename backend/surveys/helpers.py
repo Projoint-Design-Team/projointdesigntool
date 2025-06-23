@@ -23,13 +23,13 @@ SAME IS THE CASE WITH THE create_js_file FUNCTION
 
 temp_1 = """// Code to randomly generate conjoint profiles in a Qualtrics survey
 
-// Terminology clarification: 
+// Terminology clarification:
 // Task = Set of choices presented to respondent in a single screen (i.e. pair of candidates)
 // Profile = Single list of attributes in a given task (i.e. candidate)
 // Attribute = Category characterized by a set of levels (i.e. education level)
 // Level = Value that an attribute can take in a particular choice task (i.e. "no formal education")
 
-// Attributes and Levels stored in a 2-dimensional Array 
+// Attributes and Levels stored in a 2-dimensional Array
 
 /* Randomize array in-place using Durstenfeld shuffle algorithm */
 function shuffleArray(array) {
@@ -44,7 +44,7 @@ function shuffleArray(array) {
 function weighted_randomize(prob_array, at_key)
 {
   var prob_list = prob_array[at_key];
-  
+
   // Create an array containing cutpoints for randomization
   var cumul_prob = new Array(prob_list.length);
   var cumulative = 0.0;
@@ -54,7 +54,7 @@ function weighted_randomize(prob_array, at_key)
   }
 
   // Generate a uniform random floating point value between 0.0 and 1.0
-  var unif_rand = Math.random();
+  var unif_rand = Math.random() * 100;
 
   // Figure out which integer should be returned
   var outInt = 0;
@@ -123,7 +123,7 @@ for (const key of Object.keys(temp_featurearray)) {
 // Re-generate the new $featurearray - label it $featureArrayNew
 var featureArrayNew = {};
 for (var h = 0; h < featureArrayKeys.length; h++){
-    featureArrayNew[featureArrayKeys[h]] = featurearray[featureArrayKeys[h]];        
+    featureArrayNew[featureArrayKeys[h]] = featurearray[featureArrayKeys[h]];
 }
 
 """
@@ -318,7 +318,7 @@ def _create_js_file(request):
         num_tasks = validated_data["num_tasks"]
         randomize = validated_data["randomize"]
         repeated_tasks = validated_data["repeated_tasks"]
-        random = validated_data["random"]
+        random = True
         task_to_repeat = validated_data["task_to_repeat"]
         where_to_repeat = validated_data["where_to_repeat"]
         repeated_tasks_flipped = validated_data["repeated_tasks_flipped"]
@@ -750,6 +750,8 @@ def _create_html(
         text_out = text_out + j
 
     text_out = text_out + footer + inst
+    text_out += "<style> .Skin #Buttons {text-align: center;} </style>"
+
     return text_out
 
 
@@ -766,6 +768,7 @@ def _create_survey(
     name,
     user_token,
     task,
+    original_tasks,
     num_attr,
     num_profiles,
     currText,
@@ -821,7 +824,7 @@ def _create_survey(
             profile_naming,
         )
 
-    _emb_fields(surveyID, user_token, num_attr, num_profiles, task)
+    _emb_fields(surveyID, user_token, num_attr, num_profiles, original_tasks)
     return surveyID
 
 
@@ -864,10 +867,11 @@ def _create_question(
         payload = {
             "QuestionText": text,
             "QuestionType": "MC",
-            "Selector": "SAVR",
+            "Selector": "SAHR",
             "Choices": answer_choices,
             "DataExportTag": data_tag,
             "Language": [],
+            "SubSelector": "TX",
         }
     requests.post(url, json=payload, headers=headers, params=querystring)
 
@@ -886,13 +890,19 @@ def _emb_fields(surveyID, user_token, num_attr, num_profiles, tasks):
     headers = {"X-API-TOKEN": user_token, "Content-Type": "application/json"}
 
     fields = []
+
     for i in range(1, tasks + 1):
-        for j in range(1, num_profiles + 1):
+
+        # Attribute Name: F-[task number]-[attribute number]
+        for j in range(1, num_attr + 1):
             key = f"F-{i}-{j}"
             fields.append({"key": key, "type": "text"})
+
+        # Level Name: F-[task number]-[profile number]-[attribute number]
+        for j in range(1, num_profiles + 1):
             for k in range(1, num_attr + 1):
-                sub_key = f"{key}-{k}"
-                fields.append({"key": sub_key, "type": "text"})
+                key = f"F-{i}-{j}-{k}"
+                fields.append({"key": key, "type": "text"})
 
     payload = {"embeddedDataFields": fields}
 
@@ -923,7 +933,7 @@ def _download_survey(surveyID, user_token, doubleQ, qType, filename):
         return f"An error occurred: {str(e)}"
 
     if qType == "mcq":
-        questionType = ["MC", "SAVR"]
+        questionType = ["MC", "SAHR"]
     elif qType == "ranking":
         questionType = ["RO", "DND"]
     else:
@@ -972,3 +982,4 @@ def _download_survey(surveyID, user_token, doubleQ, qType, filename):
         with open(filename, "w") as qsf_file:
             json.dump(qsf_data, qsf_file)
         return True
+

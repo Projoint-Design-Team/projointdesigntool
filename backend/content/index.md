@@ -1,8 +1,3 @@
----
-layout: default
-title: ProJoint Design Tool
----
-
 # Welcome to the ProJoint Design Tool Documentation
 
 ## Overview

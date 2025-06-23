@@ -218,7 +218,7 @@ export const Settings = () => {
               "Participant randomized",
             ]}
             defaultValue={orderingOptions(ordering)}
-            onChange={(e) =>
+	    onChange={(e) =>
               handleSettingChange(
                 "ordering",
                 reverseOrderingOptions(e.target.value)

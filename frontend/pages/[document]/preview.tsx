@@ -72,6 +72,9 @@ function PreviewPage({ params }: IServerProps) {
     settings.numProfiles,
     instructions,
     cleanInvalidRestrictions,
+    fixedProfile,
+    fixedProfileEnabled,
+    getAttributeById,
   ]);
 
   useEffect(() => {
@@ -83,7 +86,7 @@ function PreviewPage({ params }: IServerProps) {
       previewData();
       setRefresh(false);
     }
-  }, [refresh]);
+  }, [refresh, previewData]);
 
   return profiles ? (
     <Preview {...profiles} setRefresh={setRefresh} refresh={refresh} />

@@ -354,6 +354,7 @@ def export_qsf(request):
             filename,
             user_token,
             max(num_tasks, where_to_repeat),
+            num_tasks,
             len(attributes),
             num_profiles,
             "",
@@ -403,7 +404,7 @@ def export_qsf(request):
 )
 @api_view(["POST"])
 def import_qsf(request):
-    data = _validate_file(request, "QSF", "multipart/form-data")
+    data = _validate_file(request, "QSF", "application/octet-stream")
     if isinstance(data, Response):
         return data
 

@@ -1,3 +1,5 @@
+
+
 services:
   backend:
     container_name: backend
@@ -25,7 +27,7 @@ services:
     networks:
       - projoint_network
     environment:
-      - NEXT_PUBLIC_API_URL=https://projoint.aaronrkaufman.com/api
+      - NEXT_PUBLIC_API_BASE_URL=https://projoint.aaronrkaufman.com/api
 
   nginx:
     container_name: nginx
@@ -50,7 +52,7 @@ volumes:
   static_volume:
   media_volume:
 
-networks: 
+networks:
   projoint_network:
     name: projoint_network
     driver: bridge

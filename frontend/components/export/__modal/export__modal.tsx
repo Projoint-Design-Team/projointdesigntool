@@ -122,7 +122,7 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [handleClickOutside]);
 
   useEffect(() => {
     setDocName(currentDoc);

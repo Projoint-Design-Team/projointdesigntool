@@ -89,7 +89,7 @@ export const preprocessSettings = (settings: SettingsProps) => {
     repeated_tasks_flipped: settings.repeatedTasksFlipped,
     task_to_repeat: settings.taskToRepeat,
     where_to_repeat: settings.whereToRepeat,
-    randomize: settings.randomize,
+    randomize: settings ? settings.ordering === "participant" : false,
   };
   return processedSettings;
 };

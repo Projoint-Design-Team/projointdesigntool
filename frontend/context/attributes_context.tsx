@@ -222,7 +222,6 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
       setStorageChanged((prev) => prev + 1);
       setEdited(false);
 
-      console.log("maybe now?");
     }
   }, [
     attributes,
