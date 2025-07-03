@@ -57,7 +57,7 @@ export const DocumentsTable: FC<DocumentsTableProps> = ({}) => {
       <div className={styles.tableContainer}>
         <div className={styles.top}>
           <div className={styles.docName}>
-            <h2>Surveys</h2>
+            <h2>Projoint Survey Designer</h2>
           </div>
           <div className={styles.docActions}>
             <DocumentsImport size="small" />
