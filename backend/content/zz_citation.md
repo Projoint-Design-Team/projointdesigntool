@@ -34,6 +34,6 @@ If you use this tool in your research, please cite the following publication:
 
 ---
 For questions, suggestions, or bug reports, please contact <u><a href="mailto:aaronkaufman@nyu.edu">Aaron Kaufman</a></u>.  
-Project repository: <u><a href="https://github.com/Projoint-Design-Team/projointdesigntool">https://github.com/Projoint-Design-Team/</a></u>
+Project repository: <u><a href="https://github.com/Projoint-Design-Team/projointdesigntool">https://github.com/Projoint-Design-Team/projointdesigntool</a></u>
 
 
