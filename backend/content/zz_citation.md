@@ -1,16 +1,41 @@
-# Citations and Acknowledgements
+# Contributors and Maintainers
 
-If you use this tool, please cite it as:
+## Citation
 
-(projoint citation here)
+If you use this tool in your research, please cite the following publication:
 
-## Comments
+> Clayton, Katherine, Horiuchi, Yusaku, Kaufman, Aaron R, King, Gary, Komisarchik, Mayya, Ebanks, Danny, Katz, Jonathan N, King, Gary, Evans, Georgina, and others.
+  
+> **Correcting measurement error bias in conjoint survey experiments.**  
 
-If you have comments, suggestions, or find bugs, please [email me](mailto:aaronkaufman@nyu.edu)!
+> *American Journal of Political Science*, 12(B2): 1-11, 2023.  
 
-## Acknowledgements
+> Princeton University Press.  
 
-This tool was built by Shyngys Karishev, Min Jie Kim, and Akhat Suleimonov at NYU Abu Dhabi under the guidance of Aaron Kaufman, Gary King, and Yusaku Horiuchi with input from Agabek Kabdullin, Alex Coppock, and many others.
+> <u><a href="https://gking.harvard.edu/files/gking/files/conerr.pdf">View publication</a></u>
 
-## References
+---
+
+## Contributors
+
+- Shyngys Karishev  
+- Min Jie Kim  
+- Akhat Suleimonov  
+- Aaron Kaufman  
+- Gary King  
+- Yusaku Horiuchi  
+- Agabek Kabdullin  
+- Alex Coppock  
+
+---
+
+## Maintainers
+
+- Aaron Kaufman  
+- Shahid Rabbani
+
+---
+For questions, suggestions, or bug reports, please contact <u><a href="mailto:aaronkaufman@nyu.edu">Aaron Kaufman</a></u>.  
+Project repository: <u><a href="https://github.com/Projoint-Design-Team/">https://github.com/Projoint-Design-Team/</a></u>
+
 
