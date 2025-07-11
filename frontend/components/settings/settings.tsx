@@ -10,10 +10,11 @@ import { SettingsNumberRange } from "./__number-range/settings__number-range";
 import ExportDropdown from "../export/export";
 import naming from "@/naming/english.json";
 import { SurveyFixedProfile } from "./__fixed-profile/survey__fixed-profile";
+import { generateUniqueDocumentName } from "@/services/utils";
 
 export const Settings = () => {
   // Context and custom hooks
-  const { currentDoc, lastEdited, setLastEdited, setCurrentDoc } =
+  const { currentDoc, lastEdited, setLastEdited, setCurrentDoc, currentDocID } =
     useContext(DocumentContext);
   const {
     setEdited,
@@ -99,10 +100,10 @@ export const Settings = () => {
     setLastEdited(new Date());
     setEdited(true);
 
-    // Update document name, use "Untitled" if empty
-    const newDocName = docName.trim() === "" ? "Untitled" : docName;
-    setCurrentDoc(newDocName);
-    setDocName(newDocName);
+    // Generate unique document name
+    const uniqueName = generateUniqueDocumentName(docName, currentDocID);
+    setCurrentDoc(uniqueName);
+    setDocName(uniqueName);
   };
 
   // Generic handler for updating settings
@@ -218,7 +219,7 @@ export const Settings = () => {
               "Participant randomized",
             ]}
             defaultValue={orderingOptions(ordering)}
-	    onChange={(e) =>
+            onChange={(e) =>
               handleSettingChange(
                 "ordering",
                 reverseOrderingOptions(e.target.value)

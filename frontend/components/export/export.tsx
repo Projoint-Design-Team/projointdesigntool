@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 
-import { ExportIcon } from "@/components/ui/icons";
+import { ExportIcon, LightTooltip } from "@/components/ui/icons";
 import english from "@/naming/english.json";
 import { useModalStore } from "@/context/modal_store";
 import { useDownload } from "@/context/download_context";
@@ -21,14 +21,31 @@ const ExportDropdown: React.FC<IExportDropdown> = ({ size }) => {
           <ExportIcon /> <p>{english.export.value}</p>
         </>
       ) : (
-        <Button
-          text={english.export.value}
-          icon={<ExportIcon stroke="white" />}
-          onClick={() => {
-            setExportModalOpen(true);
-            cleanDownloadStatus();
+        <LightTooltip
+          title="Export your conjoint survey - Choose from Qualtrics (QSF), CSV data, JavaScript, or JSON formats to use in your research"
+          placement="bottom"
+          PopperProps={{
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [0, -8],
+                },
+              },
+            ],
           }}
-        ></Button>
+        >
+          <div>
+            <Button
+              text={english.export.value}
+              icon={<ExportIcon stroke="white" />}
+              onClick={() => {
+                setExportModalOpen(true);
+                cleanDownloadStatus();
+              }}
+            />
+          </div>
+        </LightTooltip>
       )}
     </>
   );

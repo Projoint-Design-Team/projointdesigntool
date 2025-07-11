@@ -88,7 +88,7 @@
 	},
 	"settingsPage": {
 		"name": {
-			"value": "Settings",
+			"value": "Title",
 			"subtitle": "You can use any name you want. Keep it simple."
 		},
 		"numberProfiles": {

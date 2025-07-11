@@ -34,16 +34,33 @@ export const DocumentItem = ({ name, active, id }: IDoc) => {
       {active ? (
         <div className={`${styles.active} ${styles.container}`}>
           <div className={styles.file_top}>
-            <Link href={`/${encodedName}`}>
-              <div className={styles.file}>
-                <FileIcon stroke="var(--dark-blue-h)" />
-                <p>{name}</p>
+            <LightTooltip
+              title="Click to open survey design - Define attributes, levels, and experimental constraints"
+              placement="right"
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [15, 0],
+                    },
+                  },
+                ],
+              }}
+            >
+              <div>
+                <Link href={`/${encodedName}`}>
+                  <div className={styles.file}>
+                    <FileIcon stroke="var(--dark-blue-h)" />
+                    <p>{name}</p>
+                  </div>
+                </Link>
               </div>
-            </Link>
+            </LightTooltip>
             <div className={styles.dots}>
               <LightTooltip
                 disableInteractive
-                title="More"
+                title="More options - Export, duplicate, or delete this survey"
                 arrow
                 placement="top"
               >
@@ -52,36 +69,92 @@ export const DocumentItem = ({ name, active, id }: IDoc) => {
             </div>
           </div>
           <ul className={styles.helpers}>
-            <Link href={`/${encodedName}/settings`}>
+            <LightTooltip
+              title="Survey Settings - Configure question format, randomization, and experimental design parameters"
+              placement="right"
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [15, 0],
+                    },
+                  },
+                ],
+              }}
+            >
               <li className={isPath("/settings") ? styles.activeLink : ""}>
-                Settings
+                <Link href={`/${encodedName}/settings`}>Settings</Link>
               </li>
-            </Link>
-            <Link href={`/${encodedName}/restrictions`}>
+            </LightTooltip>
+            <LightTooltip
+              title="Restrictions - Define forbidden or required attribute combinations to ensure realistic choice scenarios"
+              placement="right"
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [15, 0],
+                    },
+                  },
+                ],
+              }}
+            >
               <li className={isPath("/restrictions") ? styles.activeLink : ""}>
-                Restrictions
+                <Link href={`/${encodedName}/restrictions`}>Restrictions</Link>
               </li>
-            </Link>
-            <Link href={`/${encodedName}/preview`}>
+            </LightTooltip>
+            <LightTooltip
+              title="Preview - See how your conjoint choice tasks will appear to respondents before exporting"
+              placement="right"
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [15, 0],
+                    },
+                  },
+                ],
+              }}
+            >
               <li className={isPath("/preview") ? styles.activeLink : ""}>
-                Preview
+                <Link href={`/${encodedName}/preview`}>Preview</Link>
               </li>
-            </Link>
+            </LightTooltip>
           </ul>
         </div>
       ) : (
         <div className={`${styles.container}`}>
           <div className={styles.file_top}>
-            <Link href={`/${encodedName}`}>
-              <div className={styles.file}>
-                <FileIcon stroke="var(--blue-p)" />
-                <p>{name}</p>
+            <LightTooltip
+              title="Click to open and edit this survey design"
+              placement="right"
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [15, 0],
+                    },
+                  },
+                ],
+              }}
+            >
+              <div>
+                <Link href={`/${encodedName}`}>
+                  <div className={styles.file}>
+                    <FileIcon stroke="var(--blue-p)" />
+                    <p>{name}</p>
+                  </div>
+                </Link>
               </div>
-            </Link>
+            </LightTooltip>
             <div className={`${styles.noshow} ${styles.dots}`}>
               <LightTooltip
                 disableInteractive
-                title="More"
+                title="More options - Export, duplicate, or delete this survey"
                 arrow
                 placement="top"
               >

@@ -95,22 +95,93 @@ export const preprocessSettings = (settings: SettingsProps) => {
 };
 
 export const preprocessFixedProfile = (
-  fixedProfile: FixedProfileProps[],
-  getAttributeName: (id: number) => Attribute | undefined
-): { [key: string]: string } => {
-  const processedFixedProfile: { [key: string]: string } = {};
-  for (const profile of fixedProfile) {
-    const attribute = getAttributeName(parseInt(profile.attribute));
-    if (!attribute) {
-      return {};
+  fixedProfile: { [key: string]: any },
+  getAttributeById: (id: number) => Attribute | undefined
+) => {
+  return Object.keys(fixedProfile).reduce((acc, key) => {
+    const attribute = getAttributeById(parseInt(key));
+    if (attribute) {
+      acc[attribute.name] = fixedProfile[key];
     }
-    const level = attribute.levels.find(
-      (level) => level.id === parseInt(profile.level)
-    );
-    if (!level) {
-      return {};
+    return acc;
+  }, {} as { [key: string]: any });
+};
+
+// Utility function to get all existing document names from localStorage
+export const getExistingDocumentNames = (): string[] => {
+  const names: string[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith("attributes-")) {
+      const item = localStorage.getItem(key);
+      if (item) {
+        try {
+          const data = JSON.parse(item);
+          if (data.name) {
+            names.push(data.name.toLowerCase()); // Store lowercase for comparison
+          }
+        } catch (e) {
+          // Skip invalid JSON entries
+        }
+      }
     }
-    processedFixedProfile[attribute.name] = level.name;
   }
-  return processedFixedProfile;
+  return names;
+};
+
+// Utility function to generate a unique document name
+export const generateUniqueDocumentName = (
+  originalName: string,
+  currentDocId?: string
+): string => {
+  const existingNames = getExistingDocumentNames();
+
+  // Remove current document's name from existing names if provided
+  if (currentDocId) {
+    const currentDocData = localStorage.getItem(`attributes-${currentDocId}`);
+    if (currentDocData) {
+      try {
+        const parsedData = JSON.parse(currentDocData);
+        if (parsedData.name) {
+          const currentNameIndex = existingNames.indexOf(
+            parsedData.name.toLowerCase()
+          );
+          if (currentNameIndex > -1) {
+            existingNames.splice(currentNameIndex, 1);
+          }
+        }
+      } catch (e) {
+        // Skip invalid JSON entries
+      }
+    }
+  }
+
+  // Handle empty or whitespace-only names
+  let baseName = originalName.trim();
+  if (baseName === "") {
+    baseName = "Untitled";
+  }
+
+  // If the name is unique, return it as-is (unless it's empty)
+  if (
+    originalName.trim() !== "" &&
+    !existingNames.includes(baseName.toLowerCase())
+  ) {
+    return originalName.trim();
+  }
+
+  // For untitled documents or duplicates, find the next available number
+  let counter = 1;
+  let candidateName: string;
+
+  do {
+    if (baseName.toLowerCase() === "untitled") {
+      candidateName = `Untitled ${counter}`;
+    } else {
+      candidateName = `${baseName} ${counter}`;
+    }
+    counter++;
+  } while (existingNames.includes(candidateName.toLowerCase()));
+
+  return candidateName;
 };

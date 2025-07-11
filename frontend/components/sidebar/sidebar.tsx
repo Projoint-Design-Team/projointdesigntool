@@ -87,7 +87,7 @@ export const Sidebar = ({ active }: { active: string }) => {
         <div className={styles.addDoc}>
           <LightTooltip
             disableInteractive
-            title="New survey"
+            title="Create a new conjoint survey - Start designing your experiment"
             arrow
             placement="right"
           >
@@ -101,12 +101,14 @@ export const Sidebar = ({ active }: { active: string }) => {
         active={surveyFolderOpened}
         toggleFolder={setSurveyFolderOpened}
         element={<Documents documents={documents} active={active} />}
+        tooltip="Your saved conjoint survey designs - Click to expand and access your projects with attributes, levels, and experimental setups"
       />
       <SidebarFolder
         active={tutorialFolderOpened}
         name="Tutorials"
         toggleFolder={setTutorialFolderOpened}
         element={<SidebarTutorials tutorials={tutorials} active={active} />}
+        tooltip="Step-by-step guides and documentation - Learn how to design effective conjoint experiments and use advanced features"
       />
     </div>
   );

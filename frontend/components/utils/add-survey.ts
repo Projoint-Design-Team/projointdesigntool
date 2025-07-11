@@ -3,6 +3,7 @@ import { NextRouter } from "next/router";
 import { Attribute } from "@/context/attributes_context";
 import { StatementProps } from "../restrictions/restrictions";
 import { RestrictionProps } from "../restrictions/restriction";
+import { generateUniqueDocumentName } from "@/services/utils";
 
 // Abstracted function with customization options via parameters
 export const addSurvey = ({
@@ -22,10 +23,16 @@ export const addSurvey = ({
   const crossRestrictions = value
     ? reintegrateCrossRestrictions(value.cross_restrictions, attributes)
     : [];
+
+  // Generate unique document name
+  const baseName =
+    value && value.filename ? value.filename.split(".")[0] : "untitled";
+  const uniqueName = generateUniqueDocumentName(baseName);
+
   const dataToSave = {
     attributes: attributes,
     lastEdited: new Date(),
-    name: value && value.filename ? value.filename.split(".")[0] : "Untitled",
+    name: uniqueName,
     instructions: {
       description: value && value.qDescription ? value.qDescription : "",
       instructions: value && value.qInstruction ? value.qInstruction : "",
@@ -36,10 +43,12 @@ export const addSurvey = ({
     settings: {
       numProfiles: value && value.num_profiles ? value.num_profiles : 2,
       numTasks: value && value.num_tasks ? value.num_tasks : 2,
-      repeatedTasks: value && value.repeated_tasks ? value.repeated_tasks : true,
-      repeatedTasksFlipped: value && value.repeated_tasks_flipped
-        ? value.repeated_tasks_flipped
-        : false,
+      repeatedTasks:
+        value && value.repeated_tasks ? value.repeated_tasks : true,
+      repeatedTasksFlipped:
+        value && value.repeated_tasks_flipped
+          ? value.repeated_tasks_flipped
+          : false,
       taskToRepeat: value && value.task_to_repeat ? value.task_to_repeat : 1,
       whereToRepeat: value && value.where_to_repeat ? value.where_to_repeat : 1,
       randomize: value && value.randomize ? value.randomize : false,
@@ -87,7 +96,6 @@ export const reintegrateRestrictions = (
   };
 
   const validRestrictions = processedRestrictions.filter((restriction) => {
-
     const validIfStates = restriction.condition.every(
       (statement: any, index: number) => {
         return (

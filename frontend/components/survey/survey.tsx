@@ -10,6 +10,7 @@ import { Droppable } from "react-beautiful-dnd";
 import ExportDropdown from "../export/export";
 import { SurveyOutcomeTypes } from "./__outcome-types/survey__outcome-types";
 import { shortenName } from "../utils/helpers";
+import { generateUniqueDocumentName } from "@/services/utils";
 
 // Function to calculate and format the time elapsed since the last edit
 const getTimeElapsed = (lastEdited: Date) => {
@@ -36,14 +37,18 @@ export const Survey: FC = () => {
     handleInstructions,
   } = useAttributes();
 
-  const { currentDoc, lastEdited, setLastEdited, setCurrentDoc } =
+  const { currentDoc, lastEdited, setLastEdited, setCurrentDoc, currentDocID } =
     useContext(DocumentContext);
 
   // State hooks
   const [isEditing, setIsEditing] = useState(false);
   const [docName, setDocName] = useState<string>(currentDoc);
-  const [description, setDescription] = useState<string>(instructions?.description || "");
-  const [instructs, setInstructions] = useState<string>(instructions?.instructions || "");
+  const [description, setDescription] = useState<string>(
+    instructions?.description || ""
+  );
+  const [instructs, setInstructions] = useState<string>(
+    instructions?.instructions || ""
+  );
 
   // Refs
   const inputRef = useRef<HTMLInputElement>(null);
@@ -67,8 +72,8 @@ export const Survey: FC = () => {
   }, [instructions]);
 
   useEffect(() => {
-    const textareas = ['descriptionTextarea', 'instructionsTextarea'];
-    textareas.forEach(id => {
+    const textareas = ["descriptionTextarea", "instructionsTextarea"];
+    textareas.forEach((id) => {
       const textarea = document.getElementById(id) as HTMLTextAreaElement;
       if (textarea) {
         adjustHeight(textarea);
@@ -91,15 +96,18 @@ export const Survey: FC = () => {
     setIsEditing(false);
     setLastEdited(new Date());
     setEdited(true);
-    setCurrentDoc(docName.trim() || "Untitled");
-    setDocName(prevName => prevName.trim() || "Untitled");
+
+    // Generate unique document name
+    const uniqueName = generateUniqueDocumentName(docName, currentDocID);
+    setCurrentDoc(uniqueName);
+    setDocName(uniqueName);
   };
 
   const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value, id } = event.target;
-    if (id === 'descriptionTextarea') {
+    if (id === "descriptionTextarea") {
       setDescription(value.trimStart());
-    } else if (id === 'instructionsTextarea') {
+    } else if (id === "instructionsTextarea") {
       setInstructions(value.trimStart());
     }
     adjustHeight(event.target);

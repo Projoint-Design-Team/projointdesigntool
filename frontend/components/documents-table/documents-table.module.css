@@ -46,6 +46,13 @@
   align-items: center;
 }
 
+.docNameNew {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
 .table_docName {
   color: var(--dark-blue-p);
   font-weight: 500;

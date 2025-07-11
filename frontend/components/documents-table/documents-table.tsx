@@ -10,7 +10,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Link from "next/link";
 import styles from "./documents-table.module.css";
-import { FileAddIcon, FileIcon } from "../ui/icons";
+import { FileAddIcon, FileIcon, LightTooltip } from "../ui/icons";
 import { useRouter } from "next/router";
 
 import { useAttributes } from "@/context/attributes_context";
@@ -56,16 +56,64 @@ export const DocumentsTable: FC<DocumentsTableProps> = ({}) => {
     <section className={styles.table}>
       <div className={styles.tableContainer}>
         <div className={styles.top}>
-          <div className={styles.docName}>
+          <div className={styles.docNameNew}>
             <h2>Projoint Survey Designer</h2>
+            <h4>
+              This is step 2 in the{" "}
+              <a
+                href="./"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  color: "var(--blue-p)",
+                  textDecoration: "underline",
+                }}
+              >
+                One-Stop Conjoint Shop workflow
+              </a>
+            </h4>
           </div>
           <div className={styles.docActions}>
-            <DocumentsImport size="small" />
-            <Button
-              text="New survey"
-              icon={<FileAddIcon stroke="var(--white)" />}
-              onClick={handleAddSurvey}
-            />
+            <LightTooltip
+              title="Import survey data from a JSON file to continue working on a previously exported survey design"
+              placement="bottom"
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, -8],
+                    },
+                  },
+                ],
+              }}
+            >
+              <div>
+                <DocumentsImport size="small" />
+              </div>
+            </LightTooltip>
+            <LightTooltip
+              title="Create a new conjoint survey by defining attributes, levels, and experimental design constraints"
+              placement="bottom"
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, -8],
+                    },
+                  },
+                ],
+              }}
+            >
+              <div>
+                <Button
+                  text="New survey"
+                  icon={<FileAddIcon stroke="var(--white)" />}
+                  onClick={handleAddSurvey}
+                />
+              </div>
+            </LightTooltip>
           </div>
         </div>
         <Paper
@@ -89,7 +137,32 @@ export const DocumentsTable: FC<DocumentsTableProps> = ({}) => {
                         color: "var(--dark-blue-h)",
                       }}
                     >
-                      <p>{column.label}</p>
+                      <LightTooltip
+                        title={
+                          column.id === "name"
+                            ? "Survey name - Click to open and edit your conjoint experiment design"
+                            : column.id === "attributesCount"
+                            ? "Attributes are the product features or characteristics that respondents will evaluate (e.g., price, brand, size). Each attribute should represent a distinct dimension of choice."
+                            : column.id === "restrictions"
+                            ? "Restrictions define which attribute combinations are forbidden or required in your experimental design to ensure realistic and meaningful choice scenarios."
+                            : column.id === "date"
+                            ? "The date when this survey design was last modified or saved"
+                            : column.label
+                        }
+                        placement="bottom"
+                        PopperProps={{
+                          modifiers: [
+                            {
+                              name: "offset",
+                              options: {
+                                offset: [0, -8],
+                              },
+                            },
+                          ],
+                        }}
+                      >
+                        <p style={{ cursor: "help" }}>{column.label}</p>
+                      </LightTooltip>
                     </TableCell>
                   ))}
                 </TableRow>
@@ -114,12 +187,27 @@ export const DocumentsTable: FC<DocumentsTableProps> = ({}) => {
                             return (
                               <TableCell key={column.id} align={column.align}>
                                 {column.id === "name" ? (
-                                  <div className={styles.file}>
-                                    <FileIcon stroke="var(--dark-blue-p)" />
-                                    <p className={styles.table_docName}>
-                                      {value}
-                                    </p>
-                                  </div>
+                                  <LightTooltip
+                                    title="Click to open this survey and start designing your conjoint experiment with attributes, levels, and choice scenarios"
+                                    placement="top"
+                                    PopperProps={{
+                                      modifiers: [
+                                        {
+                                          name: "offset",
+                                          options: {
+                                            offset: [0, -8],
+                                          },
+                                        },
+                                      ],
+                                    }}
+                                  >
+                                    <div className={styles.file}>
+                                      <FileIcon stroke="var(--dark-blue-p)" />
+                                      <p className={styles.table_docName}>
+                                        {value}
+                                      </p>
+                                    </div>
+                                  </LightTooltip>
                                 ) : column.format &&
                                   typeof value === "number" ? (
                                   <p className={styles.table_docValue}>

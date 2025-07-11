@@ -12,7 +12,10 @@ import { useDownload } from "@/context/download_context";
 import { downloadSurvey } from "@/services/api";
 import { DocumentContext } from "@/context/document_context";
 import { useAttributes } from "@/context/attributes_context";
-import { preprocessFixedProfile } from "@/services/utils";
+import {
+  preprocessFixedProfile,
+  generateUniqueDocumentName,
+} from "@/services/utils";
 
 export interface ExportModalProps {}
 
@@ -85,10 +88,13 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
     setExportModalOpen(false);
     cleanInvalidRestrictions();
 
+    // Generate unique document name for export
+    const uniqueDocName = generateUniqueDocumentName(docName);
+
     await downloadSurvey(
       attributes,
       path,
-      docName,
+      uniqueDocName,
       setDownloadStatus,
       settings,
       fixedProfileEnabled
@@ -114,9 +120,9 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
   };
 
   const handleBlur = () => {
-    if (docName.trim() === "") {
-      setDocName("Untitled");
-    }
+    // Generate unique name on blur and update the input
+    const uniqueName = generateUniqueDocumentName(docName);
+    setDocName(uniqueName);
   };
 
   useEffect(() => {
@@ -166,14 +172,14 @@ export const ExportModal: FC<ExportModalProps> = ({}) => {
             handleItemClick={handleItemClick}
           />
           {activeItem.name === "CSV" && (
-              <SettingsNumberRange
-                value={numRows}
-                onChange={handleNumRowsChange}
-                min={1}
-                max={100000}
-                label={english.export.methods.csv.rows.value}
-                explanation={english.export.methods.csv.rows.subtitle}
-              />
+            <SettingsNumberRange
+              value={numRows}
+              onChange={handleNumRowsChange}
+              min={1}
+              max={100000}
+              label={english.export.methods.csv.rows.value}
+              explanation={english.export.methods.csv.rows.subtitle}
+            />
           )}
           <div className={styles.modalButtonContainer}>
             <button
