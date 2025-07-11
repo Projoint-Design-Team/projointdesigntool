@@ -12,6 +12,18 @@ export interface SidebarTutorialsProps {
 
 const formatTutorial = (tutorial: string) => {
   const tutorialName = tutorial.replace(".md", "");
+
+  // Custom names for specific tutorials
+  const customNames: { [key: string]: string } = {
+    "01_settings": "Details",
+  };
+
+  // Return custom name if available
+  if (customNames[tutorialName]) {
+    return shortenName(customNames[tutorialName], 20);
+  }
+
+  // Default processing for other tutorials
   const tutorialTitle = tutorialName.split("_").map((word, index, array) => {
     if (index === 0 && array.length > 1) return "";
     return word.charAt(0).toUpperCase() + word.slice(1);
@@ -47,30 +59,32 @@ export const SidebarTutorials: FC<SidebarTutorialsProps> = ({
   active,
 }) => (
   <ul className={styles.sidebar__tutorials}>
-    {tutorials.map((tutorial) => (
-      <LightTooltip
-        key={tutorial}
-        title={getTutorialTooltip(tutorial)}
-        placement="right"
-        PopperProps={{
-          modifiers: [
-            {
-              name: "offset",
-              options: {
-                offset: [15, 0],
+    {tutorials
+      .filter((tutorial) => !tutorial.includes("index")) // Filter out index tutorial
+      .map((tutorial) => (
+        <LightTooltip
+          key={tutorial}
+          title={getTutorialTooltip(tutorial)}
+          placement="right"
+          PopperProps={{
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [15, 0],
+                },
               },
-            },
-          ],
-        }}
-      >
-        <li className={active.includes(tutorial) ? styles.active : ""}>
-          <Link href={`/tutorials/${tutorial}`}>
-            <p className={styles.sidebar__tutorials__link}>
-              {formatTutorial(tutorial)}
-            </p>
-          </Link>
-        </li>
-      </LightTooltip>
-    ))}
+            ],
+          }}
+        >
+          <li className={active.includes(tutorial) ? styles.active : ""}>
+            <Link href={`/tutorials/${tutorial}`}>
+              <p className={styles.sidebar__tutorials__link}>
+                {formatTutorial(tutorial)}
+              </p>
+            </Link>
+          </li>
+        </LightTooltip>
+      ))}
   </ul>
 );

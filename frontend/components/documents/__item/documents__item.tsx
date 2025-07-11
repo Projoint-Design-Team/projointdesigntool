@@ -84,7 +84,7 @@ export const DocumentItem = ({ name, active, id }: IDoc) => {
               }}
             >
               <li className={isPath("/settings") ? styles.activeLink : ""}>
-                <Link href={`/${encodedName}/settings`}>Settings</Link>
+                <Link href={`/${encodedName}/settings`}>Survey Settings</Link>
               </li>
             </LightTooltip>
             <LightTooltip
