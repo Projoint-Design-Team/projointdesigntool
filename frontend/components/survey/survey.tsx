@@ -173,7 +173,7 @@ export const Survey: FC = () => {
             )}
           </Droppable>
         </div>
-        <AddAttribute onCreate={() => addNewAttribute("Untitled")} />
+        <AddAttribute onCreate={() => addNewAttribute("Attribute Name")} />
 
         <div>
           <textarea

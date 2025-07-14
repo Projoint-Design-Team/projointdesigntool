@@ -175,7 +175,7 @@ export const generateUniqueDocumentName = (
   let candidateName: string;
 
   do {
-    if (baseName.toLowerCase() === "untitled") {
+    if (baseName.toLowerCase() === "Untitled") {
       candidateName = `Untitled ${counter}`;
     } else {
       candidateName = `${baseName} ${counter}`;

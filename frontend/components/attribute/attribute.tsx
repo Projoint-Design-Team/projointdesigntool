@@ -13,6 +13,7 @@ import {
   LightTooltip,
   LockIcon,
   UnlockIcon,
+  XIcon,
 } from "../ui/icons";
 import { AttributeWeight } from "./__weight/attribute__weight";
 import { Button } from "../ui/button";
@@ -51,12 +52,27 @@ export const Attribute: FC<PropsAttributeComponent> = ({
     addLevelToAttribute,
     updateWeight,
     toggleAttributeLocked,
+    newlyCreatedAttributeKey,
+    setNewlyCreatedAttributeKey,
   } = useAttributes();
 
   const [isEditing, setIsEditing] = useState(false);
   const [attributeName, setAttributeName] = useState<string>(attribute.name);
   const [totalWeight, setTotalWeight] = useState<number>(0);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Sync attributeName state with attribute.name prop
+  useEffect(() => {
+    setAttributeName(attribute.name);
+  }, [attribute.name]);
+
+  // Auto-edit newly created attributes
+  useEffect(() => {
+    if (newlyCreatedAttributeKey === attribute.key) {
+      setIsEditing(true);
+      setNewlyCreatedAttributeKey(null); // Clear the newly created attribute key
+    }
+  }, [newlyCreatedAttributeKey, attribute.key, setNewlyCreatedAttributeKey]);
 
   useEffect(() => {
     !show && setHighlightedAttribute(-1);
@@ -65,7 +81,12 @@ export const Attribute: FC<PropsAttributeComponent> = ({
   useEffect(() => {
     highlightedAttribute === attribute.key &&
       setCurrentWeights(attribute.levels.map((lvl) => lvl.weight));
-  }, [highlightedAttribute, attribute.key, attribute.levels,setCurrentWeights]);
+  }, [
+    highlightedAttribute,
+    attribute.key,
+    attribute.levels,
+    setCurrentWeights,
+  ]);
 
   useEffect(() => {
     if (isEditing) {
@@ -80,12 +101,13 @@ export const Attribute: FC<PropsAttributeComponent> = ({
   const handleBlur = () => {
     setIsEditing(false);
 
-    if (attributeName.trim() === "") {
-      setAttributeName("Untitled");
-      handleAttributeNameChange("Untitled", attribute.key);
-    } else {
-      handleAttributeNameChange(attributeName.trimStart(), attribute.key);
+    let finalName = attributeName.trim();
+    if (finalName === "") {
+      finalName = "Attribute Name";
     }
+
+    handleAttributeNameChange(finalName, attribute.key);
+    // The attributeName will be updated when the component re-renders with the new name from props
   };
 
   const handleWeightChange = (index: number, newWeight: number) => {
@@ -144,36 +166,10 @@ export const Attribute: FC<PropsAttributeComponent> = ({
             height: `${
               show && attribute.levels.length > 0
                 ? 32 + (attribute.levels.length + 1) * 41.5
-                : 67.5
+                : 94
             }px`,
           }}
         >
-          <LightTooltip
-            title={attribute.locked ? "Unlock attribute" : "Lock attribute"}
-            placement="bottom"
-            PopperProps={{
-              modifiers: [
-                {
-                  name: "offset",
-                  options: {
-                    offset: [0, -15], // Adjust the offset to bring the tooltip closer
-                  },
-                },
-              ],
-            }}
-          >
-            <div
-              className={`${styles.lockHandle}`}
-              onClick={() => toggleAttributeLocked(attribute.key)}
-            >
-              {attribute.locked ? (
-                <LockIcon stroke="var(--blue)" />
-              ) : (
-                <UnlockIcon stroke="var(--blue)" />
-              )}
-            </div>
-          </LightTooltip>
-
           <div
             className={`${styles.attribute_left} ${
               !show ? styles.pointer : ""
@@ -214,6 +210,88 @@ export const Attribute: FC<PropsAttributeComponent> = ({
               )}
             </div>
           </div>
+
+          {/* Icon group positioned on absolute right side */}
+          <div className={styles.attributeIcons}>
+            <LightTooltip
+              title={attribute.locked ? "Unlock attribute" : "Lock attribute"}
+              placement="right"
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, 0],
+                    },
+                  },
+                ],
+              }}
+            >
+              <div
+                className={styles.iconButton}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleAttributeLocked(attribute.key);
+                }}
+              >
+                {attribute.locked ? (
+                  <LockIcon stroke="var(--blue)" />
+                ) : (
+                  <UnlockIcon stroke="var(--blue)" />
+                )}
+              </div>
+            </LightTooltip>
+
+            <LightTooltip
+              title="Edit attribute name"
+              placement="right"
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, 0],
+                    },
+                  },
+                ],
+              }}
+            >
+              <div
+                className={styles.iconButton}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsEditing(true);
+                }}
+              >
+                <EditTip stroke="var(--blue)" />
+              </div>
+            </LightTooltip>
+
+            <LightTooltip
+              title="Delete attribute"
+              placement="right"
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, 0],
+                    },
+                  },
+                ],
+              }}
+            >
+              <div
+                className={styles.iconButton}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteAttribute(attribute.key);
+                }}
+              >
+                <XIcon />
+              </div>
+            </LightTooltip>
+          </div>
           <div className={styles.attribute_right}>
             {show ? (
               <Droppable
@@ -239,7 +317,7 @@ export const Attribute: FC<PropsAttributeComponent> = ({
                       <button
                         className={styles.addLevel}
                         onClick={() =>
-                          addLevelToAttribute(attribute.key, "Untitled")
+                          addLevelToAttribute(attribute.key, "Level Name")
                         }
                       >
                         {naming.surveyPage.attribute.addLevel.value}
@@ -286,31 +364,6 @@ export const Attribute: FC<PropsAttributeComponent> = ({
               ""
             )}
           </div>
-          {highlightedAttribute === attribute.key && (
-            <div className={styles.handles}>
-              {attribute.levels.length > 0 && (
-                <Button
-                  onClick={() => {
-                    showWeights ? saveWeights() : setShowWeights(!showWeights);
-                  }}
-                  icon={<EditTip stroke="var(--white)" />}
-                  text={
-                    showWeights
-                      ? naming.surveyPage.attribute.saveWeights.value
-                      : naming.surveyPage.attribute.editWeights.value
-                  }
-                  size="0.75rem"
-                ></Button>
-              )}
-              <Button
-                onClick={() => deleteAttribute(attribute.key)}
-                icon={<DeleteTip stroke="var(--white)" />}
-                text={naming.surveyPage.attribute.deleteAttribute.value}
-                size="0.75rem"
-                bg="var(--red)"
-              ></Button>
-            </div>
-          )}
         </li>
       )}
     </Draggable>

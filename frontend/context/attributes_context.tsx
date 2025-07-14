@@ -10,6 +10,7 @@ import {
   AddLevelToAttribute,
   DeleteLevelFromAttribute,
   LevelNameChange,
+  generateUniqueAttributeName,
 } from "./utils/level";
 
 export interface Level {
@@ -66,6 +67,12 @@ interface AttributeContextType {
   setAttributes: React.Dispatch<React.SetStateAction<Attribute[]>>;
   isCreatingAttribute: boolean;
   setIsCreatingAttribute: React.Dispatch<React.SetStateAction<boolean>>;
+  newlyCreatedLevelId: number | null;
+  setNewlyCreatedLevelId: React.Dispatch<React.SetStateAction<number | null>>;
+  newlyCreatedAttributeKey: number | null;
+  setNewlyCreatedAttributeKey: React.Dispatch<
+    React.SetStateAction<number | null>
+  >;
   getAttributeById: (id: number) => Attribute | undefined;
   getLevelById: (levelId: number, attributeName: string) => string;
   addNewAttribute: (name: string) => void;
@@ -196,6 +203,12 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
   }, [currentDocID]);
 
   const [isCreatingAttribute, setIsCreatingAttribute] = useState(false);
+  const [newlyCreatedLevelId, setNewlyCreatedLevelId] = useState<number | null>(
+    null
+  );
+  const [newlyCreatedAttributeKey, setNewlyCreatedAttributeKey] = useState<
+    number | null
+  >(null);
 
   useEffect(() => {
     if (currentDocID && currentDocID === prevDocID && edited) {
@@ -221,7 +234,6 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
       );
       setStorageChanged((prev) => prev + 1);
       setEdited(false);
-
     }
   }, [
     attributes,
@@ -238,8 +250,11 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
   ]);
 
   const addNewAttribute = (name: string) => {
+    // Generate unique name for the new attribute
+    const uniqueAttributeName = generateUniqueAttributeName(attributes, name);
+
     const newAttribute: Attribute = {
-      name,
+      name: uniqueAttributeName,
       levels: [],
       key: Date.now(),
       locked: false,
@@ -248,6 +263,7 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     setIsCreatingAttribute(false);
     setEdited(true);
     setAttributesEdited(true);
+    setNewlyCreatedAttributeKey(newAttribute.key);
   };
 
   const toggleAttributeLocked = (key: number) => {
@@ -308,7 +324,12 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
   const handleCreateAttribute = () => setIsCreatingAttribute(true);
 
   const addLevelToAttribute = (attributeKey: number, newLevel: string) => {
-    AddLevelToAttribute(attributeKey, newLevel, setAttributes);
+    const newLevelId = AddLevelToAttribute(
+      attributeKey,
+      newLevel,
+      setAttributes
+    );
+    setNewlyCreatedLevelId(newLevelId);
     setEdited(true);
     setAttributesEdited(true);
   };
@@ -335,7 +356,27 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     setAttributes((prevAttributes) => {
       return prevAttributes.map((attribute) => {
         if (attribute.key === key) {
-          return { ...attribute, name: newName };
+          // Validate that the new name is unique among attributes
+          const otherAttributes = prevAttributes.filter(
+            (attr) => attr.key !== key
+          );
+          const existingNames = otherAttributes.map((attr) =>
+            attr.name.toLowerCase()
+          );
+
+          let finalName = newName.trim();
+
+          // If name is empty, use "Untitled"
+          if (finalName === "") {
+            finalName = "Untitled";
+          }
+
+          // If name already exists, generate a unique name
+          if (existingNames.includes(finalName.toLowerCase())) {
+            finalName = generateUniqueAttributeName(otherAttributes, finalName);
+          }
+
+          return { ...attribute, name: finalName };
         }
         return attribute;
       });
@@ -577,6 +618,12 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     setAttributes,
     isCreatingAttribute,
     setIsCreatingAttribute,
+    newlyCreatedLevelId,
+    setNewlyCreatedLevelId,
+    newlyCreatedAttributeKey,
+    setNewlyCreatedAttributeKey,
+    getAttributeById,
+    getLevelById,
     addNewAttribute,
     addLevelToAttribute,
     deleteLevelFromAttribute,
@@ -585,8 +632,6 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     cancelNewAttribute,
     handleCreateAttribute,
     setEdited,
-    getAttributeById,
-    getLevelById,
     handleAttributeNameChange,
     handleInstructions,
     storageChanged,

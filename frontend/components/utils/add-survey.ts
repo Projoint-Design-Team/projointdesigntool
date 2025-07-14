@@ -26,7 +26,7 @@ export const addSurvey = ({
 
   // Generate unique document name
   const baseName =
-    value && value.filename ? value.filename.split(".")[0] : "untitled";
+    value && value.filename ? value.filename.split(".")[0] : "Untitled";
   const uniqueName = generateUniqueDocumentName(baseName);
 
   const dataToSave = {

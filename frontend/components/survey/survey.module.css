@@ -110,20 +110,7 @@
   visibility: hidden;
 }
 
-.lockHandle {
-  position: absolute;
-  right: -2rem;
-  padding: 0.5rem;
-  font-size: 1.25rem;
-}
-
-.lockHandle:hover {
-  cursor: pointer;
-}
-
-.attribute:hover .lockHandle {
-  visibility: visible;
-}
+/* Lock handle styles removed - now using inline icon layout */
 
 .visible {
   visibility: visible;
@@ -156,7 +143,7 @@
   display: flex;
   align-items: center;
   border-left: 1px solid var(--border-gray);
-  height: fit-content;
+  height: 100%;
   transition: height 0.1s ease-in-out;
   overflow: hidden;
   width: calc((100% - 4rem) / 2);
@@ -205,18 +192,7 @@
   padding-top: 0;
 }
 
-.handles {
-  border-radius: 0.5rem;
-  position: absolute;
-  bottom: -1rem;
-  left: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  gap: 1rem;
-  /* visibility: hidden; */
-}
+/* Old handles styles removed - replaced with inline icon layout and weightControls */
 
 .deleteAttribute {
   background: none;
@@ -312,7 +288,54 @@
 }
 
 .atrributeInfo {
+  flex: 1;
+  cursor: text;
   width: 100%;
+}
+
+.attributeIcons {
+  position: absolute;
+  right: -2.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.attribute:hover .attributeIcons {
+  visibility: visible;
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem;
+  cursor: pointer;
+  border-radius: 0.3rem;
+  transition: background-color 0.2s ease;
+  background-color: var(--white);
+  border: 1px solid var(--border-gray);
+}
+
+.iconButton:hover {
+  background-color: var(--border-gray);
+}
+
+.iconButton svg {
+  width: 14px;
+  height: 14px;
+}
+
+.weightControls {
+  position: absolute;
+  bottom: -1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .buttons {

@@ -18,7 +18,25 @@ export const Level = ({ name, index, id, attributeKey }: ILevelComponent) => {
   const [levelName, setLevelName] = useState<string>(name);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { deleteLevelFromAttribute, handleLevelNameChange } = useAttributes();
+  const {
+    deleteLevelFromAttribute,
+    handleLevelNameChange,
+    newlyCreatedLevelId,
+    setNewlyCreatedLevelId,
+  } = useAttributes();
+
+  // Sync levelName state with name prop
+  useEffect(() => {
+    setLevelName(name);
+  }, [name]);
+
+  // Auto-edit newly created levels
+  useEffect(() => {
+    if (newlyCreatedLevelId === id) {
+      setIsEditing(true);
+      setNewlyCreatedLevelId(null); // Clear the newly created level ID
+    }
+  }, [newlyCreatedLevelId, id, setNewlyCreatedLevelId]);
 
   useEffect(() => {
     if (isEditing) {
@@ -33,12 +51,13 @@ export const Level = ({ name, index, id, attributeKey }: ILevelComponent) => {
   const handleBlur = () => {
     setIsEditing(false);
 
-    if (levelName.trim() === "") {
-      handleLevelNameChange(attributeKey, "Untitled", id);
-      setLevelName("Untitled");
-    } else {
-      handleLevelNameChange(attributeKey, levelName, id);
+    let finalName = levelName.trim();
+    if (finalName === "") {
+      finalName = "Level Name";
     }
+
+    handleLevelNameChange(attributeKey, finalName, id);
+    // The levelName will be updated when the component re-renders with the new name from props
   };
 
   return (
@@ -62,7 +81,7 @@ export const Level = ({ name, index, id, attributeKey }: ILevelComponent) => {
                 {
                   name: "offset",
                   options: {
-                    offset: [0, -15], // Adjust the offset to bring the tooltip closer
+                    offset: [0, 0],
                   },
                 },
               ],

@@ -196,7 +196,7 @@ export const ThreeDots = forwardRef<
                       display: "flex",
                       gap: "0.75rem",
                       alignItems: "center",
-                      padding: "0.5rem 1rem",
+                      padding: "0rem 1rem",
                       fontSize: "0.875rem",
                       fontWeight: "medium",
                       color: "var(--red)",
