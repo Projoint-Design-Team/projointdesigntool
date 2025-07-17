@@ -5,6 +5,8 @@ interface ModalStoreState {
   setImportModalOpen: (val?: boolean) => void;
   exportModalOpen: boolean;
   setExportModalOpen: (val?: boolean) => void;
+  termsModalOpen: boolean;
+  setTermsModalOpen: (val?: boolean) => void;
 }
 
 export const useModalStore = create<ModalStoreState>((set) => ({
@@ -16,4 +18,7 @@ export const useModalStore = create<ModalStoreState>((set) => ({
     set((state) => ({
       exportModalOpen: val ?? !state.exportModalOpen,
     })),
+  termsModalOpen: false,
+  setTermsModalOpen: (val) =>
+    set((state) => ({ termsModalOpen: val ?? !state.termsModalOpen })),
 }));

@@ -14,6 +14,7 @@ import { SidebarTutorials } from "./__tutorials/sidebar__tutorials";
 import { addSurvey } from "../utils/add-survey";
 
 import { useSidebarFoldersStore } from "@/context/sidebar_folders";
+import { useModalStore } from "@/context/modal_store";
 
 export const Sidebar = ({ active }: { active: string }) => {
   const [documents, setDocuments] = useState<IDocument[]>([]);
@@ -26,6 +27,8 @@ export const Sidebar = ({ active }: { active: string }) => {
     tutorialFolderOpened,
     setTutorialFolderOpened,
   } = useSidebarFoldersStore();
+
+  const { setTermsModalOpen } = useModalStore();
 
   useEffect(() => {
     const fetchTutorials = async () => {
@@ -110,6 +113,21 @@ export const Sidebar = ({ active }: { active: string }) => {
         element={<SidebarTutorials tutorials={tutorials} active={active} />}
         tooltip="Step-by-step guides and documentation - Learn how to design effective conjoint experiments and use advanced features"
       />
+      <div className={styles.termsLink}>
+        <LightTooltip
+          disableInteractive
+          title="View our Terms and Conditions - Legal information about using this platform"
+          arrow
+          placement="right"
+        >
+          <span
+            onClick={() => setTermsModalOpen(true)}
+            className={styles.termsText}
+          >
+            Terms and Conditions
+          </span>
+        </LightTooltip>
+      </div>
     </div>
   );
 };
