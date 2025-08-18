@@ -61,7 +61,7 @@ export const DocumentsTable: FC<DocumentsTableProps> = ({}) => {
             <h4>
               This is step 2 in the{" "}
               <a
-                href="./"
+                href="https://yhoriuchi.github.io/projoint/index.html"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{

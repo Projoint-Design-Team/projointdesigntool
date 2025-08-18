@@ -38,7 +38,7 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
 
             <p>
               Welcome to Projoint Design Tool, a research platform offered by
-              the President and Fellows of Harvard College ("Harvard"), acting
+              the President and Fellows of Harvard College (&quot;Harvard&quot;), acting
               through its Institute for Quantitative Social Science.
             </p>
 
@@ -52,14 +52,14 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
             <div style={{ marginLeft: "1.5rem" }}>
                 <h4>1. <u>Scope and Description of Service</u></h4>
                 <p>
-                  The Projoint Design Tool platform (the "Service") includes all
+                  The Projoint Design Tool platform (the &quot;Service&quot;) includes all
                   services provided to you in connection with your use of
                   Projoint Design Tool. The Service is intended to be used both
                   by researchers conducting surveys as part of their research,
-                  studies, or investigations (each a "Researcher"), and by
-                  respondents to such surveys (each a "Respondent"). In each
+                  studies, or investigations (each a &quot;Researcher&quot;), and by
+                  respondents to such surveys (each a &quot;Respondent&quot;). In each
                   case, the survey, and the broader research project with which
-                  such survey is connected, will be known as the "Research".
+                  such survey is connected, will be known as the &quot;Research&quot;.
                 </p>
 
                 <h4>2. <u>Appropriate Use/Conduct</u></h4>
@@ -139,7 +139,7 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
                   questions you answered during your participation in Research,
                   along with any information you input into the Service. In each
                   case, these Terms of Service will refer to all such content
-                  and data, collectively, as "Content".
+                  and data, collectively, as &quot;Content&quot;.
                 </p>
                 <p>
                   By submitting Content or causing Content to be submitted to
@@ -164,9 +164,7 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
                 <h4>5. <u>Consent to Collection and Use of Information</u></h4>
                 <p>
                   The Service may collect data for each user as set forth in the
-                  Projoint Design Tool Privacy Statement ("Privacy Statement")
-                  or as otherwise disclosed in the Service. You acknowledge that
-                  you have read and understand the Privacy Statement.
+                  Projoint Design Tool Privacy Statement (&quot;Privacy Statement&quot;)
                 </p>
 
                 <h4>6. <u>AI Acknowledgment</u></h4>
@@ -187,7 +185,7 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
                 <p>
                   TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, THE SERVICE
                   AND ANY INFORMATION, PRODUCTS, OR SERVICES THEREIN OR OBTAINED
-                  THEREBY ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND
+                  THEREBY ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND
                   (EXPRESS, IMPLIED, OR OTHERWISE), INCLUDING, WITHOUT
                   LIMITATION, ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS
                   FOR A PARTICULAR PURPOSE, OR NONINFRINGEMENT. WE DO NOT
@@ -254,8 +252,8 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
               This Privacy Statement discloses the privacy practices for
               https://projoint.aaronrkaufman.com/, the website of the Projoint
               Design Tool Service offered by the Institute for Quantitative
-              Social Science at Harvard (the "Service").
-            </p>
+              Social Science at Harvard (the &quot;Service&quot;).
+            </p>  
 
             <h4>What information do we gather about you?</h4>
             <p>
