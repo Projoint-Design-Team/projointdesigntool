@@ -75,6 +75,7 @@ export const DocumentsTable: FC<DocumentsTableProps> = ({}) => {
           </div>
           <div className={styles.docActions}>
             <LightTooltip
+            
               title="Import survey data from a JSON file to continue working on a previously exported survey design"
               placement="bottom"
               PopperProps={{

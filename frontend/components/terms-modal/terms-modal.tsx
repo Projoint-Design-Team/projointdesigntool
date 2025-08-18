@@ -83,7 +83,7 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
                     Use the Service in any manner intended to damage, disable,
                     overburden, interfere with, or disrupt any part of the
                     Service, the computer equipment or network(s) connected to
-                    the Service, or any other user's access to or use of the
+                    the Service, or any other user&apos;s access to or use of the
                     Service.
                   </li>
                   <li>
@@ -210,7 +210,7 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
                 <p>
                   You agree to indemnify and hold harmless us from any and all
                   claims, liabilities, damages, losses and expenses, including
-                  reasonable attorneys' fees and costs, relating to or arising
+                  reasonable attorneys&apos; fees and costs, relating to or arising
                   out of (a) your use or attempted use of the Service in
                   violation of these Terms of Service; or (b) your violation of
                   any law or rights of any third party in connection with your
