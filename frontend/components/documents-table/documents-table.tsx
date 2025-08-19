@@ -20,6 +20,7 @@ import { DocumentData, fetchDocuments } from "./documents-table.constants";
 
 import { addSurvey } from "../utils/add-survey";
 import { DocumentsImport } from "../import/import";
+import CollapsibleHeader from "./collapsible-header";
 
 export interface DocumentsTableProps {}
 
@@ -56,23 +57,7 @@ export const DocumentsTable: FC<DocumentsTableProps> = ({}) => {
     <section className={styles.table}>
       <div className={styles.tableContainer}>
         <div className={styles.top}>
-          <div className={styles.docNameNew}>
-            <h2>Projoint Survey Designer</h2>
-            <h4>
-              This is step 2 in the{" "}
-              <a
-                href="https://yhoriuchi.github.io/projoint/index.html"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  color: "var(--blue-p)",
-                  textDecoration: "underline",
-                }}
-              >
-                One-Stop Conjoint Shop workflow
-              </a>
-            </h4>
-          </div>
+          <CollapsibleHeader/>
           <div className={styles.docActions}>
             <LightTooltip
               title="Import survey data from a JSON file to continue working on a previously exported survey design"
