@@ -7,15 +7,12 @@ function CollapsibleHeader() {
     setIsOpen(!isOpen);
   };
 
-  // --- Style Definitions ---
-
-  // 2. Apply the CSSProperties type to your style object
   const headerStyle: CSSProperties = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     cursor: "pointer",
-    userSelect: "none", // TypeScript now understands 'none' is a valid value
+    userSelect: "none", 
   };
 
   const containerStyle: CSSProperties = {
@@ -27,7 +24,6 @@ function CollapsibleHeader() {
     padding: "1rem",
   };
   
-  // (You can add the CSSProperties type to your other style objects too)
   const titleStyle: CSSProperties = {
     fontSize: "1.25rem",
     fontWeight: "600",
@@ -50,8 +46,6 @@ function CollapsibleHeader() {
     opacity: isOpen ? 1 : 0,
   };
 
-  // ... rest of the component ...
-
   return (
     <div style={containerStyle}>
       <div style={headerStyle} onClick={handleToggle}>
@@ -72,7 +66,20 @@ function CollapsibleHeader() {
         </svg>
       </div>
       <div style={contentWrapperStyle}>
-        {/* ... content ... */}
+        <h4>
+              This is step 2 in the{" "}
+              <a
+                href="https://yhoriuchi.github.io/projoint/index.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  color: "var(--blue-p)",
+                  textDecoration: "underline",
+                }}
+              >
+                One-Stop Conjoint Shop workflow
+              </a>
+            </h4>
       </div>
     </div>
   );
