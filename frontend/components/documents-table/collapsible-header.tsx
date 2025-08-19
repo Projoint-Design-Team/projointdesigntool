@@ -39,11 +39,12 @@ function CollapsibleHeader() {
   };
 
   const contentWrapperStyle: CSSProperties = {
+    marginTop: "1rem",
     display: "grid",
     overflow: "hidden",
     transition: "grid-template-rows 0.3s ease-in-out, opacity 0.3s ease-in-out",
-    gridTemplateRows: isOpen ? "1fr" : "0fr",
-    opacity: isOpen ? 1 : 0,
+    gridTemplateRows: "1fr",
+    opacity: 1,
   };
 
   return (
@@ -65,6 +66,7 @@ function CollapsibleHeader() {
           />
         </svg>
       </div>
+      {isOpen &&
       <div style={contentWrapperStyle}>
         <h4>
               This is step 2 in the{" "}
@@ -81,6 +83,7 @@ function CollapsibleHeader() {
               </a>
             </h4>
       </div>
+        }
     </div>
   );
 }
