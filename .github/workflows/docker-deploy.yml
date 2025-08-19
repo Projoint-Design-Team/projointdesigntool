@@ -22,5 +22,9 @@ jobs:
         script: |
           cd projointdesigntool
           git pull origin main
-          docker compose up -d --build --force-recreate --remove-orphans
-          docker image prune -a -f
+          docker compose down
+          docker container prune -f 
+          docker image prune -f 
+          docker builder prune -af 
+          docker rmi $(docker images -q)
+          docker compose up -d
