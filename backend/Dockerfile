@@ -1,7 +1,6 @@
-###########
-
-Builder
-###########
+#########
+#Builder#
+#########
 FROM python:3.9.7-bullseye as builder
 
 WORKDIR /usr/src/app
@@ -9,7 +8,6 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-Remove musl-dev; keep libpq-dev if you build psycopg2
 RUN apt-get update && apt-get install -y postgresql gcc python3-dev gettext g++ libpq-dev
 
 RUN pip install --upgrade pip
@@ -18,10 +16,9 @@ COPY . .
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
 
-#########
-
-FINAL
-#########
+#######
+#FINAL#
+#######
 FROM python:3.9.7-bullseye
 
 RUN mkdir -p /home/app
