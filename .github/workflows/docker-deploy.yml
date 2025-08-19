@@ -22,5 +22,6 @@ jobs:
         script: |
           cd projointdesigntool
           git pull origin main
-          docker compose build --no-cache
-          docker compose up -d --force-recreate
+          docker compose down
+          docker rmi $(docker images -q)
+          docker compose up -d
