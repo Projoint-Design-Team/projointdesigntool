@@ -33,13 +33,13 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
             <h3>Projoint Design Tool Terms of Service</h3>
 
             <p>
-              <strong>Last updated:</strong> July 14, 2024
+              <strong>Last updated:</strong> July 14, 2025
             </p>
 
             <p>
               Welcome to Projoint Design Tool, a research platform offered by
-              the President and Fellows of Harvard College (&quot;Harvard&quot;), acting
-              through its Institute for Quantitative Social Science.
+              NYU Abu Dhabi (&quot;NYU Abu Dhabi&quot;), acting
+              through its Division of Social Science.
             </p>
 
             <p>
@@ -122,7 +122,7 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
                 <h4>3. <u>Service License</u></h4>
                 <p>
                   Subject to your compliance with these Terms of Service,
-                  Harvard hereby grants you a limited, revocable license to
+                  NYU Abu Dhabi hereby grants you a limited, revocable license to
                   access and use the Service: (a) solely in order to carry out
                   Research if you are a Researcher; and (b) solely in order to
                   solicit your feedback on Research you participated in if you
@@ -143,7 +143,7 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
                 </p>
                 <p>
                   By submitting Content or causing Content to be submitted to
-                  the Service, you grant Harvard a perpetual, irrevocable,
+                  the Service, you grant NYU Abu Dhabi a perpetual, irrevocable,
                   worldwide, transferable, royalty-free, fully paid-up,
                   non-exclusive license to reproduce, publicly perform, publicly
                   display, and distribute such Content in order to (a) operate,
@@ -176,7 +176,7 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
                   understand and agree that the output provided by any chatbot
                   on the Service may not be accurate, current, or complete, may
                   contain content that is inconsistent with the views of
-                  Harvard, and should not be relied on without independent
+                  NYU Abu Dhabi, and should not be relied on without independent
                   confirmation, or relied on as a substitute for professional
                   advice.
                 </p>
@@ -232,15 +232,15 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
                   You agree that the Terms of Service and any claim or dispute
                   arising out of or relating to the Terms of Service, or the
                   Service and your use of the Service, will be governed by the
-                  laws of the Commonwealth of Massachusetts, excluding its
+                  laws of the United Arab Emirates, excluding its
                   conflicts of laws principles.
                 </p>
 
                 <h4>12. <u>Whole Agreement/Amendments</u></h4>
                 <p>
                   These Terms of Service and the Privacy Statement together
-                  constitute the entire agreement between you and Harvard with
-                  respect to your use of the Platform and this Service. Harvard
+                  constitute the entire agreement between you and NYU Abu Dhabi with
+                  respect to your use of the Platform and this Service. NYU Abu Dhabi
                   reserves the right to amend these Terms of Service at any
                   time.
                 </p>
@@ -251,8 +251,8 @@ export const TermsModal: FC<TermsModalProps> = ({}) => {
             <p>
               This Privacy Statement discloses the privacy practices for
               https://projoint.aaronrkaufman.com/, the website of the Projoint
-              Design Tool Service offered by the Institute for Quantitative
-              Social Science at Harvard (the &quot;Service&quot;).
+              Design Tool Service offered by the
+              Division of Social Science at NYU Abu Dhabi (the &quot;Service&quot;).
             </p>  
 
             <h4>What information do we gather about you?</h4>

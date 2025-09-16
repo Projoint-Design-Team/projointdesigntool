@@ -73,3 +73,13 @@ ul {
 button:hover {
   cursor: pointer;
 }
+
+::selection {
+  background-color: var(--blue);
+  color: var(--white);
+}
+
+::-moz-selection {
+  background-color: var(--blue);
+  color: var(--white);
+}
