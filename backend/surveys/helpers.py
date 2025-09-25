@@ -563,15 +563,15 @@ def _create_profiles(profiles_num, attribute_list, restrictions, cross_restricti
     return profiles_list
 
 
+
 def _write_header(writer, attributes, profiles):
     header = []
     for i in range(1, len(attributes) + 1):
-        for j in range(1, profiles + 2):
-            if j == 1:
-                header.append(f"ATT{i}")
-            else:
-                header.append(f"ATT{i}P{j-1}")
+        header.append(f"ATT{i}")               # always include base label
+        for j in range(1, profiles + 1):       # loop exactly profiles times
+            header.append(f"ATT{i}P{j}")
     writer.writerow(header)
+
 
 
 def _rearrange_and_write_profiles(writer, profiles_list, profiles):
