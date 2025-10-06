@@ -432,32 +432,40 @@ def _evaluate_cross_condition(profile, condition):
 
 
 def _evaluate_cross_profile_violation(profiles, restriction):
-    """Evaluates if the given restriction is violated in any pair of profiles."""
-    condition = restriction["condition"]
-    result = restriction["result"]
+    """
+    Return True if the cross-profile restriction is violated.
 
-    condition_not_entered = True
+    Semantics, If profile i satisfies 'condition', then every other profile j != i
+    must satisfy 'result'. A violation exists if there is any j that does NOT
+    satisfy 'result'.
+    """
+    cond = restriction["condition"]
+    res  = restriction["result"]
 
-    for i in range(len(profiles)):
-        for j in range(len(profiles)):
-            if i != j:  # Ensure different profiles are compared
-                if _evaluate_cross_condition(profiles[i], condition):
-                    condition_not_entered = False
-                    if _evaluate_cross_condition(profiles[j], result):
-                        return True  # Restriction is valid
-    if condition_not_entered:
-        return True
-    return False
+    for i, p_i in enumerate(profiles):
+        if _evaluate_cross_condition(p_i, cond):
+            # i triggers the antecedent, now all others must satisfy the consequent
+            for j, p_j in enumerate(profiles):
+                if i == j:
+                    continue
+                if not _evaluate_cross_condition(p_j, res):
+                    return True  # violation, an "other" does NOT satisfy result
+    return False  # no violation found
 
 
-def _check_any_cross_profile_restriction_violated(profiles, cross_restrictions):
-    """Checks if any cross-profile restrictions are violated."""
+
+def _cross_profile_restrictions_valid(profiles, cross_restrictions):
+    """
+    Return True only if no cross-profile restriction is violated.
+    If there are no cross restrictions, this is trivially valid.
+    """
     if not cross_restrictions:
         return True
-    for restriction in cross_restrictions:
-        if _evaluate_cross_profile_violation(profiles, restriction):
-            return True
-    return False
+    for r in cross_restrictions:
+        if _evaluate_cross_profile_violation(profiles, r):
+            return False  # invalid, a violation exists
+    return True
+
 
 
 def _evaluate_condition(profile, conditions):
@@ -557,9 +565,10 @@ def _create_profiles(profiles_num, attribute_list, restrictions, cross_restricti
             profile = _generate_single_profile(attribute_list)
             if _check_restrictions(profile, restrictions):
                 profiles_list.append(profile)
-        profiles_valid = _check_any_cross_profile_restriction_violated(
+        profiles_valid = _cross_profile_restrictions_valid(
             profiles_list, cross_restrictions
         )
+
     return profiles_list
 
 
