@@ -57,7 +57,13 @@ export const DocumentsTable: FC<DocumentsTableProps> = ({}) => {
     <section className={styles.table}>
       <div className={styles.tableContainer}>
         <div className={styles.top}>
+
           <CollapsibleHeader/>
+
+          <div className={styles.docName}>
+            <h2>Projoint Survey Designer </h2>
+          </div>
+
           <div className={styles.docActions}>
             <LightTooltip
               title="Import survey data from a JSON file to continue working on a previously exported survey design"
