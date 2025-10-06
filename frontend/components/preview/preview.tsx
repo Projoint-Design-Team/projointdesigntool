@@ -115,6 +115,7 @@ const Preview: React.FC<IPreview> = ({
                     ? styles.attributeName
                     : ""
                 }`}
+				
                 key={index}
               >
                 <p>{item}</p>
