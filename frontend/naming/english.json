@@ -105,11 +105,11 @@
     },
     "repeatedTask": {
       "value": "Repeated task",
-      "subtitle": "<a href='/tutorials/01_settings.md'> Option </a> to repeat tasks"
+      "subtitle": "<Should there be a repeated task to estimate measurement error?"
     },
     "shuffled": {
       "value": "Option to either flip columns same for repeated tasks",
-      "subtitle": "Option to either flip columns same for repeated tasks"
+      "subtitle": "Should the repeated task be reverse-ordered"
     },
     "whichRepeat": {
       "value": "Which task to repeat?",

@@ -157,9 +157,9 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
     numProfiles: 2,
     numTasks: 2,
     repeatedTasks: true,
-    repeatedTasksFlipped: false,
+    repeatedTasksFlipped: true,
     taskToRepeat: 1,
-    whereToRepeat: 1,
+    whereToRepeat: 2,
     randomize: false,
     ordering: "task",
   });
