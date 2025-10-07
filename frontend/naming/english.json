@@ -105,7 +105,7 @@
     },
     "repeatedTask": {
       "value": "Repeated task",
-      "subtitle": "<Should there be a repeated task to estimate measurement error?"
+      "subtitle": "Should there be a repeated task to estimate measurement error?"
     },
     "shuffled": {
       "value": "Option to either flip columns same for repeated tasks",
