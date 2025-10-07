@@ -86,6 +86,9 @@ export const downloadSurvey = async (
         filename: file,
         fixed_profile: fixedProfile,
         profile_naming,
+		num_profiles: Number(
+		  (settings as any).numProfiles ?? (settings as any).num_profiles
+		),
         ...processedSettings,
         ...preprocessedInstructions,
       },

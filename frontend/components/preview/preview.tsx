@@ -123,6 +123,17 @@ const Preview: React.FC<IPreview> = ({
           </div>
         </div>
 
+		<div
+		  style={{
+			marginTop: "16px",
+			fontSize: "14px",
+			color: "#666",
+		  }}
+		>
+		  <strong>Note:</strong> If you find any bugs, please report them to{" "}
+		  <a href="mailto:aaronkaufman@nyu.edu">aaronkaufman@nyu.edu</a>.
+		</div>
+
         <div className={styles.instructions}>
           {instructions && instructions.instructions}
         </div>
