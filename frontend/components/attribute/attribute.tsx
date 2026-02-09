@@ -166,7 +166,7 @@ export const Attribute: FC<PropsAttributeComponent> = ({
             height: `${
               show && attribute.levels.length > 0
                 ? 32 + (attribute.levels.length + 1) * 41.5
-                : 94
+                : attribute.levels.length > 0 ? 126 : 94
             }px`,
           }}
         >
@@ -266,6 +266,44 @@ export const Attribute: FC<PropsAttributeComponent> = ({
                 <EditTip stroke="var(--blue)" />
               </div>
             </LightTooltip>
+
+            {attribute.levels.length > 0 && (
+              <LightTooltip
+                title={
+                  showWeights
+                    ? naming.surveyPage.attribute.saveWeights.value
+                    : naming.surveyPage.attribute.editWeights.value
+                }
+                placement="right"
+                PopperProps={{
+                  modifiers: [
+                    {
+                      name: "offset",
+                      options: {
+                        offset: [0, 0],
+                      },
+                    },
+                  ],
+                }}
+              >
+                <div
+                  className={styles.iconButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    showWeights ? saveWeights() : setShowWeights(!showWeights);
+                  }}
+                >
+                  <span style={{ 
+                    color: "var(--blue)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "14px",
+                    height: "14px",
+                  }}>%</span>
+                </div>
+              </LightTooltip>
+            )}
 
             <LightTooltip
               title="Delete attribute"

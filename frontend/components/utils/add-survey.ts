@@ -48,9 +48,9 @@ export const addSurvey = ({
       repeatedTasksFlipped:
         value && value.repeated_tasks_flipped
           ? value.repeated_tasks_flipped
-          : false,
+          : true,
       taskToRepeat: value && value.task_to_repeat ? value.task_to_repeat : 1,
-      whereToRepeat: value && value.where_to_repeat ? value.where_to_repeat : 1,
+      whereToRepeat: value && value.where_to_repeat ? value.where_to_repeat : 2,
       randomize: value && value.randomize ? value.randomize : false,
     },
   };
