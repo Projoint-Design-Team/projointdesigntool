@@ -951,44 +951,24 @@ def _download_survey(surveyID, user_token, doubleQ, qType, filename):
 
     if response.status_code == 200:
         response_json = response.json()
-        qsf_data = response_json.get("result", {})
+        qsf_result = response_json.get("result", {})
+        if not qsf_result:
+            return False
 
-        if doubleQ:
-            counter = 0
-            for j in qsf_data["SurveyElements"]:
-                if "Payload" in j and isinstance(j["Payload"], dict):
-                    counter += 1
-                    curr = j["Payload"]
-                    if (
-                        "DataExportTag" in curr
-                        and curr["DataExportTag"] == "Introduction"
-                    ):
-                        continue
-                    if "QuestionType" in curr:
-                        if counter % 2 == 1:
-                            curr["QuestionType"] = questionType[0]
-                        else:
-                            curr["QuestionType"] = questionType2[0]
-                    if "Selector" in curr:
-                        if counter % 2 == 1:
-                            curr["Selector"] = questionType[1]
-                        else:
-                            curr["Selector"] = questionType2[1]
-        else:
-            for j in qsf_data["SurveyElements"]:
-                if "Payload" in j and isinstance(j["Payload"], dict):
-                    curr = j["Payload"]
-                    if (
-                        "DataExportTag" in curr
-                        and curr["DataExportTag"] == "Introduction"
-                    ):
-                        continue
-                    if "QuestionType" in curr:
-                        curr["QuestionType"] = questionType[0]
-                    if "Selector" in curr:
-                        curr["Selector"] = questionType[1]
+        # Build a real Qualtrics QSF wrapper
+        qsf_wrapper = {
+            "SurveyEntry": qsf_result.get("SurveyEntry", {}),
+            "SurveyElements": qsf_result.get("SurveyElements", []),
+        }
 
-        with open(filename, "w") as qsf_file:
-            json.dump(qsf_data, qsf_file)
+        # Some exports include SurveyEntry/SurveyElements at top-level already, but to be safe:
+        # If qsf_result itself already looks like the wrapper, keep it
+        if "SurveyEntry" in qsf_result and "SurveyElements" in qsf_result:
+            qsf_wrapper = qsf_result
+
+        with open(filename, "w", encoding="utf-8") as qsf_file:
+            json.dump(qsf_wrapper, qsf_file, ensure_ascii=False)
+
         return True
+
 
