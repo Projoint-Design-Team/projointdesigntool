@@ -347,7 +347,7 @@ def export_qsf(request):
         qDescription = validated_data["qDescription"]
         profile_naming = validated_data["profile_naming"]
 
-        user_token = os.getenv("QUALTRICS_API_KEY")
+        user_token = "XKOu7PR1pwkekbkQuhMgC7tjR0xE1DwZhdC17uOQ"
 
         js_text = _create_qualtrics_js_text(request)
         surveyID = _create_survey(

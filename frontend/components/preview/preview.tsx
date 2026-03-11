@@ -48,6 +48,8 @@ const Preview: React.FC<IPreview> = ({
     switch (instructions?.outcomeType) {
       case "mcq":
         return <PreviewMcq refresh={refresh || false} options={profiles} />;
+      case "mcq_np":
+        return <PreviewMcq refresh={refresh || false} options={profiles} noPreference={true} />;
       case "ranking":
         return (
           <PreviewRanking refresh={refresh || false} profiles={profiles} />

@@ -12,6 +12,7 @@ export interface SurveyOutcomeTypesProps {}
 // Mapping of outcome types to their display names
 const outcomeTypeMapping = {
   mcq: "Multiple Choice Question",
+  mcq_np: "Multiple Choice + No Preference",
   slider: "Slider",
   ranking: "Ranking",
 };
@@ -33,6 +34,8 @@ const OutcomeDropdownWithTooltips: FC<{
         return `Respondents choose 1 option from ${numProfiles} profiles (${profileNaming} 1, ${profileNaming} 2${
           numProfiles > 2 ? ", etc." : ""
         })`;
+      case "Multiple Choice + No Preference":
+        return `Respondents choose 1 option from ${numProfiles} profiles or select "No preference"`;
       case "Ranking":
         return `Respondents drag to rank all ${numProfiles} profiles from most to least preferred`;
       case "Slider":

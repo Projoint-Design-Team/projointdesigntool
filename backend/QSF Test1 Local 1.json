@@ -1,0 +1,91 @@
+{
+    "attributes": [
+        {
+            "name": "Position on Economic Well-being",
+            "levels": [
+                {
+                    "name": "I promise to protect American household incomes and keep our economy strong and stable, so families can rely on steady jobs and affordable living costs.",
+                    "weight": 50
+                },
+                {
+                    "name": "I promise to grow our economy faster than ever, raise incomes, and deliver bigger paychecks and lower living costs for every American family.",
+                    "weight": 50
+                }
+            ],
+            "locked": false
+        },
+        {
+            "name": "Policy Positions",
+            "levels": [
+                {
+                    "name": "Immigrants make this country stronger. I will secure the border and create a path to citizenship for most undocumented immigrants who follow the law.",
+                    "weight": 50
+                },
+                {
+                    "name": "America must come first. I will strengthen the border and deport most undocumented immigrants, with only a few exceptions.",
+                    "weight": 50
+                }
+            ],
+            "locked": false
+        },
+        {
+            "name": "Position on Fair Elections",
+            "levels": [
+                {
+                    "name": "A president must respect the law and answer to the courts to protect our democracy.",
+                    "weight": 50
+                },
+                {
+                    "name": "A president should have the power to get things done without interference from unelected judges and bureaucrats.",
+                    "weight": 50
+                }
+            ],
+            "locked": false
+        },
+        {
+            "name": "Position on Free Speech",
+            "levels": [
+                {
+                    "name": "People have the right to speak out and criticize my policies without fear of punishment.",
+                    "weight": 50
+                },
+                {
+                    "name": "People who spread lies and false attacks against me should face consequences for harming our country.",
+                    "weight": 50
+                }
+            ],
+            "locked": false
+        },
+        {
+            "name": "Gender",
+            "levels": [
+                {
+                    "name": "Male",
+                    "weight": 50
+                },
+                {
+                    "name": "Female",
+                    "weight": 50
+                }
+            ],
+            "locked": false
+        }
+    ],
+    "csv_lines": 500,
+    "restrictions": [],
+    "cross_restrictions": [],
+    "filename": "QSF Test1 Local 1.json",
+    "fixed_profile": {},
+    "profile_naming": "Profile",
+    "num_profiles": 2,
+    "num_tasks": 2,
+    "repeated_tasks": true,
+    "repeated_tasks_flipped": false,
+    "task_to_repeat": 1,
+    "where_to_repeat": 1,
+    "randomize": false,
+    "qDescription": "This is a candidate conjoint survey where respondents repeatedly choose between two hypothetical political candidates, each defined by multiple attributes.",
+    "doubleQ": false,
+    "qType": "mcq",
+    "qInstruction": "Political candidates can have many different combinations of beliefs and policies.\n\nIn this next task, you will be presented with two hypothetical candidates. Each hypothetical candidate endorses different visions for the country and has different approaches to leadership.\n\nYou should choose the candidate with the beliefs that represents your IDEAL leader, which candidate you think would be BEST for the country.\n\nYou will be given FIVE different opportunities to pick the candidate you prefer. Please read each version VERY CAREFULLY and compare each candidates’ description thoughtfully as you review the selections. There are NO right or wrong answers, just honestly select which type of candidate you most want to lead, regardless of any other considerations."
+}

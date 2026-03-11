@@ -36,7 +36,7 @@ interface RestrictionProps {
 export interface IInstructions {
   description: string;
   instructions: string;
-  outcomeType: "ranking" | "slider" | "mcq";
+  outcomeType: "ranking" | "slider" | "mcq" | "mcq_np";
 }
 
 export interface Attribute {
@@ -302,7 +302,7 @@ export const AttributeProvider: React.FC<{ children: ReactNode }> = ({
         setInstructions({
           instructions: instructions?.instructions || "",
           description: instructions?.description || "",
-          outcomeType: value as "ranking" | "slider" | "mcq",
+          outcomeType: value as "ranking" | "slider" | "mcq" | "mcq_np",
         });
         break;
     }
