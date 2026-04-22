@@ -346,14 +346,15 @@ def _create_js_file(request):
             file_js.write("// num_attributes = Number of Attributes in the Array\n")
             file_js.write("var num_attributes = featurearray.length;\n\n")
             file_js.write("// Should duplicate profiles be rejected?\n")
-            file_js.write(
-                "let dupprofiles = ["
-                + str(task_to_repeat)
-                + ","
-                + str(where_to_repeat)
-                + "]"
-                + "\n"
-            )
+            if repeated_tasks:
+                file_js.write(
+                    "let dupprofiles = ["
+                    + str(task_to_repeat)
+                    + ","
+                    + str(where_to_repeat)
+                    + "]"
+                    + "\n"
+                )
             file_js.write(
                 f"var noDuplicateProfiles = {'false' if repeated_tasks else 'true'};\n\n"
             )
@@ -367,51 +368,52 @@ def _create_js_file(request):
                 file_js.write("var featureArrayNew = featurearray;\n\n")
 
             file_js.write(temp_3)
-            if repeated_tasks_flipped:
-                file_js.write(
-                    """
-                    // Duplicate profiles
-                    for (const key in returnarray) {{
-                    if (returnarray.hasOwnProperty(key)) {{
-                        if (key.startsWith('F-{}')) {{
-                        let correspondingKey = 'F-{}' + key.substring(3); // Get corresponding key starting with 'F-1'
-                        if (returnarray[correspondingKey]) {{
-                            returnarray[key] = returnarray[correspondingKey]; // Set value of 'F-2' key to be the same as 'F-1' counterpart
+            if repeated_tasks:
+                if repeated_tasks_flipped:
+                    file_js.write(
+                        """
+                        // Duplicate profiles
+                        for (const key in returnarray) {{
+                        if (returnarray.hasOwnProperty(key)) {{
+                            if (key.startsWith('F-{}')) {{
+                            let correspondingKey = 'F-{}' + key.substring(3); // Get corresponding key starting with 'F-1'
+                            if (returnarray[correspondingKey]) {{
+                                returnarray[key] = returnarray[correspondingKey]; // Set value of 'F-2' key to be the same as 'F-1' counterpart
+                            }}
+                            }}
                         }}
                         }}
-                    }}
-                    }}
-                    """.format(
-                        str(task_to_repeat), str(where_to_repeat)
+                        """.format(
+                            str(task_to_repeat), str(where_to_repeat)
+                        )
                     )
-                )
-            else:
-                file_js.write(
-                    """
-                let curr = N;
-                for (let i = 1; i <= N; i++) {{ // Loop through tasks starting from Task 2
-                    let startKey = 'F-{}-' + curr;
-                    let trailKey = 'F-{}-' + i;
-                    for (let j = 1 ; j <= num_attributes; j++){{
-                        let correspondingKey = startKey + '-' + j;
-                        let trailCorKey = trailKey + '-' + j;
-                        if (returnarray[correspondingKey]){{
-                            returnarray[correspondingKey] = returnarray[trailCorKey];
-                        }}
-                    }};
-                    curr -=1;
-                }}
+                else:
+                    file_js.write(
+                        """
+                    let curr = N;
+                    for (let i = 1; i <= N; i++) {{ // Loop through tasks starting from Task 2
+                        let startKey = 'F-{}-' + curr;
+                        let trailKey = 'F-{}-' + i;
+                        for (let j = 1 ; j <= num_attributes; j++){{
+                            let correspondingKey = startKey + '-' + j;
+                            let trailCorKey = trailKey + '-' + j;
+                            if (returnarray[correspondingKey]){{
+                                returnarray[correspondingKey] = returnarray[trailCorKey];
+                            }}
+                        }};
+                        curr -=1;
+                    }}
 
-                for(let i=1 ; i<=num_attributes; i++){{
-                    let startKey = 'F-1-' + i;
-                    let trailKey = 'F-2-' + i;
-                    if (returnarray[startKey]){{
-                        returnarray[startKey] = returnarray[trailKey];
-                    }}
-                }}""".format(
-                        str(task_to_repeat), str(where_to_repeat)
+                    for(let i=1 ; i<=num_attributes; i++){{
+                        let startKey = 'F-1-' + i;
+                        let trailKey = 'F-2-' + i;
+                        if (returnarray[startKey]){{
+                            returnarray[startKey] = returnarray[trailKey];
+                        }}
+                    }}""".format(
+                            str(task_to_repeat), str(where_to_repeat)
+                        )
                     )
-                )
             file_js.write("\n")
             file_js.write(temp_4)
             file_js.close()

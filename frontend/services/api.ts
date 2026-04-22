@@ -68,11 +68,8 @@ export const downloadSurvey = async (
     const processedCrossRestrictions = preprocessCrossRestrictions(
       crossRestrictions || []
     );
-    // Only export settings for qsf and json
-    const processedSettings =
-      path === "export_qsf" || path === "export_json"
-        ? preprocessSettings(settings)
-        : {};
+    // Send settings for all export types; the backend ignores fields it doesn't use
+    const processedSettings = preprocessSettings(settings);
 
     const preprocessedInstructions = path !== "export_csv" ? instructions : {};
 
