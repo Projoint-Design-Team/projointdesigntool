@@ -384,7 +384,7 @@ def _create_js_file(request):
                         }}
                         }}
                         """.format(
-                            str(task_to_repeat), str(where_to_repeat)
+                            str(where_to_repeat), str(task_to_repeat)
                         )
                     )
                 else:
@@ -411,7 +411,7 @@ def _create_js_file(request):
                             returnarray[startKey] = returnarray[trailKey];
                         }}
                     }}""".format(
-                            str(task_to_repeat), str(where_to_repeat)
+                            str(where_to_repeat), str(task_to_repeat)
                         )
                     )
             file_js.write("\n")
