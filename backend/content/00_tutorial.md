@@ -37,3 +37,17 @@ There are four options for exporting a survey, and we recommend users do at leas
 3) Exporting to JavaScript (JS) produces a file that can be uploaded to Qualtrics to perform randomization. 
 
 4) Exporting to Qualtrics produces a .QSF file that can be loaded into Qualtrics, automatically populating a survey with appropriate randomization and the correct question tasks.
+
+### Note on response data column names
+
+When you download response data from Qualtrics (CSV / SPSS), the conjoint attribute columns are named with a `__js_` prefix - e.g. `__js_F-1-1-1` instead of `F-1-1-1`. This prefix is required by Qualtrics's current JavaScript API and cannot be omitted.
+
+If your analysis script expects bare names like `F-1-1-1`, add one line at the top to strip the prefix.
+
+In R:
+
+    colnames(data) <- gsub("__js_", "", colnames(data))
+
+In Python:
+
+    df.columns = df.columns.str.replace("__js_", "", regex=False)

@@ -243,7 +243,7 @@ var returnarrayKeys = Object.keys(returnarray);
 
 temp_4 = """
 for (var pr = 0; pr < returnarrayKeys.length; pr++) {
-  Qualtrics.SurveyEngine.setEmbeddedData(
+  Qualtrics.SurveyEngine.setJSEmbeddedData(
     returnarrayKeys[pr],
     returnarray[returnarrayKeys[pr]]
   );
@@ -731,7 +731,7 @@ def _create_html(
     rows = ["A"] * num_attr
     for m in range(num_attr):
         rows[m] = (
-            "<tr>\n<td style='text-align: center;'><strong>${e://Field/F-"
+            "<tr>\n<td style='text-align: center;'><strong>${e://Field/__js_F-"
             + str(i)
             + "-"
             + str(m + 1)
@@ -740,7 +740,7 @@ def _create_html(
         for n in range(num_profiles) if not flip else range(num_profiles - 1, -1, -1):
             rows[m] = (
                 rows[m]
-                + "<td style='text-align: center;'>${e://Field/F-"
+                + "<td style='text-align: center;'>${e://Field/__js_F-"
                 + str(i)
                 + "-"
                 + str(n + 1)
@@ -904,15 +904,15 @@ def _emb_fields(surveyID, user_token, num_attr, num_profiles, tasks):
 
     for i in range(1, tasks + 1):
 
-        # Attribute Name: F-[task number]-[attribute number]
+        # Attribute Name: __js_F-[task number]-[attribute number]
         for j in range(1, num_attr + 1):
-            key = f"F-{i}-{j}"
+            key = f"__js_F-{i}-{j}"
             fields.append({"key": key, "type": "text"})
 
-        # Level Name: F-[task number]-[profile number]-[attribute number]
+        # Level Name: __js_F-[task number]-[profile number]-[attribute number]
         for j in range(1, num_profiles + 1):
             for k in range(1, num_attr + 1):
-                key = f"F-{i}-{j}-{k}"
+                key = f"__js_F-{i}-{j}-{k}"
                 fields.append({"key": key, "type": "text"})
 
     payload = {"embeddedDataFields": fields}
