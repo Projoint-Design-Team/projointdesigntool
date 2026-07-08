@@ -45,7 +45,7 @@ class ShortSurveySerializer(serializers.ModelSerializer):
         many=True, required=False, default=list
     )
     #num_profiles = serializers.IntegerField(default=2, min_value=2)
-    num_profiles = serializers.IntegerField(min_value=2) 
+    num_profiles = serializers.IntegerField(min_value=1)
     filename = serializers.CharField(required=True)
     csv_lines = serializers.IntegerField(default=500)
     fixed_profile = serializers.JSONField(required=False, default=dict)

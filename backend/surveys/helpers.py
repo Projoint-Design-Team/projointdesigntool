@@ -761,7 +761,7 @@ def _create_html(
         text_out = text_out + j
 
     text_out = text_out + footer + inst
-    text_out += "<style> .Skin #Buttons {text-align: center;} </style>"
+    text_out += "<style> .Skin #Buttons {text-align: center;} table.UserTable {border-collapse: collapse; margin: 0 auto;} table.UserTable td {border: 1px solid #ccc; padding: 6px 10px;} </style>"
 
     return text_out
 
