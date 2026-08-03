@@ -140,6 +140,12 @@ var returnarray = {};
 
 // For each task p
 for (var p = 1; p <= K; p++) {
+  // Rebuild the whole task until cross-profile restrictions are satisfied
+  // (capped so contradictory restrictions cannot hang the respondent's browser)
+  var task_attempts = 0;
+  var task_valid = false;
+
+  while (!task_valid) {
   // For each profile i
   for (var i = 1; i <= N; i++) {
     // Repeat until non-restricted profile generated
@@ -198,6 +204,48 @@ for (var p = 1; p <= K; p++) {
       }
     }
   }
+
+  task_attempts++;
+  task_valid = task_attempts >= 500 || crossRestrictionsValid(returnarray, p);
+  }
+}
+
+// Build profile dictionaries for task taskNum from the profiles array
+function getTaskProfiles(profilesArray, taskNum) {
+  var profiles = [];
+  for (var prof = 1; prof <= N; prof++) {
+    var dict = {};
+    for (var a = 1; a <= featureArrayKeys.length; a++) {
+      dict[profilesArray["F-" + taskNum + "-" + a]] = profilesArray["F-" + taskNum + "-" + prof + "-" + a];
+    }
+    profiles.push(dict);
+  }
+  return profiles;
+}
+
+// Evaluate a single cross-profile condition against a profile
+function evaluateCrossCondition(profile, cond) {
+  return (profile[cond.attribute] === cond.value) === (cond.operation === '==');
+}
+
+// Cross-profile restrictions: if any profile in the task satisfies 'condition',
+// every other profile in the task must satisfy 'result' (same semantics as the
+// backend preview/CSV generator)
+function crossRestrictionsValid(profilesArray, taskNum) {
+  if (crossrestrictionarray.length === 0) return true;
+  var profiles = getTaskProfiles(profilesArray, taskNum);
+  return crossrestrictionarray.every(function(restriction) {
+    for (var a = 0; a < profiles.length; a++) {
+      if (evaluateCrossCondition(profiles[a], restriction.condition)) {
+        for (var b = 0; b < profiles.length; b++) {
+          if (a !== b && !evaluateCrossCondition(profiles[b], restriction.result)) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  });
 }
 
 // Evaluate restrictions based on the given profile
@@ -314,6 +362,7 @@ def _create_js_file(request):
 
         # Optional
         restrictions = validated_data["restrictions"]
+        cross_restrictions = validated_data["cross_restrictions"]
         num_profiles = validated_data["num_profiles"]
         num_tasks = validated_data["num_tasks"]
         randomize = validated_data["randomize"]
@@ -329,6 +378,9 @@ def _create_js_file(request):
 
             file_js.write(_create_array_or_prob_string(attributes, True))
             file_js.write(f"var restrictionarray = {restrictions};\n\n")
+            file_js.write(
+                f"var crossrestrictionarray = {json.dumps(cross_restrictions)};\n\n"
+            )
             file_js.write(
                 _create_array_or_prob_string(attributes, False)
                 if random
