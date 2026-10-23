@@ -1,6 +1,6 @@
 # Use a multi-stage build to keep the final image as small as possible
 # Build stage
-FROM node:alpine as builder
+FROM node:22.23.4-alpine as builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
@@ -8,7 +8,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:alpine
+FROM node:22.23.4-alpine
 WORKDIR /app
 #COPY --from=builder /app/.env.production ./ (uncomment this line when you create ".env.production" file with environment variables )
 COPY --from=builder /app/.env.local ./
